@@ -1,0 +1,20 @@
+# Task ID: 99
+# Title: Refactor PRD to use Markdown Format in Root Directory
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Modify the application to use a Product Requirements Document (PRD) in Markdown format (e.g., `PRD.md`) located in the project's root directory. This replaces the current `scripts/prd.txt`.
+# Details:
+1. Update PRD parsing logic to correctly interpret Markdown syntax.
+2. Change the expected PRD filename convention (e.g., from `prd.txt` to `PRD.md`).
+3. Modify all code referencing the PRD path to look for it in the project root directory instead of the `scripts/` subdirectory.
+4. Ensure tools like `parse_prd` and project initialization scripts are updated to reflect these changes.
+5. Document the new PRD format and location requirements.
+6. Consider backward compatibility or provide clear migration steps for existing projects if applicable.
+
+# Test Strategy:
+1. Create a sample `PRD.md` file in the root directory with various Markdown elements.
+2. Run the `parse_prd` tool (or equivalent function) and verify it correctly processes the Markdown PRD from the root directory.
+3. Confirm that tasks are generated accurately based on the content of `PRD.md`.
+4. Test project initialization to ensure it correctly sets up or expects the PRD in the new location/format.
+5. Verify that any other system components relying on PRD information function correctly with the changes.

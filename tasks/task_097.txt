@@ -1,0 +1,11 @@
+# Task ID: 97
+# Title: Update Windsurf Rules File for MCP Integration
+# Status: done
+# Dependencies: 86
+# Priority: high
+# Description: Revise the .windsurfrules file to shift the focus from CLI operations to MCP server functionality, ensuring MCP tools are the primary integration point.
+# Details:
+This task involves updating the DEV_WORKFLOW section by replacing traditional CLI command examples with their MCP tool equivalents. The update will include adding MCP-specific configuration details, setup guidance, and instructions on integrating the MCP server with development environments like Windsurf. Additionally, update the environment variables documentation to reflect the new .taskmasterconfig approach and provide clear MCP server restart guidance when core logic changes occur. The file should also include updated workflow examples, emphasizing MCP tools as the preferred method while retaining CLI commands as fallback options. Ensure that the changes align with the approaches used in .cursor/rules/dev_workflow.mdc and .cursor/rules/taskmaster.mdc.
+
+# Test Strategy:
+Validate the updated .windsurfrules file by checking that the DEV_WORKFLOW section now prioritizes MCP commands over CLI operations, and that the documentation for environment variables and server restart procedures reflects the new .taskmasterconfig approach. Run simulated workflows to ensure that MCP tools integrate correctly, and cross-reference the changes with the standards in .cursor/rules/dev_workflow.mdc and .cursor/rules/taskmaster.mdc. Review all command examples to confirm that they clearly mark MCP as the primary option with CLI commands noted as fallback.
