@@ -1,0 +1,60 @@
+{
+	"azure": [
+		{
+			"id": "o3",
+			"swe_score": 0.71,
+			"cost_per_1m_tokens": { "input": 60.0, "output": 240.0 },
+			"allowed_roles": ["main", "fallback"],
+			"max_tokens": 200000
+		},
+		{
+			"id": "o3-mini",
+			"swe_score": 0.61,
+			"cost_per_1m_tokens": { "input": 3.75, "output": 15.0 },
+			"allowed_roles": ["main", "fallback"],
+			"max_tokens": 200000
+		},
+		{
+			"id": "gpt-4o",
+			"swe_score": 0.332,
+			"cost_per_1m_tokens": { "input": 2.5, "output": 10.0 },
+			"allowed_roles": ["main", "fallback"],
+			"max_tokens": 16384
+		},
+		{
+			"id": "gpt-4o-mini",
+			"swe_score": 0.3,
+			"cost_per_1m_tokens": { "input": 0.15, "output": 0.6 },
+			"allowed_roles": ["main", "fallback"],
+			"max_tokens": 16384
+		},
+		{
+			"id": "gpt-4-turbo",
+			"swe_score": 0.35,
+			"cost_per_1m_tokens": { "input": 10.0, "output": 30.0 },
+			"allowed_roles": ["main", "fallback"],
+			"max_tokens": 4096
+		},
+		{
+			"id": "gpt-4",
+			"swe_score": 0.32,
+			"cost_per_1m_tokens": { "input": 30.0, "output": 60.0 },
+			"allowed_roles": ["main", "fallback"],
+			"max_tokens": 8192
+		},
+		{
+			"id": "gpt-35-turbo",
+			"swe_score": 0.25,
+			"cost_per_1m_tokens": { "input": 0.5, "output": 1.5 },
+			"allowed_roles": ["main", "fallback"],
+			"max_tokens": 4096
+		},
+		{
+			"id": "gpt-35-turbo-16k",
+			"swe_score": 0.25,
+			"cost_per_1m_tokens": { "input": 3.0, "output": 4.0 },
+			"allowed_roles": ["main", "fallback"],
+			"max_tokens": 16384
+		}
+	]
+}
