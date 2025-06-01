@@ -66,3 +66,6 @@ dev-debug.log
 .npmrc
 
 .cursor/
+.cursorignore
+/.windsurfrules
+/.taskmasterconfig
