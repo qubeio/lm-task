@@ -1,5 +1,48 @@
 # Task Master
 
+Author: Andreas Frangopoulos (from forked code)
+
+## Introduction
+
+🚀 **Task Master** is your all-in-one, AI-powered task management sidekick for software development. Supercharge your
+workflow with the magic of Azure OpenAI and let Task Master turn your requirements into a crystal-clear, actionable
+plan—automatically. Whether you're a solo dev or a whole team, Task Master helps you plan, track, and deliver projects
+with less stress and more fun.
+
+### ✨ What can Task Master do?
+
+- 🤖 **AI-Driven Task Generation**: Instantly convert your Product Requirements Document (PRD) into a structured,
+  prioritized task list with smart dependencies.
+- 🧠 **Intelligent Task Updates**: Use AI to update, split, or clarify tasks as your project evolves—no more manual
+  busywork!
+- 🔗 **Automatic Dependency Management**: Visualize, validate, and fix task dependencies with a click.
+- 🗂️ **Task File Generation**: Generate individual, human-readable task files for every task and subtask.
+- 🛠️ **Batch Operations**: Update statuses, reorganize, or move multiple tasks at once for maximum efficiency.
+- 🖥️ **Seamless Editor & CLI Integration**: Use the Model Control Protocol (MCP) server for direct editor (Cursor, VS
+  Code, Windsurf) integration, or manage everything from the command line.
+- 📝 **Comprehensive Documentation**: Auto-generate docs, get help, and see example workflows right in your project.
+- 🔒 **Enterprise-Ready**: Built for corporate environments—uses only Azure OpenAI, supports secure config, and tracks
+  AI usage/costs.
+- 📊 **Telemetry & Cost Tracking**: Monitor AI usage, token counts, and costs to stay in control.
+- 🧩 **Extensible & Modular**: Designed for easy customization, future AI providers, and community contributions.
+
+### 🏆 Core Features at a Glance
+
+- **Project Initialization**: Scaffold your project with a single command
+- **PRD Parsing**: Turn requirements into tasks in seconds
+- **Task CRUD**: Create, read, update, and delete tasks and subtasks
+- **Status & Priority**: Track progress and focus on what matters
+- **Dependency Tools**: Add, remove, validate, and auto-fix dependencies
+- **Batch & Move**: Reorganize your task hierarchy anytime
+- **AI-Powered Updates**: Let the AI rewrite or expand tasks as your project changes
+- **File Generation**: Keep your task files in sync with your plan
+- **Config Management**: Easy model and API key setup
+- **Editor Integration**: Use directly from Cursor, VS Code, or Windsurf
+
+🎯 **Task Master is here to help you ship faster, smarter, and with less hassle.**
+
+---
+
 ## Requirements
 
 Taskmaster utilizes Azure OpenAI for AI-powered task management operations. You will need:
@@ -28,40 +71,42 @@ MCP (Model Control Protocol) lets you run Task Master directly from your editor.
 
 ```jsonc
 {
-	"mcpServers": {
-		"taskmaster-ai": {
-			"command": "npx",
-			"args": ["-y", "--package=task-master-ai", "task-master-ai"],
-			"env": {
-				"AZURE_OPENAI_API_KEY": "YOUR_AZURE_OPENAI_API_KEY_HERE",
-				"AZURE_OPENAI_ENDPOINT": "YOUR_AZURE_OPENAI_ENDPOINT_HERE"
-			}
-		}
-	}
+  "mcpServers": {
+    "taskmaster-ai": {
+      "command": "npx",
+      "args": ["-y", "--package=task-master-ai", "task-master-ai"],
+      "env": {
+        "AZURE_OPENAI_API_KEY": "YOUR_AZURE_OPENAI_API_KEY_HERE",
+        "AZURE_OPENAI_ENDPOINT": "YOUR_AZURE_OPENAI_ENDPOINT_HERE",
+      },
+    },
+  },
 }
 ```
 
-> 🔑 Replace `YOUR_AZURE_OPENAI_API_KEY_HERE` and `YOUR_AZURE_OPENAI_ENDPOINT_HERE` with your actual Azure OpenAI credentials.
+> 🔑 Replace `YOUR_AZURE_OPENAI_API_KEY_HERE` and `YOUR_AZURE_OPENAI_ENDPOINT_HERE` with your actual Azure OpenAI
+> credentials.
 
 ##### VS Code (`servers` + `type`)
 
 ```jsonc
 {
-	"servers": {
-		"taskmaster-ai": {
-			"command": "npx",
-			"args": ["-y", "--package=task-master-ai", "task-master-ai"],
-			"env": {
-				"AZURE_OPENAI_API_KEY": "YOUR_AZURE_OPENAI_API_KEY_HERE",
-				"AZURE_OPENAI_ENDPOINT": "YOUR_AZURE_OPENAI_ENDPOINT_HERE"
-			},
-			"type": "stdio"
-		}
-	}
+  "servers": {
+    "taskmaster-ai": {
+      "command": "npx",
+      "args": ["-y", "--package=task-master-ai", "task-master-ai"],
+      "env": {
+        "AZURE_OPENAI_API_KEY": "YOUR_AZURE_OPENAI_API_KEY_HERE",
+        "AZURE_OPENAI_ENDPOINT": "YOUR_AZURE_OPENAI_ENDPOINT_HERE",
+      },
+      "type": "stdio",
+    },
+  },
 }
 ```
 
-> 🔑 Replace `YOUR_AZURE_OPENAI_API_KEY_HERE` and `YOUR_AZURE_OPENAI_ENDPOINT_HERE` with your actual Azure OpenAI credentials.
+> 🔑 Replace `YOUR_AZURE_OPENAI_API_KEY_HERE` and `YOUR_AZURE_OPENAI_ENDPOINT_HERE` with your actual Azure OpenAI
+> credentials.
 
 #### 2. (Cursor-only) Enable Taskmaster MCP
 
@@ -159,7 +204,7 @@ For more detailed information, check out the documentation in the `docs` directo
 
 ## Troubleshooting
 
-### If `task-master init` doesn't respond:
+### If `task-master init` doesn't respond
 
 Try running it with Node directly:
 
