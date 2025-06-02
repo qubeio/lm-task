@@ -130,9 +130,13 @@ In your editor's AI chat pane, say:
 Initialize taskmaster-ai in my project
 ```
 
-#### 5. Make sure you have a PRD in `<project_folder>/scripts/prd.txt`
+#### 5. Make sure you have a PRD in your project root
 
-An example of a PRD is located into `<project_folder>/scripts/example_prd.txt`.
+Task Master will automatically search for PRD files in this order: `PRD.md`, `prd.md`, `PRD.txt`, `prd.txt` in the
+project root, then in the `scripts/` directory for backward compatibility.
+
+An example of a PRD is located at `<project_folder>/scripts/example_prd.md` which you can use as a template to create
+your `PRD.md` in the project root. A text version is also available at `<project_folder>/scripts/example_prd.txt`.
 
 **Always start with a detailed PRD.**
 
@@ -142,7 +146,7 @@ The more detailed your PRD, the better the generated tasks will be.
 
 Use your AI assistant to:
 
-- Parse requirements: `Can you parse my PRD at scripts/prd.txt?`
+- Parse requirements: `Can you parse my PRD?` (Task Master will automatically find your PRD file)
 - Plan next step: `What's the next task I should work on?`
 - Implement a task: `Can you help me implement task 3?`
 - Add subtasks to a task: `Can you help me add subtasks to task 4?`
@@ -180,7 +184,7 @@ This will prompt you for project details and set up a new project with the neces
 task-master init
 
 # Parse a PRD and generate tasks
-task-master parse-prd your-prd.txt
+task-master parse-prd
 
 # List all tasks
 task-master list

@@ -1,0 +1,83 @@
+# Task ID: 100
+# Title: Implement MCP Inspector End-to-End Test Suite
+# Status: pending
+# Dependencies: 19, 97
+# Priority: medium
+# Description: Develop a comprehensive test suite to verify that the MCP server implementation meets the core Model-Context-Protocol requirements.
+# Details:
+Based on the documentation in docs/mcp-inspector-e2e.md, implement an end-to-end test suite that covers the following aspects: 1) Discoverability Testing: Ensure the server correctly exposes the 'tools', 'resources', and 'prompts' endpoints; 2) Tool Invocation Testing: Validate that at least one tool executes successfully and returns the expected JSON output; 3) Error Handling Testing: Confirm that invalid tool calls result in appropriate error statuses; 4) Automated Test Execution: Create the 'tests/e2e/run_mcp_inspector.sh' script to facilitate automated testing; 5) Result Capture and Analysis: Store test results in a timestamped folder under 'tests/e2e/_runs/mcp-inspector-<timestamp>/' for detailed inspection; 6) CI Integration: Ensure seamless integration of these tests into existing CI pipelines. The implementation should utilize 'npx --yes @modelcontextprotocol/inspector@latest --cli' for invoking the inspector and employ 'jq' for JSON validation, while also incorporating comprehensive logging and error handling to provide early feedback on MCP compliance.
+
+# Test Strategy:
+To verify the correct implementation, run the test suite against both local server instances and explicit server endpoints. Check that the 'tools', 'resources', and 'prompts' endpoints are properly discovered, that valid tool invocations return expected JSON outputs, and that erroneous tool calls produce the correct error statuses. Ensure that the 'run_mcp_inspector.sh' script executes seamlessly, captures results in the designated directory, and integrates properly with CI pipelines. Logs and error messages should provide clear feedback for troubleshooting and regression detection.
+
+# Subtasks:
+## 1. Enhance MCP Inspector Script with Missing Helper Functions [pending]
+### Dependencies: None
+### Description: Complete the run_mcp_inspector.sh script by implementing missing helper functions and improving error handling
+### Details:
+The current script references helper functions from e2e_helpers.sh but some key functions like log_step, log_info, log_error, log_success are missing. Need to:
+1. Add the missing logging functions to e2e_helpers.sh
+2. Ensure proper error handling and exit codes
+3. Add validation for required dependencies (jq, node, npx)
+4. Improve the script's robustness and error reporting
+
+## 2. Add Comprehensive JSON Schema Validation [pending]
+### Dependencies: 100.1
+### Description: Extend the basic JSON key validation to include proper schema validation for MCP responses
+### Details:
+The current script only checks for basic key presence. Need to implement:
+1. Proper schema validation for tools/list response (validate tools array structure)
+2. Schema validation for resources/list response (validate resources array structure)
+3. Schema validation for tool invocation results (validate result object structure)
+4. Add validation for expected MCP protocol fields and data types
+5. Create reusable validation functions that can be extended for future tests
+
+## 3. Implement Performance Monitoring and Timing [pending]
+### Dependencies: 100.1
+### Description: Add performance monitoring capabilities to track latency and detect regressions
+### Details:
+As mentioned in the documentation, add performance monitoring features:
+1. Wrap MCP inspector calls with timing measurements
+2. Record response times for each endpoint (tools/list, resources/list, tool calls)
+3. Generate performance summary report
+4. Set reasonable thresholds for performance regression detection
+5. Save timing data to the run directory for historical analysis
+6. Add optional performance comparison with previous runs
+
+## 4. Add Extended Tool Testing Coverage [pending]
+### Dependencies: 100.2
+### Description: Expand tool testing beyond the basic single tool call to test multiple tools and edge cases
+### Details:
+Enhance the tool testing coverage as suggested in the documentation:
+1. Test multiple tools from the tools/list response, not just the first one
+2. Test tools with different parameter requirements (no params, required params, optional params)
+3. Add tests for tools that return different result types (objects, arrays, primitives)
+4. Test edge cases like empty parameter objects, invalid parameter types
+5. Create a comprehensive tool compatibility matrix
+6. Add specific tests for our key tools like get_tasks, add_task, etc.
+
+## 5. Integrate with Existing E2E Test Infrastructure [pending]
+### Dependencies: 100.3, 100.4
+### Description: Integrate the MCP inspector tests with the existing run_e2e.sh framework and CI pipeline
+### Details:
+Connect the MCP inspector tests with the existing test infrastructure:
+1. Modify run_e2e.sh to include MCP inspector tests as an optional or default step
+2. Add command-line flags to run_e2e.sh to control MCP inspector execution
+3. Ensure proper integration with the existing logging and cost tracking systems
+4. Add MCP inspector results to the overall E2E test summary
+5. Update CI configuration to include MCP inspector tests
+6. Ensure compatibility with the existing LLM analysis framework
+
+## 6. Create Comprehensive Test Documentation and Examples [pending]
+### Dependencies: 100.5
+### Description: Create documentation, examples, and troubleshooting guides for the MCP inspector test suite
+### Details:
+Complete the documentation and examples for the MCP inspector test suite:
+1. Update the existing docs/mcp-inspector-e2e.md with implementation details
+2. Add examples of successful and failed test runs
+3. Create troubleshooting guide for common issues
+4. Document the test output format and how to interpret results
+5. Add examples of extending the test suite for custom tools
+6. Create developer guide for maintaining and updating the tests
+7. Add integration examples for different CI/CD systems
+

@@ -303,13 +303,13 @@ log_step() {
     exit 1
   fi
 
-  log_info "Copying sample PRD to test directory..."
-  cp "$SAMPLE_PRD_SOURCE" "$TEST_RUN_DIR/prd.txt"
-  if [ ! -f "$TEST_RUN_DIR/prd.txt" ]; then
+  log_info "Copying sample PRD to test directory as PRD.md..."
+  cp "$SAMPLE_PRD_SOURCE" "$TEST_RUN_DIR/PRD.md"
+  if [ ! -f "$TEST_RUN_DIR/PRD.md" ]; then
     log_error "Failed to copy sample PRD to $TEST_RUN_DIR."
     exit 1
   fi
-  log_success "Sample PRD copied."
+  log_success "Sample PRD copied as PRD.md."
 
   # ORIGINAL_DIR=$(pwd) # Save original dir # <<< REMOVED FROM HERE
   cd "$TEST_RUN_DIR"
@@ -340,7 +340,7 @@ log_step() {
   log_success "Project initialized."
 
   log_step "Parsing PRD"
-  cmd_output_prd=$(task-master parse-prd ./prd.txt --force 2>&1)
+  cmd_output_prd=$(task-master parse-prd --force 2>&1)
   exit_status_prd=$?
   echo "$cmd_output_prd"
   extract_and_sum_cost "$cmd_output_prd"

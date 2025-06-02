@@ -1,18 +1,22 @@
 # Meta-Development Script
 
-This folder contains a **meta-development script** (`dev.js`) and related utilities that manage tasks for an AI-driven or traditional software development workflow. The script revolves around a `tasks.json` file, which holds an up-to-date list of development tasks.
+This folder contains a **meta-development script** (`dev.js`) and related utilities that manage tasks for an AI-driven
+or traditional software development workflow. The script revolves around a `tasks.json` file, which holds an up-to-date
+list of development tasks.
 
 ## Overview
 
-In an AI-driven development process—particularly with tools like [Cursor](https://www.cursor.so/)—it's beneficial to have a **single source of truth** for tasks. This script allows you to:
+In an AI-driven development process—particularly with tools like [Cursor](https://www.cursor.so/)—it's beneficial to
+have a **single source of truth** for tasks. This script allows you to:
 
-1. **Parse** a PRD or requirements document (`.txt`) to initialize a set of tasks (`tasks.json`).
+1. **Parse** a PRD or requirements document (`.md` or `.txt`) to initialize a set of tasks (`tasks.json`).
 2. **List** all existing tasks (IDs, statuses, titles).
 3. **Update** tasks to accommodate new prompts or architecture changes (useful if you discover "implementation drift").
 4. **Generate** individual task files (e.g., `task_001.txt`) for easy reference or to feed into an AI coding workflow.
 5. **Set task status**—mark tasks as `done`, `pending`, or `deferred` based on progress.
 6. **Add subtasks** to tasks—break down complex tasks into smaller, more manageable subtasks.
-7. **Research-backed subtask generation**—use Perplexity AI to generate more informed and contextually relevant subtasks.
+7. **Research-backed subtask generation**—use Perplexity AI to generate more informed and contextually relevant
+   subtasks.
 8. **Clear subtasks**—remove subtasks from specified tasks to allow regeneration or restructuring.
 9. **Show task details**—display detailed information about a specific task and its subtasks.
 
@@ -42,13 +46,13 @@ The script can be configured through environment variables in a `.env` file at t
 
 1. **`tasks.json`**:
 
-   - A JSON file at the project root containing an array of tasks (each with `id`, `title`, `description`, `status`, etc.).
+   - A JSON file at the project root containing an array of tasks (each with `id`, `title`, `description`, `status`,
+     etc.).
    - The `meta` field can store additional info like the project's name, version, or reference to the PRD.
    - Tasks can have `subtasks` for more detailed implementation steps.
    - Dependencies are displayed with status indicators (✅ for completed, ⏱️ for pending) to easily track progress.
 
-2. **Script Commands**
-   You can run the script via:
+2. **Script Commands** You can run the script via:
 
    ```bash
    node scripts/dev.js [command] [options]
@@ -202,7 +206,9 @@ The script integrates with two AI services:
 1. **Anthropic Claude**: Used for parsing PRDs, generating tasks, and creating subtasks.
 2. **Perplexity AI**: Used for research-backed subtask generation when the `--research` flag is specified.
 
-The Perplexity integration uses the OpenAI client to connect to Perplexity's API, which provides enhanced research capabilities for generating more informed subtasks. If the Perplexity API is unavailable or encounters an error, the script will automatically fall back to using Anthropic's Claude.
+The Perplexity integration uses the OpenAI client to connect to Perplexity's API, which provides enhanced research
+capabilities for generating more informed subtasks. If the Perplexity API is unavailable or encounters an error, the
+script will automatically fall back to using Anthropic's Claude.
 
 To use the Perplexity integration:
 
@@ -327,7 +333,8 @@ node scripts/dev.js next --file=custom-tasks.json
 
 This command:
 
-1. Identifies all **eligible tasks** - pending or in-progress tasks whose dependencies are all satisfied (marked as done)
+1. Identifies all **eligible tasks** - pending or in-progress tasks whose dependencies are all satisfied (marked as
+   done)
 2. **Prioritizes** these eligible tasks by:
    - Priority level (high > medium > low)
    - Number of dependencies (fewer dependencies first)
@@ -341,7 +348,8 @@ This command:
    - Command to mark the task as done when completed
    - Commands for working with subtasks (update status or add new subtasks)
 
-This feature ensures you're always working on the most appropriate task based on your project's current state and dependency structure.
+This feature ensures you're always working on the most appropriate task based on your project's current state and
+dependency structure.
 
 ## Showing Task Details
 
@@ -376,7 +384,8 @@ This command:
    - Commands for working with subtasks
    - For subtasks, provides a link to view the parent task
 
-This command is particularly useful when you need to examine a specific task in detail before implementing it or when you want to check the status and details of a particular task.
+This command is particularly useful when you need to examine a specific task in detail before implementing it or when
+you want to check the status and details of a particular task.
 
 ## Enhanced Error Handling
 

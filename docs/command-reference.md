@@ -5,11 +5,17 @@ Here's a comprehensive reference of all available commands:
 ## Parse PRD
 
 ```bash
-# Parse a PRD file and generate tasks
-task-master parse-prd <prd-file.txt>
+# Parse a PRD file and generate tasks (auto-detects PRD.md, prd.md, PRD.txt, prd.txt in project root)
+task-master parse-prd
+
+# Parse a specific PRD file
+task-master parse-prd <prd-file.md>
 
 # Limit the number of tasks generated
-task-master parse-prd <prd-file.txt> --num-tasks=10
+task-master parse-prd --num-tasks=10
+
+# Parse a specific file with custom task count
+task-master parse-prd <prd-file.md> --num-tasks=10
 ```
 
 ## List Tasks
@@ -71,7 +77,9 @@ task-master update-subtask --id=<parentId.subtaskId> --prompt="<prompt>"
 task-master update-subtask --id=5.2 --prompt="Add rate limiting of 100 requests per minute"
 ```
 
-Unlike the `update-task` command which replaces task information, the `update-subtask` command _appends_ new information to the existing subtask details, marking it with a timestamp. This is useful for iteratively enhancing subtasks while preserving the original content.
+Unlike the `update-task` command which replaces task information, the `update-subtask` command _appends_ new information
+to the existing subtask details, marking it with a timestamp. This is useful for iteratively enhancing subtasks while
+preserving the original content.
 
 ## Generate Task Files
 
@@ -186,4 +194,5 @@ task-master models --set-fallback=gpt-4o-mini
 task-master models --setup
 ```
 
-Configuration is stored in `.taskmasterconfig` in your project root. API keys are managed via `.env` or MCP configuration. This version only supports Azure OpenAI models: `gpt-4o`, `gpt-4o-mini`, and `o3-mini`.
+Configuration is stored in `.taskmasterconfig` in your project root. API keys are managed via `.env` or MCP
+configuration. This version only supports Azure OpenAI models: `gpt-4o`, `gpt-4o-mini`, and `o3-mini`.

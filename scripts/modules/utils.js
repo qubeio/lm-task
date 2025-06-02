@@ -3,12 +3,12 @@
  * Utility functions for the Task Master CLI
  */
 
-import fs from 'fs';
-import path from 'path';
-import chalk from 'chalk';
-import dotenv from 'dotenv';
+import fs from "fs";
+import path from "path";
+import chalk from "chalk";
+import dotenv from "dotenv";
 // Import specific config getters needed here
-import { getLogLevel, getDebugFlag } from './config-manager.js';
+import { getLogLevel, getDebugFlag } from "./config-manager.js";
 
 // Global silent mode flag
 let silentMode = false;
@@ -26,36 +26,36 @@ let silentMode = false;
  * @returns {string|undefined} The value of the environment variable or undefined if not found.
  */
 function resolveEnvVariable(key, session = null, projectRoot = null) {
-	// 1. Check session.env
-	if (session?.env?.[key]) {
-		return session.env[key];
-	}
+  // 1. Check session.env
+  if (session?.env?.[key]) {
+    return session.env[key];
+  }
 
-	// 2. Read .env file at projectRoot
-	if (projectRoot) {
-		const envPath = path.join(projectRoot, '.env');
-		if (fs.existsSync(envPath)) {
-			try {
-				const envFileContent = fs.readFileSync(envPath, 'utf-8');
-				const parsedEnv = dotenv.parse(envFileContent); // Use dotenv to parse
-				if (parsedEnv && parsedEnv[key]) {
-					// console.log(`DEBUG: Found key ${key} in ${envPath}`); // Optional debug log
-					return parsedEnv[key];
-				}
-			} catch (error) {
-				// Log error but don't crash, just proceed as if key wasn't found in file
-				log('warn', `Could not read or parse ${envPath}: ${error.message}`);
-			}
-		}
-	}
+  // 2. Read .env file at projectRoot
+  if (projectRoot) {
+    const envPath = path.join(projectRoot, ".env");
+    if (fs.existsSync(envPath)) {
+      try {
+        const envFileContent = fs.readFileSync(envPath, "utf-8");
+        const parsedEnv = dotenv.parse(envFileContent); // Use dotenv to parse
+        if (parsedEnv && parsedEnv[key]) {
+          // console.log(`DEBUG: Found key ${key} in ${envPath}`); // Optional debug log
+          return parsedEnv[key];
+        }
+      } catch (error) {
+        // Log error but don't crash, just proceed as if key wasn't found in file
+        log("warn", `Could not read or parse ${envPath}: ${error.message}`);
+      }
+    }
+  }
 
-	// 3. Fallback: Check process.env
-	if (process.env[key]) {
-		return process.env[key];
-	}
+  // 3. Fallback: Check process.env
+  if (process.env[key]) {
+    return process.env[key];
+  }
 
-	// Not found anywhere
-	return undefined;
+  // Not found anywhere
+  return undefined;
 }
 
 // --- Project Root Finding Utility ---
@@ -67,23 +67,23 @@ function resolveEnvVariable(key, session = null, projectRoot = null) {
  * @returns {string|null} The path to the project root directory, or null if not found.
  */
 function findProjectRoot(
-	startPath = process.cwd(),
-	markers = ['package.json', '.git', '.taskmasterconfig']
+  startPath = process.cwd(),
+  markers = ["package.json", ".git", ".taskmasterconfig"]
 ) {
-	let currentPath = path.resolve(startPath);
-	while (true) {
-		for (const marker of markers) {
-			if (fs.existsSync(path.join(currentPath, marker))) {
-				return currentPath;
-			}
-		}
-		const parentPath = path.dirname(currentPath);
-		if (parentPath === currentPath) {
-			// Reached the filesystem root
-			return null;
-		}
-		currentPath = parentPath;
-	}
+  let currentPath = path.resolve(startPath);
+  while (true) {
+    for (const marker of markers) {
+      if (fs.existsSync(path.join(currentPath, marker))) {
+        return currentPath;
+      }
+    }
+    const parentPath = path.dirname(currentPath);
+    if (parentPath === currentPath) {
+      // Reached the filesystem root
+      return null;
+    }
+    currentPath = parentPath;
+  }
 }
 
 // --- Dynamic Configuration Function --- (REMOVED)
@@ -95,11 +95,11 @@ function getConfig(session = null) {
 
 // Set up logging based on log level
 const LOG_LEVELS = {
-	debug: 0,
-	info: 1,
-	warn: 2,
-	error: 3,
-	success: 1 // Treat success like info level
+  debug: 0,
+  info: 1,
+  warn: 2,
+  error: 3,
+  success: 1, // Treat success like info level
 };
 
 /**
@@ -107,21 +107,21 @@ const LOG_LEVELS = {
  * @returns {Promise<Object>} The task manager module object
  */
 async function getTaskManager() {
-	return import('./task-manager.js');
+  return import("./task-manager.js");
 }
 
 /**
  * Enable silent logging mode
  */
 function enableSilentMode() {
-	silentMode = true;
+  silentMode = true;
 }
 
 /**
  * Disable silent logging mode
  */
 function disableSilentMode() {
-	silentMode = false;
+  silentMode = false;
 }
 
 /**
@@ -129,7 +129,18 @@ function disableSilentMode() {
  * @returns {boolean} True if silent mode is enabled
  */
 function isSilentMode() {
-	return silentMode;
+  return silentMode;
+}
+
+/**
+ * Preprocesses Markdown PRD content.
+ * @param {string} content - The Markdown content to preprocess.
+ * @returns {string} The preprocessed content.
+ */
+function preprocessMarkdownPRD(content) {
+  // For now, just return the content as is.
+  // This function can be expanded later if specific Markdown preprocessing is needed.
+  return content;
 }
 
 /**
@@ -138,38 +149,38 @@ function isSilentMode() {
  * @param  {...any} args - Arguments to log
  */
 function log(level, ...args) {
-	// Immediately return if silentMode is enabled
-	if (isSilentMode()) {
-		return;
-	}
+  // Immediately return if silentMode is enabled
+  if (isSilentMode()) {
+    return;
+  }
 
-	// Get log level dynamically from config-manager
-	const configLevel = getLogLevel() || 'info'; // Use getter
+  // Get log level dynamically from config-manager
+  const configLevel = getLogLevel() || "info"; // Use getter
 
-	// Use text prefixes instead of emojis
-	const prefixes = {
-		debug: chalk.gray('[DEBUG]'),
-		info: chalk.blue('[INFO]'),
-		warn: chalk.yellow('[WARN]'),
-		error: chalk.red('[ERROR]'),
-		success: chalk.green('[SUCCESS]')
-	};
+  // Use text prefixes instead of emojis
+  const prefixes = {
+    debug: chalk.gray("[DEBUG]"),
+    info: chalk.blue("[INFO]"),
+    warn: chalk.yellow("[WARN]"),
+    error: chalk.red("[ERROR]"),
+    success: chalk.green("[SUCCESS]"),
+  };
 
-	// Ensure level exists, default to info if not
-	const currentLevel = LOG_LEVELS.hasOwnProperty(level) ? level : 'info';
+  // Ensure level exists, default to info if not
+  const currentLevel = LOG_LEVELS.hasOwnProperty(level) ? level : "info";
 
-	// Check log level configuration
-	if (
-		LOG_LEVELS[currentLevel] >= (LOG_LEVELS[configLevel] ?? LOG_LEVELS.info)
-	) {
-		const prefix = prefixes[currentLevel] || '';
-		// Use console.log for all levels, let chalk handle coloring
-		// Construct the message properly
-		const message = args
-			.map((arg) => (typeof arg === 'object' ? JSON.stringify(arg) : arg))
-			.join(' ');
-		console.log(`${prefix} ${message}`);
-	}
+  // Check log level configuration
+  if (
+    LOG_LEVELS[currentLevel] >= (LOG_LEVELS[configLevel] ?? LOG_LEVELS.info)
+  ) {
+    const prefix = prefixes[currentLevel] || "";
+    // Use console.log for all levels, let chalk handle coloring
+    // Construct the message properly
+    const message = args
+      .map((arg) => (typeof arg === "object" ? JSON.stringify(arg) : arg))
+      .join(" ");
+    console.log(`${prefix} ${message}`);
+  }
 }
 
 /**
@@ -178,20 +189,20 @@ function log(level, ...args) {
  * @returns {Object|null} Parsed JSON data or null if error occurs
  */
 function readJSON(filepath) {
-	// Get debug flag dynamically from config-manager
-	const isDebug = getDebugFlag();
-	try {
-		const rawData = fs.readFileSync(filepath, 'utf8');
-		return JSON.parse(rawData);
-	} catch (error) {
-		log('error', `Error reading JSON file ${filepath}:`, error.message);
-		if (isDebug) {
-			// Use dynamic debug flag
-			// Use log utility for debug output too
-			log('error', 'Full error details:', error);
-		}
-		return null;
-	}
+  // Get debug flag dynamically from config-manager
+  const isDebug = getDebugFlag();
+  try {
+    const rawData = fs.readFileSync(filepath, "utf8");
+    return JSON.parse(rawData);
+  } catch (error) {
+    log("error", `Error reading JSON file ${filepath}:`, error.message);
+    if (isDebug) {
+      // Use dynamic debug flag
+      // Use log utility for debug output too
+      log("error", "Full error details:", error);
+    }
+    return null;
+  }
 }
 
 /**
@@ -200,22 +211,22 @@ function readJSON(filepath) {
  * @param {Object} data - Data to write
  */
 function writeJSON(filepath, data) {
-	// Get debug flag dynamically from config-manager
-	const isDebug = getDebugFlag();
-	try {
-		const dir = path.dirname(filepath);
-		if (!fs.existsSync(dir)) {
-			fs.mkdirSync(dir, { recursive: true });
-		}
-		fs.writeFileSync(filepath, JSON.stringify(data, null, 2), 'utf8');
-	} catch (error) {
-		log('error', `Error writing JSON file ${filepath}:`, error.message);
-		if (isDebug) {
-			// Use dynamic debug flag
-			// Use log utility for debug output too
-			log('error', 'Full error details:', error);
-		}
-	}
+  // Get debug flag dynamically from config-manager
+  const isDebug = getDebugFlag();
+  try {
+    const dir = path.dirname(filepath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(filepath, JSON.stringify(data, null, 2), "utf8");
+  } catch (error) {
+    log("error", `Error writing JSON file ${filepath}:`, error.message);
+    if (isDebug) {
+      // Use dynamic debug flag
+      // Use log utility for debug output too
+      log("error", "Full error details:", error);
+    }
+  }
 }
 
 /**
@@ -224,24 +235,24 @@ function writeJSON(filepath, data) {
  * @returns {string} Sanitized prompt
  */
 function sanitizePrompt(prompt) {
-	if (!prompt) return prompt;
+  if (!prompt) return prompt;
 
-	// Remove dangerous HTML/script tags and their content
-	let sanitized = prompt.replace(
-		/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-		''
-	);
+  // Remove dangerous HTML/script tags and their content
+  let sanitized = prompt.replace(
+    /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+    ""
+  );
 
-	// Remove other potentially dangerous HTML tags
-	sanitized = sanitized.replace(/<[^>]*>/g, '');
+  // Remove other potentially dangerous HTML tags
+  sanitized = sanitized.replace(/<[^>]*>/g, "");
 
-	// Replace double quotes with escaped double quotes for shell safety
-	sanitized = sanitized.replace(/"/g, '\\"');
+  // Replace double quotes with escaped double quotes for shell safety
+  sanitized = sanitized.replace(/"/g, '\\"');
 
-	// Clean up multiple spaces
-	sanitized = sanitized.replace(/\s+/g, ' ').trim();
+  // Clean up multiple spaces
+  sanitized = sanitized.replace(/\s+/g, " ").trim();
 
-	return sanitized;
+  return sanitized;
 }
 
 /**
@@ -251,26 +262,26 @@ function sanitizePrompt(prompt) {
  * @returns {boolean} True if the task exists, false otherwise
  */
 function taskExists(tasks, taskId) {
-	if (!taskId || !tasks || !Array.isArray(tasks)) {
-		return false;
-	}
+  if (!taskId || !tasks || !Array.isArray(tasks)) {
+    return false;
+  }
 
-	// Handle both regular task IDs and subtask IDs (e.g., "1.2")
-	if (typeof taskId === 'string' && taskId.includes('.')) {
-		const [parentId, subtaskId] = taskId
-			.split('.')
-			.map((id) => parseInt(id, 10));
-		const parentTask = tasks.find((t) => t.id === parentId);
+  // Handle both regular task IDs and subtask IDs (e.g., "1.2")
+  if (typeof taskId === "string" && taskId.includes(".")) {
+    const [parentId, subtaskId] = taskId
+      .split(".")
+      .map((id) => parseInt(id, 10));
+    const parentTask = tasks.find((t) => t.id === parentId);
 
-		if (!parentTask || !parentTask.subtasks) {
-			return false;
-		}
+    if (!parentTask || !parentTask.subtasks) {
+      return false;
+    }
 
-		return parentTask.subtasks.some((st) => st.id === subtaskId);
-	}
+    return parentTask.subtasks.some((st) => st.id === subtaskId);
+  }
 
-	const id = parseInt(taskId, 10);
-	return tasks.some((t) => t.id === id);
+  const id = parseInt(taskId, 10);
+  return tasks.some((t) => t.id === id);
 }
 
 /**
@@ -279,15 +290,15 @@ function taskExists(tasks, taskId) {
  * @returns {string} The formatted task ID
  */
 function formatTaskId(id) {
-	if (typeof id === 'string' && id.includes('.')) {
-		return id; // Already formatted as a string with a dot (e.g., "1.2")
-	}
+  if (typeof id === "string" && id.includes(".")) {
+    return id; // Already formatted as a string with a dot (e.g., "1.2")
+  }
 
-	if (typeof id === 'number') {
-		return id.toString();
-	}
+  if (typeof id === "number") {
+    return id.toString();
+  }
 
-	return id;
+  return id;
 }
 
 /**
@@ -298,71 +309,71 @@ function formatTaskId(id) {
  * @returns {{task: Object|null, originalSubtaskCount: number|null}} The task object (potentially with filtered subtasks) and the original subtask count if filtered, or nulls if not found.
  */
 function findTaskById(tasks, taskId, statusFilter = null) {
-	if (!taskId || !tasks || !Array.isArray(tasks)) {
-		return { task: null, originalSubtaskCount: null };
-	}
+  if (!taskId || !tasks || !Array.isArray(tasks)) {
+    return { task: null, originalSubtaskCount: null };
+  }
 
-	// Check if it's a subtask ID (e.g., "1.2")
-	if (typeof taskId === 'string' && taskId.includes('.')) {
-		// If looking for a subtask, statusFilter doesn't apply directly here.
-		const [parentId, subtaskId] = taskId
-			.split('.')
-			.map((id) => parseInt(id, 10));
-		const parentTask = tasks.find((t) => t.id === parentId);
+  // Check if it's a subtask ID (e.g., "1.2")
+  if (typeof taskId === "string" && taskId.includes(".")) {
+    // If looking for a subtask, statusFilter doesn't apply directly here.
+    const [parentId, subtaskId] = taskId
+      .split(".")
+      .map((id) => parseInt(id, 10));
+    const parentTask = tasks.find((t) => t.id === parentId);
 
-		if (!parentTask || !parentTask.subtasks) {
-			return { task: null, originalSubtaskCount: null };
-		}
+    if (!parentTask || !parentTask.subtasks) {
+      return { task: null, originalSubtaskCount: null };
+    }
 
-		const subtask = parentTask.subtasks.find((st) => st.id === subtaskId);
-		if (subtask) {
-			// Add reference to parent task for context
-			subtask.parentTask = {
-				id: parentTask.id,
-				title: parentTask.title,
-				status: parentTask.status
-			};
-			subtask.isSubtask = true;
-		}
+    const subtask = parentTask.subtasks.find((st) => st.id === subtaskId);
+    if (subtask) {
+      // Add reference to parent task for context
+      subtask.parentTask = {
+        id: parentTask.id,
+        title: parentTask.title,
+        status: parentTask.status,
+      };
+      subtask.isSubtask = true;
+    }
 
-		return { task: subtask || null, originalSubtaskCount: null };
-	}
+    return { task: subtask || null, originalSubtaskCount: null };
+  }
 
-	let taskResult = null;
-	let originalSubtaskCount = null;
+  let taskResult = null;
+  let originalSubtaskCount = null;
 
-	// Find the main task
-	const id = parseInt(taskId, 10);
-	const task = tasks.find((t) => t.id === id) || null;
+  // Find the main task
+  const id = parseInt(taskId, 10);
+  const task = tasks.find((t) => t.id === id) || null;
 
-	// If task not found, return nulls
-	if (!task) {
-		return { task: null, originalSubtaskCount: null };
-	}
+  // If task not found, return nulls
+  if (!task) {
+    return { task: null, originalSubtaskCount: null };
+  }
 
-	taskResult = task;
+  taskResult = task;
 
-	// If task found and statusFilter provided, filter its subtasks
-	if (
-		statusFilter &&
-		typeof statusFilter === 'string' &&
-		task.subtasks &&
-		Array.isArray(task.subtasks)
-	) {
-		originalSubtaskCount = task.subtasks.length;
-		// Clone the task to avoid modifying the original array
-		const filteredTask = { ...task };
-		filteredTask.subtasks = task.subtasks.filter(
-			(subtask) =>
-				subtask.status &&
-				subtask.status.toLowerCase() === statusFilter.toLowerCase()
-		);
+  // If task found and statusFilter provided, filter its subtasks
+  if (
+    statusFilter &&
+    typeof statusFilter === "string" &&
+    task.subtasks &&
+    Array.isArray(task.subtasks)
+  ) {
+    originalSubtaskCount = task.subtasks.length;
+    // Clone the task to avoid modifying the original array
+    const filteredTask = { ...task };
+    filteredTask.subtasks = task.subtasks.filter(
+      (subtask) =>
+        subtask.status &&
+        subtask.status.toLowerCase() === statusFilter.toLowerCase()
+    );
 
-		taskResult = filteredTask;
-	}
+    taskResult = filteredTask;
+  }
 
-	// Return the found task and original subtask count
-	return { task: taskResult, originalSubtaskCount };
+  // Return the found task and original subtask count
+  return { task: taskResult, originalSubtaskCount };
 }
 
 /**
@@ -372,11 +383,11 @@ function findTaskById(tasks, taskId, statusFilter = null) {
  * @returns {string} The truncated text
  */
 function truncate(text, maxLength) {
-	if (!text || text.length <= maxLength) {
-		return text;
-	}
+  if (!text || text.length <= maxLength) {
+    return text;
+  }
 
-	return text.slice(0, maxLength - 3) + '...';
+  return text.slice(0, maxLength - 3) + "...";
 }
 
 /**
@@ -388,46 +399,46 @@ function truncate(text, maxLength) {
  * @returns {Array} - List of dependency edges that need to be removed to break cycles
  */
 function findCycles(
-	subtaskId,
-	dependencyMap,
-	visited = new Set(),
-	recursionStack = new Set(),
-	path = []
+  subtaskId,
+  dependencyMap,
+  visited = new Set(),
+  recursionStack = new Set(),
+  path = []
 ) {
-	// Mark the current node as visited and part of recursion stack
-	visited.add(subtaskId);
-	recursionStack.add(subtaskId);
-	path.push(subtaskId);
+  // Mark the current node as visited and part of recursion stack
+  visited.add(subtaskId);
+  recursionStack.add(subtaskId);
+  path.push(subtaskId);
 
-	const cyclesToBreak = [];
+  const cyclesToBreak = [];
 
-	// Get all dependencies of the current subtask
-	const dependencies = dependencyMap.get(subtaskId) || [];
+  // Get all dependencies of the current subtask
+  const dependencies = dependencyMap.get(subtaskId) || [];
 
-	// For each dependency
-	for (const depId of dependencies) {
-		// If not visited, recursively check for cycles
-		if (!visited.has(depId)) {
-			const cycles = findCycles(depId, dependencyMap, visited, recursionStack, [
-				...path
-			]);
-			cyclesToBreak.push(...cycles);
-		}
-		// If the dependency is in the recursion stack, we found a cycle
-		else if (recursionStack.has(depId)) {
-			// Find the position of the dependency in the path
-			const cycleStartIndex = path.indexOf(depId);
-			// The last edge in the cycle is what we want to remove
-			const cycleEdges = path.slice(cycleStartIndex);
-			// We'll remove the last edge in the cycle (the one that points back)
-			cyclesToBreak.push(depId);
-		}
-	}
+  // For each dependency
+  for (const depId of dependencies) {
+    // If not visited, recursively check for cycles
+    if (!visited.has(depId)) {
+      const cycles = findCycles(depId, dependencyMap, visited, recursionStack, [
+        ...path,
+      ]);
+      cyclesToBreak.push(...cycles);
+    }
+    // If the dependency is in the recursion stack, we found a cycle
+    else if (recursionStack.has(depId)) {
+      // Find the position of the dependency in the path
+      const cycleStartIndex = path.indexOf(depId);
+      // The last edge in the cycle is what we want to remove
+      const cycleEdges = path.slice(cycleStartIndex);
+      // We'll remove the last edge in the cycle (the one that points back)
+      cyclesToBreak.push(depId);
+    }
+  }
 
-	// Remove the node from recursion stack before returning
-	recursionStack.delete(subtaskId);
+  // Remove the node from recursion stack before returning
+  recursionStack.delete(subtaskId);
 
-	return cyclesToBreak;
+  return cyclesToBreak;
 }
 
 /**
@@ -436,23 +447,23 @@ function findCycles(
  * @returns {string} The kebab-case version of the string
  */
 const toKebabCase = (str) => {
-	// Special handling for common acronyms
-	const withReplacedAcronyms = str
-		.replace(/ID/g, 'Id')
-		.replace(/API/g, 'Api')
-		.replace(/UI/g, 'Ui')
-		.replace(/URL/g, 'Url')
-		.replace(/URI/g, 'Uri')
-		.replace(/JSON/g, 'Json')
-		.replace(/XML/g, 'Xml')
-		.replace(/HTML/g, 'Html')
-		.replace(/CSS/g, 'Css');
+  // Special handling for common acronyms
+  const withReplacedAcronyms = str
+    .replace(/ID/g, "Id")
+    .replace(/API/g, "Api")
+    .replace(/UI/g, "Ui")
+    .replace(/URL/g, "Url")
+    .replace(/URI/g, "Uri")
+    .replace(/JSON/g, "Json")
+    .replace(/XML/g, "Xml")
+    .replace(/HTML/g, "Html")
+    .replace(/CSS/g, "Css");
 
-	// Insert hyphens before capital letters and convert to lowercase
-	return withReplacedAcronyms
-		.replace(/([A-Z])/g, '-$1')
-		.toLowerCase()
-		.replace(/^-/, ''); // Remove leading hyphen if present
+  // Insert hyphens before capital letters and convert to lowercase
+  return withReplacedAcronyms
+    .replace(/([A-Z])/g, "-$1")
+    .toLowerCase()
+    .replace(/^-/, ""); // Remove leading hyphen if present
 };
 
 /**
@@ -461,29 +472,29 @@ const toKebabCase = (str) => {
  * @returns {Array<{original: string, kebabCase: string}>} - List of flags that should be converted
  */
 function detectCamelCaseFlags(args) {
-	const camelCaseFlags = [];
-	for (const arg of args) {
-		if (arg.startsWith('--')) {
-			const flagName = arg.split('=')[0].slice(2); // Remove -- and anything after =
+  const camelCaseFlags = [];
+  for (const arg of args) {
+    if (arg.startsWith("--")) {
+      const flagName = arg.split("=")[0].slice(2); // Remove -- and anything after =
 
-			// Skip single-word flags - they can't be camelCase
-			if (!flagName.includes('-') && !/[A-Z]/.test(flagName)) {
-				continue;
-			}
+      // Skip single-word flags - they can't be camelCase
+      if (!flagName.includes("-") && !/[A-Z]/.test(flagName)) {
+        continue;
+      }
 
-			// Check for camelCase pattern (lowercase followed by uppercase)
-			if (/[a-z][A-Z]/.test(flagName)) {
-				const kebabVersion = toKebabCase(flagName);
-				if (kebabVersion !== flagName) {
-					camelCaseFlags.push({
-						original: flagName,
-						kebabCase: kebabVersion
-					});
-				}
-			}
-		}
-	}
-	return camelCaseFlags;
+      // Check for camelCase pattern (lowercase followed by uppercase)
+      if (/[a-z][A-Z]/.test(flagName)) {
+        const kebabVersion = toKebabCase(flagName);
+        if (kebabVersion !== flagName) {
+          camelCaseFlags.push({
+            original: flagName,
+            kebabCase: kebabVersion,
+          });
+        }
+      }
+    }
+  }
+  return camelCaseFlags;
 }
 
 /**
@@ -493,73 +504,74 @@ function detectCamelCaseFlags(args) {
  * @returns {Object|null} Aggregated telemetry object or null if input is empty.
  */
 function aggregateTelemetry(telemetryArray, overallCommandName) {
-	if (!telemetryArray || telemetryArray.length === 0) {
-		return null;
-	}
+  if (!telemetryArray || telemetryArray.length === 0) {
+    return null;
+  }
 
-	const aggregated = {
-		timestamp: new Date().toISOString(), // Use current time for aggregation time
-		userId: telemetryArray[0].userId, // Assume userId is consistent
-		commandName: overallCommandName,
-		modelUsed: 'Multiple', // Default if models vary
-		providerName: 'Multiple', // Default if providers vary
-		inputTokens: 0,
-		outputTokens: 0,
-		totalTokens: 0,
-		totalCost: 0,
-		currency: telemetryArray[0].currency || 'USD' // Assume consistent currency or default
-	};
+  const aggregated = {
+    timestamp: new Date().toISOString(), // Use current time for aggregation time
+    userId: telemetryArray[0].userId, // Assume userId is consistent
+    commandName: overallCommandName,
+    modelUsed: "Multiple", // Default if models vary
+    providerName: "Multiple", // Default if providers vary
+    inputTokens: 0,
+    outputTokens: 0,
+    totalTokens: 0,
+    totalCost: 0,
+    currency: telemetryArray[0].currency || "USD", // Assume consistent currency or default
+  };
 
-	const uniqueModels = new Set();
-	const uniqueProviders = new Set();
-	const uniqueCurrencies = new Set();
+  const uniqueModels = new Set();
+  const uniqueProviders = new Set();
+  const uniqueCurrencies = new Set();
 
-	telemetryArray.forEach((item) => {
-		aggregated.inputTokens += item.inputTokens || 0;
-		aggregated.outputTokens += item.outputTokens || 0;
-		aggregated.totalCost += item.totalCost || 0;
-		uniqueModels.add(item.modelUsed);
-		uniqueProviders.add(item.providerName);
-		uniqueCurrencies.add(item.currency || 'USD');
-	});
+  telemetryArray.forEach((item) => {
+    aggregated.inputTokens += item.inputTokens || 0;
+    aggregated.outputTokens += item.outputTokens || 0;
+    aggregated.totalCost += item.totalCost || 0;
+    uniqueModels.add(item.modelUsed);
+    uniqueProviders.add(item.providerName);
+    uniqueCurrencies.add(item.currency || "USD");
+  });
 
-	aggregated.totalTokens = aggregated.inputTokens + aggregated.outputTokens;
-	aggregated.totalCost = parseFloat(aggregated.totalCost.toFixed(6)); // Fix precision
+  aggregated.totalTokens = aggregated.inputTokens + aggregated.outputTokens;
+  aggregated.totalCost = parseFloat(aggregated.totalCost.toFixed(6)); // Fix precision
 
-	if (uniqueModels.size === 1) {
-		aggregated.modelUsed = [...uniqueModels][0];
-	}
-	if (uniqueProviders.size === 1) {
-		aggregated.providerName = [...uniqueProviders][0];
-	}
-	if (uniqueCurrencies.size > 1) {
-		aggregated.currency = 'Multiple'; // Mark if currencies actually differ
-	} else if (uniqueCurrencies.size === 1) {
-		aggregated.currency = [...uniqueCurrencies][0];
-	}
+  if (uniqueModels.size === 1) {
+    aggregated.modelUsed = [...uniqueModels][0];
+  }
+  if (uniqueProviders.size === 1) {
+    aggregated.providerName = [...uniqueProviders][0];
+  }
+  if (uniqueCurrencies.size > 1) {
+    aggregated.currency = "Multiple"; // Mark if currencies actually differ
+  } else if (uniqueCurrencies.size === 1) {
+    aggregated.currency = [...uniqueCurrencies][0];
+  }
 
-	return aggregated;
+  return aggregated;
 }
 
 // Export all utility functions and configuration
 export {
-	LOG_LEVELS,
-	log,
-	readJSON,
-	writeJSON,
-	sanitizePrompt,
-	taskExists,
-	formatTaskId,
-	findTaskById,
-	truncate,
-	findCycles,
-	toKebabCase,
-	detectCamelCaseFlags,
-	disableSilentMode,
-	enableSilentMode,
-	getTaskManager,
-	isSilentMode,
-	resolveEnvVariable,
-	findProjectRoot,
-	aggregateTelemetry
+  LOG_LEVELS,
+  log,
+  readJSON,
+  writeJSON,
+  sanitizePrompt,
+  taskExists,
+  formatTaskId,
+  findTaskById,
+  truncate,
+  findCycles,
+  toKebabCase,
+  detectCamelCaseFlags,
+  aggregateTelemetry,
+  resolveEnvVariable, // Added missing export
+  findProjectRoot, // Added missing export
+  preprocessMarkdownPRD, // Added missing export
+  disableSilentMode,
+  enableSilentMode,
+  getTaskManager,
+  isSilentMode,
 };

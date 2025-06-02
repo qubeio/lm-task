@@ -20,23 +20,23 @@ npm i -g task-master-ai
 
 ```json
 {
-	"mcpServers": {
-		"taskmaster-ai": {
-			"command": "npx",
-			"args": ["-y", "--package=task-master-ai", "task-master-ai"],
-			"env": {
-				"AZURE_OPENAI_API_KEY": "YOUR_AZURE_OPENAI_API_KEY_HERE",
-				"AZURE_OPENAI_ENDPOINT": "YOUR_AZURE_OPENAI_ENDPOINT_HERE"
-			}
-		}
-	}
+  "mcpServers": {
+    "taskmaster-ai": {
+      "command": "npx",
+      "args": ["-y", "--package=task-master-ai", "task-master-ai"],
+      "env": {
+        "AZURE_OPENAI_API_KEY": "YOUR_AZURE_OPENAI_API_KEY_HERE",
+        "AZURE_OPENAI_ENDPOINT": "YOUR_AZURE_OPENAI_ENDPOINT_HERE"
+      }
+    }
+  }
 }
 ```
 
 **IMPORTANT:** Azure OpenAI API key and endpoint are _required_ for this version of Task Master.
 
-**To use AI commands in CLI** you MUST have API keys in the .env file
-**To use AI commands in MCP** you MUST have API keys in the .mcp.json file (or MCP config equivalent)
+**To use AI commands in CLI** you MUST have API keys in the .env file **To use AI commands in MCP** you MUST have API
+keys in the .mcp.json file (or MCP config equivalent)
 
 We recommend having keys in both places and adding mcp.json to your gitignore so your API keys aren't checked into git.
 
@@ -54,12 +54,12 @@ The AI will:
 - Set up initial configuration files
 - Guide you through the rest of the process
 
-5. Place your PRD document in the `scripts/` directory (e.g., `scripts/prd.txt`)
+5. Create your PRD document as `PRD.md` in the project root (Task Master will automatically find it)
 
 6. **Use natural language commands** to interact with Task Master:
 
 ```
-Can you parse my PRD at scripts/prd.txt?
+Can you parse my PRD?
 What's the next task I should work on?
 Can you help me implement task 3?
 ```
@@ -94,7 +94,7 @@ After setting up Task Master, you can use these commands (either via AI prompts 
 
 ```bash
 # Parse a PRD and generate tasks
-task-master parse-prd your-prd.txt
+task-master parse-prd
 
 # List all tasks
 task-master list
@@ -108,11 +108,13 @@ task-master generate
 
 ## Setting up Cursor AI Integration
 
-Task Master is designed to work seamlessly with [Cursor AI](https://www.cursor.so/), providing a structured workflow for AI-driven development.
+Task Master is designed to work seamlessly with [Cursor AI](https://www.cursor.so/), providing a structured workflow for
+AI-driven development.
 
 ### Using Cursor with MCP (Recommended)
 
-If you've already set up Task Master with MCP in Cursor, the integration is automatic. You can simply use natural language to interact with Task Master:
+If you've already set up Task Master with MCP in Cursor, the integration is automatic. You can simply use natural
+language to interact with Task Master:
 
 ```
 What tasks are available to work on next?
@@ -125,8 +127,9 @@ I'd like to implement task 4. What does it involve?
 If you're not using MCP, you can still set up Cursor integration:
 
 1. After initializing your project, open it in Cursor
-2. The `.cursor/rules/dev_workflow.mdc` file is automatically loaded by Cursor, providing the AI with knowledge about the task management system
-3. Place your PRD document in the `scripts/` directory (e.g., `scripts/prd.txt`)
+2. The `.cursor/rules/dev_workflow.mdc` file is automatically loaded by Cursor, providing the AI with knowledge about
+   the task management system
+3. Create your PRD document as `PRD.md` in the project root (Task Master will automatically find it)
 4. Open Cursor's AI chat and switch to Agent mode
 
 ### Alternative MCP Setup in Cursor
@@ -142,20 +145,21 @@ You can also set up the MCP server in Cursor settings:
    - Command: "npx -y --package=task-master-ai task-master-ai"
 5. Save the settings
 
-Once configured, you can interact with Task Master's task management commands directly through Cursor's interface, providing a more integrated experience.
+Once configured, you can interact with Task Master's task management commands directly through Cursor's interface,
+providing a more integrated experience.
 
 ## Initial Task Generation
 
 In Cursor's AI chat, instruct the agent to generate tasks from your PRD:
 
 ```
-Please use the task-master parse-prd command to generate tasks from my PRD. The PRD is located at scripts/prd.txt.
+Please use the task-master parse-prd command to generate tasks from my PRD.
 ```
 
 The agent will execute:
 
 ```bash
-task-master parse-prd scripts/prd.txt
+task-master parse-prd
 ```
 
 This will:
@@ -178,7 +182,8 @@ The agent will execute:
 task-master generate
 ```
 
-This creates individual task files in the `tasks/` directory (e.g., `task_001.txt`, `task_002.txt`), making it easier to reference specific tasks.
+This creates individual task files in the `tasks/` directory (e.g., `task_001.txt`, `task_002.txt`), making it easier to
+reference specific tasks.
 
 ## AI-Driven Development Workflow
 
@@ -283,7 +288,8 @@ You can reorganize tasks in various ways:
 - Moving a subtask to a different parent: `--from=5.2 --to=7.3`
 - Reordering subtasks within the same parent: `--from=5.2 --to=5.4`
 - Moving a task to a new ID position: `--from=5 --to=25` (even if task 25 doesn't exist yet)
-- Moving multiple tasks at once: `--from=10,11,12 --to=16,17,18` (must have same number of IDs, Taskmaster will look through each position)
+- Moving multiple tasks at once: `--from=10,11,12 --to=16,17,18` (must have same number of IDs, Taskmaster will look
+  through each position)
 
 When moving tasks to new IDs:
 
@@ -296,7 +302,8 @@ This is particularly useful as your project understanding evolves and you need t
 
 ### 7. Resolving Merge Conflicts with Tasks
 
-When working with a team, you might encounter merge conflicts in your tasks.json file if multiple team members create tasks on different branches. The move command makes resolving these conflicts straightforward:
+When working with a team, you might encounter merge conflicts in your tasks.json file if multiple team members create
+tasks on different branches. The move command makes resolving these conflicts straightforward:
 
 ```
 I just merged the main branch and there's a conflict with tasks.json. My teammates created tasks 10-15 while I created tasks 10-12 on my branch. Can you help me resolve this?
@@ -314,7 +321,8 @@ task-master move --from=11 --to=17
 task-master move --from=12 --to=18
 ```
 
-This approach preserves everyone's work while maintaining a clean task structure, making it much easier to handle task conflicts than trying to manually merge JSON files.
+This approach preserves everyone's work while maintaining a clean task structure, making it much easier to handle task
+conflicts than trying to manually merge JSON files.
 
 ### 8. Adding Subtasks to Complex Tasks
 
@@ -349,7 +357,7 @@ task-master add-subtask --parent=5 --title="Integration testing" --description="
 ### Starting a new project
 
 ```
-I've just initialized a new project with Claude Task Master. I have a PRD at scripts/prd.txt.
+I've just initialized a new project with Claude Task Master. I have a PRD.md file in the project root.
 Can you help me parse it and set up the initial tasks?
 ```
 

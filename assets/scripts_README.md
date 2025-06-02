@@ -1,12 +1,15 @@
 # Meta-Development Script
 
-This folder contains a **meta-development script** (`dev.js`) and related utilities that manage tasks for an AI-driven or traditional software development workflow. The script revolves around a `tasks.json` file, which holds an up-to-date list of development tasks.
+This folder contains a **meta-development script** (`dev.js`) and related utilities that manage tasks for an AI-driven
+or traditional software development workflow. The script revolves around a `tasks.json` file, which holds an up-to-date
+list of development tasks.
 
 ## Overview
 
-In an AI-driven development process—particularly with tools like [Cursor](https://www.cursor.so/)—it's beneficial to have a **single source of truth** for tasks. This script allows you to:
+In an AI-driven development process—particularly with tools like [Cursor](https://www.cursor.so/)—it's beneficial to
+have a **single source of truth** for tasks. This script allows you to:
 
-1. **Parse** a PRD or requirements document (`.txt`) to initialize a set of tasks (`tasks.json`).
+1. **Parse** a PRD or requirements document (`.md` or `.txt`) to initialize a set of tasks (`tasks.json`).
 2. **List** all existing tasks (IDs, statuses, titles).
 3. **Update** tasks to accommodate new prompts or architecture changes (useful if you discover "implementation drift").
 4. **Generate** individual task files (e.g., `task_001.txt`) for easy reference or to feed into an AI coding workflow.
@@ -21,7 +24,8 @@ Task Master configuration is now managed through two primary methods:
 
 1.  **`.taskmasterconfig` File (Project Root - Primary)**
 
-    - Stores AI model selections (`main`, `research`, `fallback`), model parameters (`maxTokens`, `temperature`), `logLevel`, `defaultSubtasks`, `defaultPriority`, `projectName`, etc.
+    - Stores AI model selections (`main`, `research`, `fallback`), model parameters (`maxTokens`, `temperature`),
+      `logLevel`, `defaultSubtasks`, `defaultPriority`, `projectName`, etc.
     - Managed using the `task-master models --setup` command or the `models` MCP tool.
     - This is the main configuration file for most settings.
 
@@ -30,19 +34,20 @@ Task Master configuration is now managed through two primary methods:
     - Create a `.env` file in your project root for CLI usage.
     - See `assets/env.example` for required key names.
 
-**Important:** Settings like `MODEL`, `MAX_TOKENS`, `TEMPERATURE`, `TASKMASTER_LOG_LEVEL`, etc., are **no longer set via `.env`**. Use `task-master models --setup` instead.
+**Important:** Settings like `MODEL`, `MAX_TOKENS`, `TEMPERATURE`, `TASKMASTER_LOG_LEVEL`, etc., are **no longer set via
+`.env`**. Use `task-master models --setup` instead.
 
 ## How It Works
 
 1. **`tasks.json`**:
 
-   - A JSON file at the project root containing an array of tasks (each with `id`, `title`, `description`, `status`, etc.).
+   - A JSON file at the project root containing an array of tasks (each with `id`, `title`, `description`, `status`,
+     etc.).
    - The `meta` field can store additional info like the project's name, version, or reference to the PRD.
    - Tasks can have `subtasks` for more detailed implementation steps.
    - Dependencies are displayed with status indicators (✅ for completed, ⏱️ for pending) to easily track progress.
 
-2. **CLI Commands**
-   You can run the commands via:
+2. **CLI Commands** You can run the commands via:
 
    ```bash
    # If installed globally
@@ -180,7 +185,8 @@ Notes:
 ## AI Integration (Updated)
 
 - The script now uses a unified AI service layer (`ai-services-unified.js`).
-- Model selection (e.g., Claude vs. Perplexity for `--research`) is determined by the configuration in `.taskmasterconfig` based on the requested `role` (`main` or `research`).
+- Model selection (e.g., Claude vs. Perplexity for `--research`) is determined by the configuration in
+  `.taskmasterconfig` based on the requested `role` (`main` or `research`).
 - API keys are automatically resolved from your `.env` file (for CLI) or MCP session environment.
 - To use the research capabilities (e.g., `add-task --research`), ensure you have:
   1.  Configured a model for the `research` role using `task-master models --setup` (Perplexity models are recommended).
@@ -302,7 +308,8 @@ task-master next --file=custom-tasks.json
 
 This command:
 
-1. Identifies all **eligible tasks** - pending or in-progress tasks whose dependencies are all satisfied (marked as done)
+1. Identifies all **eligible tasks** - pending or in-progress tasks whose dependencies are all satisfied (marked as
+   done)
 2. **Prioritizes** these eligible tasks by:
    - Priority level (high > medium > low)
    - Number of dependencies (fewer dependencies first)
@@ -316,7 +323,8 @@ This command:
    - Command to mark the task as done when completed
    - Commands for working with subtasks (update status or add new subtasks)
 
-This feature ensures you're always working on the most appropriate task based on your project's current state and dependency structure.
+This feature ensures you're always working on the most appropriate task based on your project's current state and
+dependency structure.
 
 ## Showing Task Details
 
@@ -351,4 +359,5 @@ This command:
    - Commands for working with subtasks
    - For subtasks, provides a link to view the parent task
 
-This command is particularly useful when you need to examine a specific task in detail before implementing it or when you want to check the status and details of a particular task.
+This command is particularly useful when you need to examine a specific task in detail before implementing it or when
+you want to check the status and details of a particular task.

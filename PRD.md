@@ -60,7 +60,7 @@
   "meta": {
     "projectName": "Project Name",
     "version": "1.0.0",
-    "prdSource": "path/to/prd.txt",
+    "prdSource": "PRD.md",
     "createdAt": "ISO-8601 timestamp",
     "updatedAt": "ISO-8601 timestamp"
   },
@@ -396,7 +396,7 @@ Additional context:
 ├── .cursor/
 │   └── mcp.json
 ├── scripts/
-│   ├── prd.txt
+│   ├── example_prd.txt
 │   └── README.md
 ├── tasks/
 │   ├── task_001.txt

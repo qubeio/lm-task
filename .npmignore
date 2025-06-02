@@ -29,7 +29,6 @@ jest.config.js
 # Original project files
 tasks.json
 tasks/
-prd.txt
 scripts/prd.txt
 .env 
 

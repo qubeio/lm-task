@@ -7,7 +7,7 @@
 ```bash
 # Project Setup
 task-master init                                    # Initialize Task Master in current project
-task-master parse-prd scripts/prd.txt             # Generate tasks from PRD document
+task-master parse-prd                           # Generate tasks from PRD document (auto-detects PRD.md)
 task-master models --setup                        # Configure AI models interactively
 
 # Daily Development Workflow
@@ -38,7 +38,7 @@ task-master generate                                         # Update task markd
 
 - `tasks/tasks.json` - Main task data file (auto-managed)
 - `.taskmasterconfig` - AI model configuration (use `task-master models` to modify)
-- `scripts/prd.txt` - Product Requirements Document for parsing
+- `PRD.md` - Product Requirements Document in project root (or `scripts/prd.txt` for backward compatibility)
 - `tasks/*.txt` - Individual task files (auto-generated from tasks.json)
 - `.env` - API keys for CLI usage
 
@@ -58,7 +58,7 @@ project/
 │   ├── task-1.md           # Individual task files
 │   └── task-2.md
 ├── scripts/
-│   ├── prd.txt             # Product requirements
+│   ├── example_prd.txt     # Example PRD template
 
 ├── .claude/
 │   ├── settings.json        # Claude Code configuration
@@ -75,23 +75,23 @@ Task Master provides an MCP server that Claude Code can connect to. Configure in
 
 ```json
 {
-	"mcpServers": {
-		"task-master-ai": {
-			"command": "npx",
-			"args": ["-y", "--package=task-master-ai", "task-master-ai"],
-			"env": {
-				"ANTHROPIC_API_KEY": "your_key_here",
-				"PERPLEXITY_API_KEY": "your_key_here",
-				"OPENAI_API_KEY": "OPENAI_API_KEY_HERE",
-				"GOOGLE_API_KEY": "GOOGLE_API_KEY_HERE",
-				"XAI_API_KEY": "XAI_API_KEY_HERE",
-				"OPENROUTER_API_KEY": "OPENROUTER_API_KEY_HERE",
-				"MISTRAL_API_KEY": "MISTRAL_API_KEY_HERE",
-				"AZURE_OPENAI_API_KEY": "AZURE_OPENAI_API_KEY_HERE",
-				"OLLAMA_API_KEY": "OLLAMA_API_KEY_HERE"
-			}
-		}
-	}
+  "mcpServers": {
+    "task-master-ai": {
+      "command": "npx",
+      "args": ["-y", "--package=task-master-ai", "task-master-ai"],
+      "env": {
+        "ANTHROPIC_API_KEY": "your_key_here",
+        "PERPLEXITY_API_KEY": "your_key_here",
+        "OPENAI_API_KEY": "OPENAI_API_KEY_HERE",
+        "GOOGLE_API_KEY": "GOOGLE_API_KEY_HERE",
+        "XAI_API_KEY": "XAI_API_KEY_HERE",
+        "OPENROUTER_API_KEY": "OPENROUTER_API_KEY_HERE",
+        "MISTRAL_API_KEY": "MISTRAL_API_KEY_HERE",
+        "AZURE_OPENAI_API_KEY": "AZURE_OPENAI_API_KEY_HERE",
+        "OLLAMA_API_KEY": "OLLAMA_API_KEY_HERE"
+      }
+    }
+  }
 }
 ```
 
@@ -128,7 +128,7 @@ update; // = task-master update
 task-master init
 
 # Create or obtain PRD, then parse it
-task-master parse-prd scripts/prd.txt
+task-master parse-prd
 
 # Add subtasks to break down complex tasks
 task-master add-subtask --parent=<id> --title="subtask name"
@@ -136,7 +136,8 @@ task-master add-subtask --parent=<id> --title="subtask name"
 
 ```
 
-If tasks already exist, another PRD can be parsed (with new information only!) using parse-prd with --append flag. This will add the generated tasks to the existing list of tasks..
+If tasks already exist, another PRD can be parsed (with new information only!) using parse-prd with --append flag. This
+will add the generated tasks to the existing list of tasks..
 
 #### 2. Daily Development Loop
 
@@ -202,14 +203,14 @@ Add to `.claude/settings.json`:
 
 ```json
 {
-	"allowedTools": [
-		"Edit",
-		"Bash(task-master *)",
-		"Bash(git commit:*)",
-		"Bash(git add:*)",
-		"Bash(npm run *)",
-		"mcp__task_master_ai__*"
-	]
+  "allowedTools": [
+    "Edit",
+    "Bash(task-master *)",
+    "Bash(git commit:*)",
+    "Bash(git add:*)",
+    "Bash(npm run *)",
+    "mcp__task_master_ai__*"
+  ]
 }
 ```
 
@@ -262,15 +263,15 @@ task-master models --set-fallback gpt-4o-mini
 
 ```json
 {
-	"id": "1.2",
-	"title": "Implement user authentication",
-	"description": "Set up JWT-based auth system",
-	"status": "pending",
-	"priority": "high",
-	"dependencies": ["1.1"],
-	"details": "Use bcrypt for hashing, JWT for tokens...",
-	"testStrategy": "Unit tests for auth functions, integration tests for login flow",
-	"subtasks": []
+  "id": "1.2",
+  "title": "Implement user authentication",
+  "description": "Set up JWT-based auth system",
+  "status": "pending",
+  "priority": "high",
+  "dependencies": ["1.1"],
+  "details": "Use bcrypt for hashing, JWT for tokens...",
+  "testStrategy": "Unit tests for auth functions, integration tests for login flow",
+  "subtasks": []
 }
 ```
 
@@ -300,7 +301,8 @@ For large migrations or multi-step processes:
 2. Use Taskmaster to parse the new prd with `task-master parse-prd --append` (also available in MCP)
 3. Use Taskmaster to add subtasks to the newly generated tasks as needed using the `add-subtask` command.
 4. Work through items systematically, checking them off as completed
-5. Use `task-master update-subtask` to log progress on each task/subtask and/or updating/researching them before/during implementation if getting stuck
+5. Use `task-master update-subtask` to log progress on each task/subtask and/or updating/researching them before/during
+   implementation if getting stuck
 
 ### Git Integration
 
@@ -402,4 +404,5 @@ These commands make AI calls and may take up to a minute:
 
 ---
 
-_This guide ensures Claude Code has immediate access to Task Master's essential functionality for agentic development workflows._
+_This guide ensures Claude Code has immediate access to Task Master's essential functionality for agentic development
+workflows._

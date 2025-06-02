@@ -5,7 +5,7 @@ Here are some common interactions with Cursor AI when using Task Master:
 ## Starting a new project
 
 ```
-I've just initialized a new project with Claude Task Master. I have a PRD at scripts/prd.txt.
+I've just initialized a new project with Claude Task Master. I have a PRD.md file in the project root.
 Can you help me parse it and set up the initial tasks?
 ```
 
@@ -74,7 +74,8 @@ task-master move --from=12 --to=18
 Task 5 seems complex. Can you help me add some subtasks to break it down into smaller pieces?
 ```
 
-(Agent runs: `task-master add-subtask --parent=5 --title="Setup authentication" --description="Implement user authentication system"`)
+(Agent runs:
+`task-master add-subtask --parent=5 --title="Setup authentication" --description="Implement user authentication system"`)
 
 ### Updating Tasks
 

@@ -15,16 +15,19 @@ Taskmaster uses two primary configuration methods:
 
 1.  **`.taskmasterconfig` File (Project Root)**
 
-    - Stores most settings: AI model selections (main, research, fallback), parameters (max tokens, temperature), logging level, default priority/subtasks, project name.
+    - Stores most settings: AI model selections (main, research, fallback), parameters (max tokens, temperature),
+      logging level, default priority/subtasks, project name.
     - **Created and managed using `task-master models --setup` CLI command or the `models` MCP tool.**
     - Do not edit manually unless you know what you are doing.
 
 2.  **Environment Variables (`.env` file or MCP `env` block)**
     - Used **only** for sensitive **API Keys** (e.g., `AZURE_OPENAI_API_KEY`, etc.)
     - **For CLI:** Place keys in a `.env` file in your project root.
-    - **For MCP/Cursor:** Place keys in the `env` section of your `.cursor/mcp.json` (or other MCP config according to the AI IDE or client you use) file under the `taskmaster-ai` server definition.
+    - **For MCP/Cursor:** Place keys in the `env` section of your `.cursor/mcp.json` (or other MCP config according to
+      the AI IDE or client you use) file under the `taskmaster-ai` server definition.
 
-**Important:** Settings like model choices, max tokens, temperature, and log level are **no longer configured via environment variables.** Use the `task-master models` command or tool.
+**Important:** Settings like model choices, max tokens, temperature, and log level are **no longer configured via
+environment variables.** Use the `task-master models` command or tool.
 
 See the [Configuration Guide](docs/configuration.md) for full details.
 
@@ -61,7 +64,8 @@ This will prompt you for project details and set up a new project with the neces
    - To use a CommonJS module, either:
      - Rename it with `.cjs` extension
      - Use `await import()` for dynamic imports
-   - If you need CommonJS throughout your project, remove `"type": "module"` from package.json, but Task Master scripts expect ESM.
+   - If you need CommonJS throughout your project, remove `"type": "module"` from package.json, but Task Master scripts
+     expect ESM.
 
 2. The Anthropic SDK version should be 0.39.0 or higher.
 
@@ -74,7 +78,7 @@ After installing the package globally, you can use these CLI commands from any d
 task-master init
 
 # Parse a PRD and generate tasks
-task-master parse-prd your-prd.txt
+task-master parse-prd
 
 # List all tasks
 task-master list
@@ -110,25 +114,30 @@ Tasks in tasks.json have the following structure:
 
 - `id`: Unique identifier for the task (Example: `1`)
 - `title`: Brief, descriptive title of the task (Example: `"Initialize Repo"`)
-- `description`: Concise description of what the task involves (Example: `"Create a new repository, set up initial structure."`)
+- `description`: Concise description of what the task involves (Example:
+  `"Create a new repository, set up initial structure."`)
 - `status`: Current state of the task (Example: `"pending"`, `"done"`, `"deferred"`)
 - `dependencies`: IDs of tasks that must be completed before this task (Example: `[1, 2]`)
   - Dependencies are displayed with status indicators (✅ for completed, ⏱️ for pending)
   - This helps quickly identify which prerequisite tasks are blocking work
 - `priority`: Importance level of the task (Example: `"high"`, `"medium"`, `"low"`)
-- `details`: In-depth implementation instructions (Example: `"Use GitHub client ID/secret, handle callback, set session token."`)
+- `details`: In-depth implementation instructions (Example:
+  `"Use GitHub client ID/secret, handle callback, set session token."`)
 - `testStrategy`: Verification approach (Example: `"Deploy and call endpoint to confirm 'Hello World' response."`)
-- `subtasks`: List of smaller, more specific tasks that make up the main task (Example: `[{"id": 1, "title": "Configure OAuth", ...}]`)
+- `subtasks`: List of smaller, more specific tasks that make up the main task (Example:
+  `[{"id": 1, "title": "Configure OAuth", ...}]`)
 
 ## Integrating with Cursor AI
 
-Claude Task Master is designed to work seamlessly with [Cursor AI](https://www.cursor.so/), providing a structured workflow for AI-driven development.
+Claude Task Master is designed to work seamlessly with [Cursor AI](https://www.cursor.so/), providing a structured
+workflow for AI-driven development.
 
 ### Setup with Cursor
 
 1. After initializing your project, open it in Cursor
-2. The `.cursor/rules/dev_workflow.mdc` file is automatically loaded by Cursor, providing the AI with knowledge about the task management system
-3. Place your PRD document in the `scripts/` directory (e.g., `scripts/prd.txt`)
+2. The `.cursor/rules/dev_workflow.mdc` file is automatically loaded by Cursor, providing the AI with knowledge about
+   the task management system
+3. Create your PRD document as `PRD.md` in the project root (Task Master will automatically find it)
 4. Open Cursor's AI chat and switch to Agent mode
 
 ### Setting up MCP in Cursor
@@ -144,20 +153,21 @@ To enable enhanced task management capabilities directly within Cursor using the
    - Command: "npx -y task-master-ai"
 5. Save the settings
 
-Once configured, you can interact with Task Master's task management commands directly through Cursor's interface, providing a more integrated experience.
+Once configured, you can interact with Task Master's task management commands directly through Cursor's interface,
+providing a more integrated experience.
 
 ### Initial Task Generation
 
 In Cursor's AI chat, instruct the agent to generate tasks from your PRD:
 
 ```
-Please use the task-master parse-prd command to generate tasks from my PRD. The PRD is located at scripts/prd.txt.
+Please use the task-master parse-prd command to generate tasks from my PRD.
 ```
 
 The agent will execute:
 
 ```bash
-task-master parse-prd scripts/prd.txt
+task-master parse-prd
 ```
 
 This will:
@@ -180,7 +190,8 @@ The agent will execute:
 task-master generate
 ```
 
-This creates individual task files in the `tasks/` directory (e.g., `task_001.txt`, `task_002.txt`), making it easier to reference specific tasks.
+This creates individual task files in the `tasks/` directory (e.g., `task_001.txt`, `task_002.txt`), making it easier to
+reference specific tasks.
 
 ## AI-Driven Development Workflow
 
@@ -443,28 +454,33 @@ The `show` command:
 
 1. **Start with a detailed PRD**: The more detailed your PRD, the better the generated tasks will be.
 
-2. **Review generated tasks**: After parsing the PRD, review the tasks to ensure they make sense and have appropriate dependencies.
+2. **Review generated tasks**: After parsing the PRD, review the tasks to ensure they make sense and have appropriate
+   dependencies.
 
-3. **Review task details**: Examine task descriptions and details to identify which tasks might need to be broken down further.
+3. **Review task details**: Examine task descriptions and details to identify which tasks might need to be broken down
+   further.
 
 4. **Follow the dependency chain**: Always respect task dependencies - the Cursor agent will help with this.
 
-5. **Update as you go**: If your implementation diverges from the plan, use the update command to keep future tasks aligned with your current approach.
+5. **Update as you go**: If your implementation diverges from the plan, use the update command to keep future tasks
+   aligned with your current approach.
 
 6. **Break down complex tasks**: Use the add-subtask command to break down complex tasks into manageable subtasks.
 
 7. **Regenerate task files**: After any updates to tasks.json, regenerate the task files to keep them in sync.
 
-8. **Communicate context to the agent**: When asking the Cursor agent to help with a task, provide context about what you're trying to achieve.
+8. **Communicate context to the agent**: When asking the Cursor agent to help with a task, provide context about what
+   you're trying to achieve.
 
-9. **Validate dependencies**: Periodically run the validate-dependencies command to check for invalid or circular dependencies.
+9. **Validate dependencies**: Periodically run the validate-dependencies command to check for invalid or circular
+   dependencies.
 
 ## Example Cursor AI Interactions
 
 ### Starting a new project
 
 ```
-I've just initialized a new project with Claude Task Master. I have a PRD at scripts/prd.txt.
+I've just initialized a new project with Claude Task Master. I have a PRD.md file in the project root.
 Can you help me parse it and set up the initial tasks?
 ```
 
