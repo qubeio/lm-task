@@ -12,18 +12,7 @@ export class KeyHandlers {
    * Setup keyboard event handlers
    */
   setup() {
-    // Navigation keys
-    this.app.screen.key(["j", "down"], () => {
-      if (!this.app.searchMode) {
-        this.app.moveDown();
-      }
-    });
-
-    this.app.screen.key(["k", "up"], () => {
-      if (!this.app.searchMode) {
-        this.app.moveUp();
-      }
-    });
+    // Let blessed.js handle navigation naturally - no custom up/down handlers needed
 
     // Go to first/last task
     this.app.screen.key(["g"], () => {
