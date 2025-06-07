@@ -40,6 +40,10 @@ export class TUIApp {
     this.searchMode = false;
     this.searchQuery = "";
     this.filteredTasks = [];
+
+    // Render debouncing to prevent character artifacts
+    this.renderTimeout = null;
+    this.isRendering = false;
   }
 
   /**
@@ -314,10 +318,45 @@ export class TUIApp {
   }
 
   /**
-   * Render the screen
+   * Render the screen with debouncing to prevent artifacts
    */
   render() {
-    this.screen.render();
+    // Clear any pending render
+    if (this.renderTimeout) {
+      clearTimeout(this.renderTimeout);
+    }
+
+    // If already rendering, schedule for later
+    if (this.isRendering) {
+      this.renderTimeout = setTimeout(() => {
+        this.render();
+      }, 16); // ~60fps
+      return;
+    }
+
+    // Perform the actual render
+    this.isRendering = true;
+    try {
+      this.screen.render();
+    } finally {
+      this.isRendering = false;
+    }
+  }
+
+  /**
+   * Force immediate render (use sparingly)
+   */
+  forceRender() {
+    if (this.renderTimeout) {
+      clearTimeout(this.renderTimeout);
+      this.renderTimeout = null;
+    }
+    this.isRendering = true;
+    try {
+      this.screen.render();
+    } finally {
+      this.isRendering = false;
+    }
   }
 
   /**
@@ -332,6 +371,12 @@ export class TUIApp {
    * Cleanup resources
    */
   cleanup() {
+    // Clear any pending render timeout
+    if (this.renderTimeout) {
+      clearTimeout(this.renderTimeout);
+      this.renderTimeout = null;
+    }
+
     if (this.screen) {
       this.screen.destroy();
     }

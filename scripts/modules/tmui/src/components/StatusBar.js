@@ -10,6 +10,7 @@ export class StatusBar {
     this.screen = screen;
     this.app = screen.app;
     this.statusBar = null;
+    this.messageTimeout = null; // Track message timeout for cleanup
     this.stats = {
       total: 0,
       completed: 0,
@@ -118,16 +119,35 @@ export class StatusBar {
    * Set status message (for temporary messages)
    */
   setMessage(message, duration = 3000) {
+    // Clear any existing message timeout
+    if (this.messageTimeout) {
+      clearTimeout(this.messageTimeout);
+      this.messageTimeout = null;
+    }
+
     const originalContent = this.statusBar.getContent();
 
     this.statusBar.setContent(` ${message} `);
     this.app.render();
 
     // Restore original content after duration
-    setTimeout(() => {
+    this.messageTimeout = setTimeout(() => {
+      this.messageTimeout = null;
       this.updateDisplay();
       this.app.render();
     }, duration);
+  }
+
+  /**
+   * Clear any pending message timeout
+   */
+  clearMessage() {
+    if (this.messageTimeout) {
+      clearTimeout(this.messageTimeout);
+      this.messageTimeout = null;
+      this.updateDisplay();
+      this.app.render();
+    }
   }
 
   /**

@@ -110,6 +110,9 @@ export class TaskTable {
   updateTasks(tasks) {
     this.tasks = tasks;
 
+    // Clear items first to prevent artifacts
+    this.table.clearItems();
+
     const items = tasks.map((task) => this.formatTaskRow(task));
 
     this.table.setItems(items);
@@ -125,7 +128,7 @@ export class TaskTable {
     const priorityCol = "Priority".padEnd(8);
     const titleCol = "Title";
 
-    return `{bold}{underline}${idCol}  ${statusCol}  ${priorityCol}  ${titleCol}{/}{/}`;
+    return `{bold}{underline}${idCol}  ${statusCol}  ${priorityCol}  ${titleCol}{/underline}{/bold}`;
   }
 
   /**
@@ -136,10 +139,16 @@ export class TaskTable {
     const priorityColor = this.getPriorityColor(task.priority);
 
     const idCol = task.id.toString().padEnd(4);
-    const statusCol = `${statusIcon} ${task.status}`.padEnd(15);
+
+    // Handle emoji padding properly - emojis take up 2 visual spaces but count as 1 character
+    const statusText = `${statusIcon} ${task.status}`;
+    const statusVisualLength = statusText.length + 1; // Add 1 for emoji visual width
+    const statusPadding = Math.max(0, 15 - statusVisualLength);
+    const statusCol = statusText + " ".repeat(statusPadding);
+
     // For priority, we need to account for color tags but pad the actual text content
     const priorityText = (task.priority || "medium").padEnd(8);
-    const priorityCol = `{${priorityColor}}${priorityText}{/}`;
+    const priorityCol = `{${priorityColor}}${priorityText}{/${priorityColor}}`;
     const titleCol = this.truncateTitle(task.title, 60);
 
     return `${idCol}  ${statusCol}  ${priorityCol}  ${titleCol}`;
