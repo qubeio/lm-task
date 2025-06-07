@@ -54,7 +54,7 @@ export class TaskDetailScreen {
       parent: this.container,
       top: 0,
       left: 0,
-      width: "98%", // leave space for the border
+      width: "98%", // leave space for the border and scrollbar
       height: "30%",
       border: {
         type: "line",
@@ -70,6 +70,16 @@ export class TaskDetailScreen {
       input: true,
       scrollable: true,
       alwaysScroll: true,
+      scrollbar: {
+        ch: " ",
+        inverse: true,
+        style: {
+          bg: this.app.theme.selected || "blue",
+        },
+        track: {
+          bg: this.app.theme.border || "grey",
+        },
+      },
       padding: {
         left: 1,
         right: 1,
@@ -165,7 +175,7 @@ export class TaskDetailScreen {
       },
       tags: true,
       content:
-        " j/k: navigate subtasks | Tab: focus parent task | Enter: select | ESC/q: back to list ",
+        " j/k: navigate subtasks | 1: parent task | 2: subtasks | Enter: select | ESC/q: back to list ",
     });
 
     // Initially hidden
@@ -199,24 +209,13 @@ export class TaskDetailScreen {
       }
     });
 
-    // Tab to switch focus between parent task and subtasks
-    this.container.key(["tab"], () => {
-      if (this.focusedComponent === "parentTask") {
-        // Switch focus to subtasks
-        this.focusedComponent = "subtasks";
-        this.parentTaskBox.style.border.fg = this.app.theme.border;
-        this.subtaskList.style.border.fg = this.app.theme.selected;
-        this.subtaskList.focus();
-        this.updateStatusBarForSubtasks();
-      } else {
-        // Switch focus to parent task
-        this.focusedComponent = "parentTask";
-        this.subtaskList.style.border.fg = this.app.theme.border;
-        this.parentTaskBox.style.border.fg = this.app.theme.selected;
-        this.parentTaskBox.focus();
-        this.updateStatusBarForParentTask();
-      }
-      this.app.render();
+    // Number keys for switching focus between panes
+    this.container.key(["1"], () => {
+      this.focusParentTask();
+    });
+
+    this.container.key(["2"], () => {
+      this.focusSubtasks();
     });
 
     // Go to first/last subtask (only when subtasks are focused)
@@ -243,6 +242,76 @@ export class TaskDetailScreen {
         // For now, just update the detail view
         this.updateSubtaskDetail();
       }
+    });
+
+    // Setup subtask list key handlers
+    this.subtaskList.key(["j", "down"], () => {
+      if (this.focusedComponent === "subtasks") {
+        this.moveSubtaskDown();
+      }
+    });
+
+    this.subtaskList.key(["k", "up"], () => {
+      if (this.focusedComponent === "subtasks") {
+        this.moveSubtaskUp();
+      }
+    });
+
+    this.subtaskList.key(["1"], () => {
+      this.focusParentTask();
+    });
+
+    this.subtaskList.key(["2"], () => {
+      this.focusSubtasks();
+    });
+
+    this.subtaskList.key(["g"], () => {
+      if (this.focusedComponent === "subtasks") {
+        this.waitForSecondG();
+      }
+    });
+
+    this.subtaskList.key(["G"], () => {
+      if (this.focusedComponent === "subtasks") {
+        this.moveToLastSubtask();
+      }
+    });
+
+    this.subtaskList.key(["escape", "q"], () => {
+      this.app.showTaskList();
+    });
+
+    this.subtaskList.key(["enter"], () => {
+      if (this.focusedComponent === "subtasks") {
+        this.updateSubtaskDetail();
+      }
+    });
+
+    // Setup parent task box key handlers
+    this.parentTaskBox.key(["j", "down"], () => {
+      if (this.focusedComponent === "parentTask") {
+        this.parentTaskBox.scroll(1);
+        this.app.render();
+      }
+    });
+
+    this.parentTaskBox.key(["k", "up"], () => {
+      if (this.focusedComponent === "parentTask") {
+        this.parentTaskBox.scroll(-1);
+        this.app.render();
+      }
+    });
+
+    this.parentTaskBox.key(["1"], () => {
+      this.focusParentTask();
+    });
+
+    this.parentTaskBox.key(["2"], () => {
+      this.focusSubtasks();
+    });
+
+    this.parentTaskBox.key(["escape", "q"], () => {
+      this.app.showTaskList();
     });
   }
 
@@ -569,7 +638,7 @@ export class TaskDetailScreen {
    */
   updateStatusBarForSubtasks() {
     this.statusBar.setContent(
-      " j/k: navigate subtasks | Tab: focus parent task | Enter: select | ESC/q: back to list "
+      " j/k: navigate subtasks | 1: parent task | 2: subtasks | Enter: select | ESC/q: back to list "
     );
   }
 
@@ -578,8 +647,32 @@ export class TaskDetailScreen {
    */
   updateStatusBarForParentTask() {
     this.statusBar.setContent(
-      " j/k: scroll parent task | Tab: focus subtasks | ESC/q: back to list "
+      " j/k: scroll parent task | 1: parent task | 2: subtasks | ESC/q: back to list "
     );
+  }
+
+  /**
+   * Focus the parent task box
+   */
+  focusParentTask() {
+    this.focusedComponent = "parentTask";
+    this.subtaskList.style.border.fg = this.app.theme.border;
+    this.parentTaskBox.style.border.fg = this.app.theme.selected;
+    this.parentTaskBox.focus();
+    this.updateStatusBarForParentTask();
+    this.app.render();
+  }
+
+  /**
+   * Focus the subtasks list
+   */
+  focusSubtasks() {
+    this.focusedComponent = "subtasks";
+    this.parentTaskBox.style.border.fg = this.app.theme.border;
+    this.subtaskList.style.border.fg = this.app.theme.selected;
+    this.subtaskList.focus();
+    this.updateStatusBarForSubtasks();
+    this.app.render();
   }
 
   /**
@@ -588,10 +681,7 @@ export class TaskDetailScreen {
   show() {
     this.container.show();
     // Set initial focus to subtasks (default behavior)
-    this.focusedComponent = "subtasks";
-    this.subtaskList.focus();
-    this.updateStatusBarForSubtasks();
-    this.app.screen.render(); // force redraw so the new borders appear
+    this.focusSubtasks();
   }
 
   /**
@@ -606,9 +696,7 @@ export class TaskDetailScreen {
    */
   focus() {
     // Default focus to subtasks
-    this.focusedComponent = "subtasks";
-    this.subtaskList.focus();
-    this.updateStatusBarForSubtasks();
+    this.focusSubtasks();
   }
 
   /**
