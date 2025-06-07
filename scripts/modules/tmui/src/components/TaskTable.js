@@ -121,7 +121,7 @@ export class TaskTable {
    */
   formatHeader() {
     const idCol = "ID".padEnd(4);
-    const statusCol = "Status".padEnd(12);
+    const statusCol = "Status".padEnd(15);
     const priorityCol = "Priority".padEnd(8);
     const titleCol = "Title";
 
@@ -136,7 +136,7 @@ export class TaskTable {
     const priorityColor = this.getPriorityColor(task.priority);
 
     const idCol = task.id.toString().padEnd(4);
-    const statusCol = `${statusIcon} ${task.status}`.padEnd(12);
+    const statusCol = `${statusIcon} ${task.status}`.padEnd(15);
     // For priority, we need to account for color tags but pad the actual text content
     const priorityText = (task.priority || "medium").padEnd(8);
     const priorityCol = `{${priorityColor}}${priorityText}{/}`;

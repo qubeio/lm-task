@@ -139,6 +139,7 @@ export class TUIApp {
     this.currentScreen = this.taskListScreen;
     this.taskListScreen.show();
     this.searchMode = false;
+    this.render(); // Ensure the screen updates immediately
   }
 
   /**
@@ -155,6 +156,7 @@ export class TUIApp {
       this.currentScreen = this.taskDetailScreen;
       this.taskDetailScreen.setTask(taskData);
       this.taskDetailScreen.show();
+      this.render(); // Ensure the screen updates immediately
     } catch (error) {
       this.showError(`Failed to load task details: ${error.message}`);
     }
