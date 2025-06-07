@@ -94,6 +94,14 @@ export class TaskTable {
         this.app.currentTaskIndex = index;
       }
     });
+
+    // Handle Enter key on the list widget directly
+    this.table.key(["enter"], () => {
+      const selectedTask = this.tasks[this.table.selected];
+      if (selectedTask && this.app) {
+        this.app.showTaskDetail(selectedTask.id);
+      }
+    });
   }
 
   /**
