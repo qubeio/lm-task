@@ -33,6 +33,7 @@ export class StatusBar {
       style: {
         fg: this.app.theme.statusText,
         bg: this.app.theme.statusBg,
+        bold: true,
       },
       tags: true,
     });
@@ -79,9 +80,9 @@ export class StatusBar {
    */
   getKeyboardShortcuts() {
     if (this.app.searchMode) {
-      return " ESC: close search │ Enter: select │ n/N: next/prev match ";
+      return " {bold}ESC{/}: close search │ {bold}Enter{/}: select │ {bold}n/N{/}: next/prev match ";
     } else {
-      return " j/k: up/down │ /: search │ Enter: details │ r: refresh │ q: quit │ ?: help ";
+      return " {bold}j/k{/}: up/down │ {bold}/{/}: search │ {bold}Enter{/}: details │ {bold}r{/}: refresh │ {bold}q{/}: quit │ {bold}?{/}: help ";
     }
   }
 

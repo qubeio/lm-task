@@ -15,16 +15,16 @@ const defaultTheme = {
   header: "cyan",
 
   // Selection colors
-  selected: "blue",
-  selectedText: "white",
-  selectedBg: "blue",
-  selectedFg: "white",
+  selected: "#f4b8e4",
+  selectedText: "black",
+  selectedBg: "#eebebe",
+  selectedFg: "black",
 
   // Status bar colors
-  statusBg: "blue",
-  statusText: "white",
-  statusBarBg: "blue",
-  statusBarFg: "white",
+  statusBg: "#81c8be",
+  statusText: "black",
+  statusBarBg: "#81c8be",
+  statusBarFg: "black",
 
   // Scrollbar colors
   scrollTrack: "gray",

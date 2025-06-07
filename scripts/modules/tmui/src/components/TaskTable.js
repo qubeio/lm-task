@@ -9,6 +9,8 @@ export class TaskTable {
   constructor(screen) {
     this.screen = screen;
     this.app = screen.app;
+    this.container = null;
+    this.header = null;
     this.table = null;
     this.tasks = [];
     this.selectedIndex = 0;
@@ -17,10 +19,10 @@ export class TaskTable {
   }
 
   /**
-   * Create the table widget with built-in header support
+   * Create the list widget with a fixed header
    */
   createTable() {
-    this.table = blessed.table({
+    this.container = blessed.box({
       parent: this.screen.getContainer(),
       top: 1,
       left: 1,
@@ -33,11 +35,34 @@ export class TaskTable {
         border: {
           fg: this.app.theme.border,
         },
-        header: {
-          fg: this.app.theme.header,
-          bold: true,
-        },
-        cell: {
+      },
+      label: " Tasks ",
+    });
+
+    this.header = blessed.text({
+      parent: this.container,
+      top: 0,
+      left: 1,
+      width: "100%-4",
+      height: 1,
+      content: this.formatHeader(),
+      style: {
+        fg: this.app.theme.header,
+        bold: true,
+        bg: this.app.theme.headerBg || "black",
+        underline: true,
+      },
+      tags: true,
+    });
+
+    this.table = blessed.list({
+      parent: this.container,
+      top: 1,
+      left: 0,
+      width: "100%-2",
+      height: "100%-3",
+      style: {
+        item: {
           fg: this.app.theme.text,
         },
         selected: {
@@ -46,7 +71,7 @@ export class TaskTable {
         },
       },
       scrollable: true,
-      alwaysScroll: true,
+      alwaysScroll: false,
       scrollbar: {
         ch: " ",
         track: {
@@ -60,9 +85,6 @@ export class TaskTable {
       vi: true,
       mouse: true,
       tags: true,
-      label: " Tasks ",
-      columnSpacing: 2,
-      columnWidth: [6, 14, 10, 0], // ID, Status, Priority, Title (0 = flexible)
     });
   }
 
@@ -72,15 +94,7 @@ export class TaskTable {
   updateTasks(tasks) {
     this.tasks = tasks;
 
-    const items = [];
-
-    // Add header that will stay visible
-    items.push(this.formatHeader());
-
-    // Add tasks
-    tasks.forEach((task, index) => {
-      items.push(this.formatTaskRow(task));
-    });
+    const items = tasks.map((task) => this.formatTaskRow(task));
 
     this.table.setItems(items);
     this.setSelectedIndex(this.selectedIndex);
@@ -95,7 +109,7 @@ export class TaskTable {
     const priorityCol = "Priority".padEnd(8);
     const titleCol = "Title";
 
-    return `{bold}${idCol}  ${statusCol}  ${priorityCol}  ${titleCol}{/}`;
+    return `{bold}{underline}${idCol}  ${statusCol}  ${priorityCol}  ${titleCol}{/}{/}`;
   }
 
   /**
@@ -162,15 +176,73 @@ export class TaskTable {
   }
 
   /**
-   * Set the selected row index
+   * Set the selected row index with improved scrolling behavior
    */
   setSelectedIndex(index) {
     this.selectedIndex = Math.max(0, Math.min(index, this.tasks.length - 1));
 
-    // Select the task row (index + 1 to account for header)
-    const listIndex = this.selectedIndex + 1;
-    if (listIndex < this.table.items.length) {
-      this.table.select(listIndex);
+    // Use blessed's built-in selection method
+    if (
+      this.selectedIndex >= 0 &&
+      this.selectedIndex < this.table.items.length
+    ) {
+      // First, select the item using blessed's native method
+      this.table.select(this.selectedIndex);
+
+      // Then apply smart scrolling behavior
+      this.smartScroll();
+    }
+  }
+
+  /**
+   * Smart scrolling behavior - selection moves first, content scrolls only when needed
+   */
+  smartScroll() {
+    const totalItems = this.table.items.length;
+    const currentIndex = this.selectedIndex;
+
+    // Get viewport height (visible rows)
+    const viewportHeight = this.table.height - 2; // Account for borders
+
+    if (totalItems <= viewportHeight) {
+      // All items fit in viewport, no scrolling needed
+      return;
+    }
+
+    // Get current scroll position
+    const currentScrollTop = this.table.childBase || 0;
+
+    // Calculate the position of the selected item relative to the viewport
+    const selectedPositionInViewport = currentIndex - currentScrollTop;
+
+    // Define scroll trigger zones (when selection should trigger scrolling)
+    const scrollMargin = 2; // Start scrolling when selection is within 2 lines of edge
+
+    // Check if we need to scroll up
+    if (selectedPositionInViewport < scrollMargin && currentScrollTop > 0) {
+      // Selection is too close to the top, scroll up
+      const scrollAmount = Math.min(
+        scrollMargin - selectedPositionInViewport,
+        currentScrollTop
+      );
+      for (let i = 0; i < scrollAmount; i++) {
+        this.table.scroll(-1);
+      }
+    }
+    // Check if we need to scroll down
+    else if (
+      selectedPositionInViewport >= viewportHeight - scrollMargin &&
+      currentScrollTop < totalItems - viewportHeight
+    ) {
+      // Selection is too close to the bottom, scroll down
+      const maxScrollDown = totalItems - viewportHeight - currentScrollTop;
+      const scrollAmount = Math.min(
+        selectedPositionInViewport - (viewportHeight - scrollMargin - 1),
+        maxScrollDown
+      );
+      for (let i = 0; i < scrollAmount; i++) {
+        this.table.scroll(1);
+      }
     }
   }
 
@@ -185,6 +257,6 @@ export class TaskTable {
    * Get the table widget
    */
   getWidget() {
-    return this.table;
+    return this.container;
   }
 }

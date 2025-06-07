@@ -6047,7 +6047,17 @@
         102
       ],
       "priority": "medium",
-      "subtasks": []
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement Pale Pink Highlight Color for TUI",
+          "description": "Change the highlight color in the TUI from dark blue to a very pale pink. The new color should be soft and not overly bright to maintain a professional look. This involves updating the theme configuration file where the selected background color is defined.",
+          "details": "<info added on 2025-06-07T18:49:42.510Z>\nImplementation completed: The theme.js file was updated to change the selected background color from \"blue\" to \"#fdf2f8\" (a very pale pink), and both selectedText and selectedFg were changed from \"white\" to \"black\" for improved contrast. These changes ensure consistency across all UI components, including TaskTable row selection, SearchScreen focus border, and TaskDetailScreen subtask selection. All references to theme.selected, theme.selectedText, theme.selectedBg, and theme.selectedFg now use the new pale pink color scheme, providing a soft, professional highlight effect throughout the interface.\n</info added on 2025-06-07T18:49:42.510Z>",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 103
+        }
+      ]
     }
   ]
 }
