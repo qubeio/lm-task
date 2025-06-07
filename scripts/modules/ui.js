@@ -971,9 +971,17 @@ async function displayNextTask(tasksPath) {
  * @param {string} tasksPath - Path to the tasks.json file
  * @param {string|number} taskId - The ID of the task to display
  * @param {string} [statusFilter] - Optional status to filter subtasks by
+ * @param {string} [outputFormat] - Output format (text or json)
  */
-async function displayTaskById(tasksPath, taskId, statusFilter = null) {
-  displayBanner();
+async function displayTaskById(
+  tasksPath,
+  taskId,
+  statusFilter = null,
+  outputFormat = "text"
+) {
+  if (outputFormat === "text") {
+    displayBanner();
+  }
 
   // Read the tasks file
   const data = readJSON(tasksPath);
@@ -991,6 +999,9 @@ async function displayTaskById(tasksPath, taskId, statusFilter = null) {
   );
 
   if (!task) {
+    if (outputFormat === "json") {
+      return { error: `Task with ID ${taskId} not found` };
+    }
     console.log(
       boxen(chalk.yellow(`Task with ID ${taskId} not found!`), {
         padding: { top: 0, bottom: 0, left: 1, right: 1 },
@@ -1000,6 +1011,31 @@ async function displayTaskById(tasksPath, taskId, statusFilter = null) {
       })
     );
     return;
+  }
+
+  // For JSON output, return structured data
+  if (outputFormat === "json") {
+    // Remove details field for JSON output to keep response size manageable
+    const { details, ...taskWithoutDetails } = task;
+
+    // If subtasks exist, remove details from them too
+    if (
+      taskWithoutDetails.subtasks &&
+      Array.isArray(taskWithoutDetails.subtasks)
+    ) {
+      taskWithoutDetails.subtasks = taskWithoutDetails.subtasks.map(
+        (subtask) => {
+          const { details: subtaskDetails, ...subtaskRest } = subtask;
+          return subtaskRest;
+        }
+      );
+    }
+
+    return {
+      task: taskWithoutDetails,
+      filter: statusFilter || null,
+      isSubtask: !!(task.isSubtask || task.parentTask),
+    };
   }
 
   // Handle subtask display specially (This logic remains the same)

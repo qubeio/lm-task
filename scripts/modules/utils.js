@@ -70,6 +70,41 @@ function findProjectRoot(
   startPath = process.cwd(),
   markers = ["package.json", ".git", ".taskmasterconfig"]
 ) {
+  // Special handling for MCP server execution context
+  // Check if we're running from the MCP server and can derive the project root
+  if (process.argv[1]) {
+    const scriptPath = process.argv[1];
+    // If running from mcp-server directory, find the parent directory containing package.json
+    if (scriptPath.includes('mcp-server')) {
+      const mcpServerIndex = scriptPath.lastIndexOf('mcp-server');
+      const potentialProjectRoot = path.dirname(scriptPath.substring(0, mcpServerIndex));
+      
+      // Verify this is actually a TaskMaster project by checking for specific markers
+      const taskMasterMarkers = ['package.json', 'scripts', 'tasks', 'PRD.md'];
+      const hasTaskMasterMarkers = taskMasterMarkers.some(marker => 
+        fs.existsSync(path.join(potentialProjectRoot, marker))
+      );
+      
+      if (hasTaskMasterMarkers) {
+        return potentialProjectRoot;
+      }
+    }
+    
+    // If running from scripts directory, try the parent
+    if (scriptPath.includes('scripts')) {
+      const scriptsIndex = scriptPath.lastIndexOf('scripts');
+      const potentialProjectRoot = path.dirname(scriptPath.substring(0, scriptsIndex));
+      
+      // Verify this is a TaskMaster project
+      if (fs.existsSync(path.join(potentialProjectRoot, 'package.json')) &&
+          (fs.existsSync(path.join(potentialProjectRoot, 'scripts')) ||
+           fs.existsSync(path.join(potentialProjectRoot, 'tasks')))) {
+        return potentialProjectRoot;
+      }
+    }
+  }
+
+  // Standard search starting from the provided path
   let currentPath = path.resolve(startPath);
   while (true) {
     for (const marker of markers) {

@@ -151,28 +151,48 @@ function getProjectRootFromSession(session, log) {
 			return finalPath;
 		}
 
-		// Fallback Logic (remains the same)
+		// Fallback Logic (enhanced for development context)
 		log.warn('No project root URI found in session. Attempting fallbacks...');
 		const cwd = process.cwd();
 
-		// Fallback 1: Use server path deduction (Cursor IDE)
+		// Fallback 1: Use server path deduction (Cursor IDE or direct execution)
 		const serverPath = process.argv[1];
-		if (serverPath && serverPath.includes('mcp-server')) {
-			const mcpServerIndex = serverPath.indexOf('mcp-server');
-			if (mcpServerIndex !== -1) {
-				const projectRoot = path.dirname(
-					serverPath.substring(0, mcpServerIndex)
-				); // Go up one level
+		if (serverPath) {
+			// If running from mcp-server directory, derive project root
+			if (serverPath.includes('mcp-server')) {
+				const mcpServerIndex = serverPath.lastIndexOf('mcp-server');
+				const potentialProjectRoot = path.dirname(serverPath.substring(0, mcpServerIndex));
+				
+				// Verify this is a TaskMaster project by checking for specific markers
+				const taskMasterMarkers = ['package.json', 'scripts', 'tasks', 'PRD.md'];
+				const hasTaskMasterMarkers = taskMasterMarkers.some(marker => 
+					fs.existsSync(path.join(potentialProjectRoot, marker))
+				);
+				
+				if (hasTaskMasterMarkers) {
+					log.info(`Using project root derived from MCP server path: ${potentialProjectRoot}`);
+					return potentialProjectRoot;
+				}
+			}
+			
+			// Legacy fallback for older path detection logic
+			if (serverPath.includes('mcp-server')) {
+				const mcpServerIndex = serverPath.indexOf('mcp-server');
+				if (mcpServerIndex !== -1) {
+					const projectRoot = path.dirname(
+						serverPath.substring(0, mcpServerIndex)
+					); // Go up one level
 
-				if (
-					fs.existsSync(path.join(projectRoot, '.cursor')) ||
-					fs.existsSync(path.join(projectRoot, 'mcp-server')) ||
-					fs.existsSync(path.join(projectRoot, 'package.json'))
-				) {
-					log.info(
-						`Using project root derived from server path: ${projectRoot}`
-					);
-					return projectRoot; // Already absolute
+					if (
+						fs.existsSync(path.join(projectRoot, '.cursor')) ||
+						fs.existsSync(path.join(projectRoot, 'mcp-server')) ||
+						fs.existsSync(path.join(projectRoot, 'package.json'))
+					) {
+						log.info(
+							`Using project root derived from legacy server path: ${projectRoot}`
+						);
+						return projectRoot; // Already absolute
+					}
 				}
 			}
 		}

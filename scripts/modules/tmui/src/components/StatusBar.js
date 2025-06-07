@@ -1,0 +1,138 @@
+/**
+ * Status Bar Component
+ * Displays keyboard shortcuts and task statistics at the bottom of the screen
+ */
+
+import blessed from "blessed";
+
+export class StatusBar {
+  constructor(screen) {
+    this.screen = screen;
+    this.app = screen.app;
+    this.statusBar = null;
+    this.stats = {
+      total: 0,
+      completed: 0,
+      inProgress: 0,
+      pending: 0,
+    };
+
+    this.createStatusBar();
+  }
+
+  /**
+   * Create the status bar widget
+   */
+  createStatusBar() {
+    this.statusBar = blessed.box({
+      parent: this.screen.getContainer(),
+      bottom: 0,
+      left: 0,
+      width: "100%",
+      height: 1,
+      style: {
+        fg: this.app.theme.statusText,
+        bg: this.app.theme.statusBg,
+      },
+      tags: true,
+    });
+
+    this.updateDisplay();
+  }
+
+  /**
+   * Update task statistics
+   */
+  updateStats(stats) {
+    this.stats = stats;
+    this.updateDisplay();
+  }
+
+  /**
+   * Update the status bar display
+   */
+  updateDisplay() {
+    const shortcuts = this.getKeyboardShortcuts();
+    const statsText = this.getStatsText();
+
+    // Calculate available space
+    const totalWidth = this.statusBar.width - 2; // Account for padding
+    const shortcutsWidth = shortcuts.length;
+    const statsWidth = statsText.length;
+    const spacingNeeded = totalWidth - shortcutsWidth - statsWidth;
+
+    let content;
+    if (spacingNeeded > 0) {
+      // Enough space for both shortcuts and stats
+      const spacing = " ".repeat(spacingNeeded);
+      content = `${shortcuts}${spacing}${statsText}`;
+    } else {
+      // Not enough space, prioritize shortcuts
+      content = shortcuts;
+    }
+
+    this.statusBar.setContent(content);
+  }
+
+  /**
+   * Get keyboard shortcuts text
+   */
+  getKeyboardShortcuts() {
+    if (this.app.searchMode) {
+      return " ESC: close search │ Enter: select │ n/N: next/prev match ";
+    } else {
+      return " j/k: up/down │ /: search │ Enter: details │ r: refresh │ q: quit │ ?: help ";
+    }
+  }
+
+  /**
+   * Get task statistics text
+   */
+  getStatsText() {
+    const { total, completed, inProgress, pending } = this.stats;
+
+    if (total === 0) {
+      return " No tasks ";
+    }
+
+    const parts = [];
+
+    if (completed > 0) {
+      parts.push(`{green-fg}✅ ${completed}{/}`);
+    }
+
+    if (inProgress > 0) {
+      parts.push(`{yellow-fg}🔄 ${inProgress}{/}`);
+    }
+
+    if (pending > 0) {
+      parts.push(`{blue-fg}⏳ ${pending}{/}`);
+    }
+
+    const statsText = parts.join(" │ ");
+    return ` ${statsText} │ Total: ${total} `;
+  }
+
+  /**
+   * Set status message (for temporary messages)
+   */
+  setMessage(message, duration = 3000) {
+    const originalContent = this.statusBar.getContent();
+
+    this.statusBar.setContent(` ${message} `);
+    this.app.render();
+
+    // Restore original content after duration
+    setTimeout(() => {
+      this.updateDisplay();
+      this.app.render();
+    }, duration);
+  }
+
+  /**
+   * Get the status bar widget
+   */
+  getWidget() {
+    return this.statusBar;
+  }
+}

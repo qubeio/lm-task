@@ -11,7 +11,7 @@ This task has two main components:\n\n1. Add `--json` flag to all relevant CLI c
 1. JSON output testing:\n   - Unit tests for each command with the --json flag\n   - Verify JSON schema consistency across commands\n   - Validate that all necessary task data is included in the JSON output\n   - Test piping output to other commands like jq\n\n2. Keybindings command testing:\n   - Test on different OSes (macOS, Windows, Linux)\n   - Verify correct path detection for Cursor's keybindings.json\n   - Test behavior when file doesn't exist\n   - Test behavior when existing keybindings conflict\n   - Validate the installed keybindings work as expected\n   - Test uninstall/restore functionality
 
 # Subtasks:
-## 1. Implement Core JSON Output Logic for `next` and `show` Commands [pending]
+## 1. Implement Core JSON Output Logic for `next` and `show` Commands [in-progress]
 ### Dependencies: None
 ### Description: Modify the command handlers for `task-master next` and `task-master show <id>` to recognize and handle a `--json` flag. When the flag is present, output the raw data received from MCP tools directly as JSON.
 ### Details:

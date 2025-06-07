@@ -85,6 +85,7 @@ import {
   isOldFormatPRD,
   isInScriptsDirectory,
 } from "./task-manager/migrate-prd.js";
+import { registerTUICommand } from "./tmui/src/index.js";
 /**
  * Runs the interactive setup process for model configuration.
  * @param {string|null} projectRoot - The resolved project root directory.
@@ -1272,20 +1273,33 @@ function registerCommands(programInstance) {
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
     .option("-s, --status <status>", "Filter by status")
     .option("--with-subtasks", "Show subtasks for each task")
+    .option("--json", "Output in JSON format")
     .action(async (options) => {
       const tasksPath = options.file;
       const statusFilter = options.status;
       const withSubtasks = options.withSubtasks || false;
+      const outputFormat = options.json ? "json" : "text";
 
-      console.log(chalk.blue(`Listing tasks from: ${tasksPath}`));
-      if (statusFilter) {
-        console.log(chalk.blue(`Filtering by status: ${statusFilter}`));
-      }
-      if (withSubtasks) {
-        console.log(chalk.blue("Including subtasks in listing"));
+      if (outputFormat === "text") {
+        console.log(chalk.blue(`Listing tasks from: ${tasksPath}`));
+        if (statusFilter) {
+          console.log(chalk.blue(`Filtering by status: ${statusFilter}`));
+        }
+        if (withSubtasks) {
+          console.log(chalk.blue("Including subtasks in listing"));
+        }
       }
 
-      await listTasks(tasksPath, statusFilter, withSubtasks);
+      const result = await listTasks(
+        tasksPath,
+        statusFilter,
+        withSubtasks,
+        outputFormat
+      );
+
+      if (outputFormat === "json") {
+        console.log(JSON.stringify(result, null, 2));
+      }
     });
 
   // clear-subtasks command
@@ -1457,9 +1471,11 @@ function registerCommands(programInstance) {
     .option("-i, --id <id>", "Task ID to show")
     .option("-s, --status <status>", "Filter subtasks by status") // ADDED status option
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
+    .option("--json", "Output in JSON format")
     .action(async (taskId, options) => {
       const idArg = taskId || options.id;
       const statusFilter = options.status; // ADDED: Capture status filter
+      const outputFormat = options.json ? "json" : "text";
 
       if (!idArg) {
         console.error(chalk.red("Error: Please provide a task ID"));
@@ -1467,8 +1483,17 @@ function registerCommands(programInstance) {
       }
 
       const tasksPath = options.file;
-      // PASS statusFilter to the display function
-      await displayTaskById(tasksPath, idArg, statusFilter);
+      // PASS statusFilter and outputFormat to the display function
+      const result = await displayTaskById(
+        tasksPath,
+        idArg,
+        statusFilter,
+        outputFormat
+      );
+
+      if (outputFormat === "json") {
+        console.log(JSON.stringify(result, null, 2));
+      }
     });
 
   // add-dependency command
@@ -2138,7 +2163,7 @@ function registerCommands(programInstance) {
     .action(async (cmdOptions) => {
       // cmdOptions contains parsed arguments
       try {
-        console.log("DEBUG: Running init command action in commands.js");
+        // console.log("DEBUG: Running init command action in commands.js");
         console.log(
           "DEBUG: Options received by action:",
           JSON.stringify(cmdOptions)
@@ -2478,6 +2503,9 @@ Examples:
       }
     });
 
+  // Register TUI command
+  registerTUICommand(programInstance);
+
   return programInstance;
 }
 
@@ -2646,8 +2674,11 @@ function displayUpgradeNotification(currentVersion, latestVersion) {
  */
 async function runCLI(argv = process.argv) {
   try {
-    // Display banner if not in a pipe
-    if (process.stdout.isTTY) {
+    // Check if --json flag is present to suppress banners
+    const isJsonOutput = argv.includes("--json");
+
+    // Display banner if not in a pipe and not JSON output
+    if (process.stdout.isTTY && !isJsonOutput) {
       displayBanner();
     }
 
@@ -2666,13 +2697,15 @@ async function runCLI(argv = process.argv) {
     const programInstance = setupCLI();
     await programInstance.parseAsync(argv);
 
-    // After command execution, check if an update is available
-    const updateInfo = await updateCheckPromise;
-    if (updateInfo.needsUpdate) {
-      displayUpgradeNotification(
-        updateInfo.currentVersion,
-        updateInfo.latestVersion
-      );
+    // After command execution, check if an update is available (but not for JSON output)
+    if (!isJsonOutput) {
+      const updateInfo = await updateCheckPromise;
+      if (updateInfo.needsUpdate) {
+        displayUpgradeNotification(
+          updateInfo.currentVersion,
+          updateInfo.latestVersion
+        );
+      }
     }
   } catch (error) {
     // ** Specific catch block for missing configuration file **

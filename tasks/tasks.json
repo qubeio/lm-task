@@ -4425,7 +4425,7 @@
           "description": "Modify the command handlers for `task-master next` and `task-master show <id>` to recognize and handle a `--json` flag. When the flag is present, output the raw data received from MCP tools directly as JSON.",
           "dependencies": [],
           "details": "1. Update the CLI argument parser to add the `--json` boolean flag to both commands\n2. Create a `formatAsJson` utility function in `src/utils/output.js` that takes a data object and returns a properly formatted JSON string\n3. In the command handler functions (`src/commands/next.js` and `src/commands/show.js`), add a conditional check for the `--json` flag\n4. If the flag is set, call the `formatAsJson` function with the raw data object and print the result\n5. If the flag is not set, continue with the existing human-readable formatting logic\n6. Ensure proper error handling for JSON serialization failures\n7. Update the command help text in both files to document the new flag",
-          "status": "pending",
+          "status": "in-progress",
           "testStrategy": "1. Create unit tests in `tests/commands/next.test.js` and `tests/commands/show.test.js`\n2. Mock the MCP data response and verify the JSON output matches expected format\n3. Test with both valid and invalid task IDs for the `show` command\n4. Verify the JSON output can be parsed back into a valid object\n5. Run manual tests with `task-master next --json` and `task-master show 123 --json` to confirm functionality"
         },
         {
@@ -5846,6 +5846,208 @@
           "parentTaskId": 100
         }
       ]
+    },
+    {
+      "id": 101,
+      "title": "Reorganize TaskMaster Configuration Structure",
+      "description": "Restructure the TaskMaster configuration to place all config-related items in a dedicated 'Taskmaster' folder for better organization and easier gitignore management.",
+      "details": "Create a dedicated 'Taskmaster' folder in the project root to contain all TaskMaster configuration items including tasks, config files, and local documents. This will reduce clutter in the root directory and make it easier to add these files to .gitignore when needed.\n\nImplementation steps:\n1. Create a new 'Taskmaster' folder in the project root\n2. Move the 'tasks' directory into the 'Taskmaster' folder\n3. Move TaskMaster configuration files (like .taskmasterconfig) into the 'Taskmaster' folder\n4. Update any code references to these files to point to the new locations\n5. Update documentation to reflect the new structure\n6. Modify the TaskMaster code to look for configuration in the new location\n7. Keep PRD.md in the root directory for backward compatibility with other agent tools\n\nThis reorganization will improve project organization while maintaining compatibility with existing tools.",
+      "testStrategy": "",
+      "status": "in-progress",
+      "dependencies": [],
+      "priority": "medium",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Create Taskmaster Directory Structure",
+          "description": "Create the new Taskmaster directory in the project root and plan the file organization structure.",
+          "details": "Create a new 'Taskmaster' directory in the project root that will house all TaskMaster configuration items. Define the structure of subdirectories needed within this folder (e.g., tasks, config, templates). Document the planned structure and ensure it aligns with the project's organization principles.",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 101
+        },
+        {
+          "id": 2,
+          "title": "Migrate Tasks Directory",
+          "description": "Move the existing 'tasks' directory into the new Taskmaster folder structure.",
+          "details": "Carefully migrate the existing 'tasks' directory and its contents into the new Taskmaster folder. This includes:\n1. Moving all task files (.md files)\n2. Moving the tasks.json file\n3. Ensuring file permissions are maintained\n4. Verifying all files are correctly transferred\n5. Testing that the TaskMaster system can still access and process these files in their new location",
+          "status": "done",
+          "dependencies": [
+            "101.1"
+          ],
+          "parentTaskId": 101
+        },
+        {
+          "id": 3,
+          "title": "Migrate Configuration Files",
+          "description": "Move TaskMaster configuration files into the new Taskmaster folder.",
+          "details": "Identify and move all TaskMaster configuration files (such as .taskmasterconfig and any other configuration files) into the new Taskmaster folder. Create a dedicated 'config' subdirectory if appropriate. Ensure that file permissions are maintained and that all configuration files are properly transferred.",
+          "status": "pending",
+          "dependencies": [
+            "101.1"
+          ],
+          "parentTaskId": 101
+        },
+        {
+          "id": 4,
+          "title": "Update Code References to New Paths",
+          "description": "Update all code references throughout the TaskMaster codebase to point to the new Taskmaster folder structure.",
+          "details": "Systematically update all code references that currently point to the old file locations to use the new Taskmaster folder structure. This includes:\n\n1. Update path references in the main TaskMaster CLI code\n2. Update path references in the MCP server code\n3. Update any hardcoded paths in configuration files\n4. Update import statements and file path constants\n5. Update any scripts that reference the old locations\n6. Ensure backward compatibility where possible\n7. Test all updated references to ensure they work correctly\n\nKey areas to check:\n- scripts/modules/ directory for any hardcoded paths\n- mcp-server/src/ directory for path references\n- Any configuration loading code\n- File discovery and auto-detection logic\n- Documentation generation scripts",
+          "status": "pending",
+          "dependencies": [
+            "101.2",
+            "101.3"
+          ],
+          "parentTaskId": 101
+        },
+        {
+          "id": 5,
+          "title": "Update Initialization and Model Setup Functions",
+          "description": "Modify the core initialization and model setup functions to create and use the new Taskmaster folder structure instead of root-level files.",
+          "details": "Update the core system functions to work with the new Taskmaster folder structure:\n\n**Initialization Function Changes:**\n1. Modify `initialize_project` to create `Taskmaster/` directory structure:\n   - `Taskmaster/tasks/` (instead of root `tasks/`)\n   - `Taskmaster/config/` for configuration files\n   - `Taskmaster/templates/` for any template files\n   - `Taskmaster/reports/` if needed for reports\n\n2. Update the initialization to create `.taskmasterconfig` in `Taskmaster/config/` instead of project root\n\n**Model Setup Function Changes:**\n1. Modify the `models` command/tool to look for and modify configuration in `Taskmaster/config/.taskmasterconfig`\n2. Update the configuration loading logic to check the new location first, with fallback to old location for backward compatibility\n3. Update the `task-master models --setup` command to create/modify the config file in the new location\n\n**Configuration Loading Updates:**\n1. Update configuration discovery logic to check `Taskmaster/config/.taskmasterconfig` first\n2. Maintain backward compatibility by falling back to root `.taskmasterconfig` if new location doesn't exist\n3. Update environment variable handling to work with new structure\n4. Update any hardcoded paths in the configuration system\n\n**File Discovery Updates:**\n1. Update `tasks.json` discovery to look in `Taskmaster/tasks/` first\n2. Update task file generation to use new directory structure\n3. Update any auto-detection logic for configuration files\n\nThis ensures the system works correctly with the new structure from the moment of initialization.",
+          "status": "pending",
+          "dependencies": [
+            "101.1"
+          ],
+          "parentTaskId": 101
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "title": "Implement TaskMaster TUI for Task Management",
+      "description": "Develop an interactive terminal user interface using Blessed.js for managing tasks by integrating with existing CLI commands.",
+      "details": "Set up a TUI launched via the 'tmui' command that displays tasks in a format consistent with 'tm list'. This TUI should use Blessed.js for its layout and support Vim-style navigation (j/k for up/down, gg/G for top/bottom). Integrate a search feature with forward slash (/) that highlights matches, and allow users to view task details with the Enter key, equivalent to the 'tm show <id>' command. Use a CLI adapter (CliAdapter class) to call existing CLI commands and parse JSON output. The implementation should be modular, with components like TaskListScreen, TaskDetailScreen, and SearchScreen, and follow the phased approach from MVP foundation to enhanced UI and interactive features as outlined in the design document at docs/tui-design.md.",
+      "testStrategy": "Launch the application using the 'tmui' command and verify that the task list loads correctly in the expected format. Test navigation keys (j/k and gg/G) and ensure search functionality is activated via '/' with proper result highlighting. Confirm that pressing Enter opens the detailed view of a selected task, and that pressing 'q' exits the TUI. Also, verify that CLI commands are correctly executed under the hood, and validate that all components interact as expected.",
+      "status": "in-progress",
+      "dependencies": [
+        2,
+        3
+      ],
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Phase 1: MVP Foundation - Project Setup and Basic Structure",
+          "description": "Set up the basic project structure for the TUI, install dependencies, and create the foundation components.",
+          "details": "- Install blessed.js dependency\n- Create tmui/ directory structure with src/, screens/, components/, utils/ folders\n- Set up entry point (index.js) with tmui command registration  \n- Create basic app.js with Blessed application setup\n- Implement basic TaskListScreen skeleton\n- Add tmui command to CLI (scripts/modules/commands.js)\n- Create initial package.json dependencies for blessed\n- Set up basic error handling and graceful exit\n<info added on 2025-06-07T16:52:52.531Z>\n✅ Phase 1 MVP Foundation - COMPLETED\n\nFinal Implementation Status:\n- ✅ Basic Blessed.js setup with `tmui` command registration\n- ✅ Task list display infrastructure created\n- ✅ CLI adapter for `tm list` and `tm show` with JSON support\n- ✅ Basic keyboard navigation framework (j/k, Enter, q)\n- ✅ Project structure and component architecture established\n\nKey Achievements:\n1. CLI Integration Fixed: Added `--json` flag support to both `list` and `show` commands\n2. TUI Launch Success: Command `task-master tmui` now launches properly and displays TaskMaster banner\n3. Architecture Complete: Full component structure implemented with screens, components, utils, and styles\n4. Foundation Ready: All core infrastructure is in place for Phase 2 development\n\nTechnical Implementation:\n- Modified `scripts/modules/commands.js` to add `--json` option to list and show commands\n- Updated `scripts/modules/ui.js` `displayTaskById` function to support JSON output\n- Created comprehensive TUI architecture with proper separation of concerns\n- Implemented CLI adapter with error handling and JSON parsing\n- Added blessed.js dependency and integrated with existing command structure\n\nNext Steps:\nReady to proceed to Phase 2: Search & Navigation implementation with forward slash search, advanced navigation (gg, G, page up/down), and search result navigation.\n</info added on 2025-06-07T16:52:52.531Z>",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 102
+        },
+        {
+          "id": 2,
+          "title": "Phase 1: CLI Adapter Implementation",
+          "description": "Create the CLI adapter that interfaces with existing TaskMaster CLI commands to provide JSON data to the TUI.",
+          "details": "- Implement CliAdapter class in utils/cliAdapter.js\n- Add getTasks() method that executes 'task-master list --json'\n- Add getTask(id) method that executes 'task-master show <id> --json'\n- Implement JSON output support for existing CLI commands (--json flag)\n- Add error handling for failed CLI command execution\n- Create task data formatting utilities\n- Test CLI adapter with existing task data\n- Handle edge cases (empty task lists, invalid IDs)",
+          "status": "done",
+          "dependencies": [
+            "102.1"
+          ],
+          "parentTaskId": 102
+        },
+        {
+          "id": 3,
+          "title": "Phase 1: Basic Task List Display",
+          "description": "Implement the core task list display using Blessed.js table component, matching the format of tm list command.",
+          "details": "- Create TaskTable component using blessed table widget\n- Implement task data rendering (ID, Status, Priority, Title columns)\n- Add status indicators with emojis (✅ done, ⏳ pending, 🔄 in-progress)\n- Format columns with proper spacing and alignment\n- Add header row with column titles\n- Implement basic task list screen layout with borders\n- Add task count display in header\n- Test with real task data from CLI adapter\n- Handle empty task list display",
+          "status": "done",
+          "dependencies": [
+            "102.2"
+          ],
+          "parentTaskId": 102
+        },
+        {
+          "id": 4,
+          "title": "Phase 1: Basic Keyboard Navigation",
+          "description": "Implement fundamental keyboard navigation for the task list using Vim-style keys.",
+          "details": "- Implement j/k navigation (down/up) for task list\n- Add arrow key support (↓/↑) as alternative to j/k\n- Create keyHandlers.js utility for centralized key handling\n- Add row highlighting/selection visual feedback\n- Implement Enter key to view task details (transition to detail screen)\n- Add 'q' key to quit application gracefully\n- Implement gg (go to first task) and G (go to last task) navigation\n- Add boundary checking (don't go past first/last task)\n- Test navigation with various task list sizes",
+          "status": "done",
+          "dependencies": [
+            "102.3"
+          ],
+          "parentTaskId": 102
+        },
+        {
+          "id": 5,
+          "title": "Phase 1: Task Detail View",
+          "description": "Create the task detail screen that displays comprehensive task information when Enter is pressed on a task.",
+          "details": "- Create TaskDetailScreen component\n- Implement task detail layout (title, status, priority, dependencies)\n- Display task description, details, and test strategy sections\n- Add proper text wrapping and scrolling for long content\n- Implement ESC/q key to return to task list\n- Add dependency status indicators (✅ for completed dependencies)\n- Create proper borders and spacing for readability\n- Handle loading states while fetching task details\n- Add error handling for invalid task IDs\n- Test with various task detail lengths and formats\n<info added on 2025-06-07T17:17:00.380Z>\nInvestigate and debug the data flow for displaying task details:\n- Trace how getCurrentTask() determines and passes the task ID\n- Verify cliAdapter.getTask() correctly parses the JSON response from the CLI\n- Ensure TaskDetailScreen.setTask() receives and renders the correct task data\n- Add logging or assertions at each step to identify where data may be lost or misparsed\n- Confirm that the task detail screen accurately reflects the data returned by the CLI\n</info added on 2025-06-07T17:17:00.380Z>\n<info added on 2025-06-07T17:20:49.229Z>\nResolved JSON parsing issues caused by CLI banners, update notifications, and debug logs contaminating output. Updated CLI to suppress banners and notifications when --json is used, and disabled debug logging for JSON output. Verified that task details are now correctly parsed and displayed in the TaskDetailScreen when Enter is pressed, with clean JSON returned from the CLI.\n</info added on 2025-06-07T17:20:49.229Z>\n<info added on 2025-06-07T18:13:35.265Z>\nRedesigned TaskDetailScreen layout implemented:\n- Parent task info displayed at the top 30% of the screen\n- Subtask list shown on the left (bottom 70%, 50% width)\n- Subtask detail pane on the right (bottom 70%, 50% width)\n- Status bar added with navigation instructions\n- j/k keys enable navigation between subtasks with visual selection highlighting\n\nMinor outstanding issue: Subtask detail pane text formatting needs improvement, as text is currently cut off or not properly wrapped, likely due to padding or wrapping settings in the detail box.\n</info added on 2025-06-07T18:13:35.265Z>\n<info added on 2025-06-07T18:24:53.486Z>\nFixed subtask details display issues:\n\n- Resolved subtask ID formatting to correctly display dotted notation (e.g., \"102.9\" instead of \"1029\") by adding explicit String() conversion in subtask header and list, updating both updateSubtaskDetail() and updateSubtaskList().\n- Eliminated stray \"e\" character and other visual artifacts by commenting out DEBUG console.log statements in cliAdapter.js and app.js, ensuring clean terminal output.\n- Improved dependencies display: now shows \"None\" when no dependencies exist and removed brackets around dependency IDs for a cleaner look.\n- Verified that subtask details now display correct IDs, clean formatting, and consistent status/priority information.\n\nAll major subtask details display issues are resolved and the TaskDetailScreen is ready for final testing and validation.\n</info added on 2025-06-07T18:24:53.486Z>",
+          "status": "in-progress",
+          "dependencies": [
+            "102.4"
+          ],
+          "parentTaskId": 102
+        },
+        {
+          "id": 6,
+          "title": "Phase 2: Search Functionality Implementation",
+          "description": "Implement the forward slash (/) search feature with highlighting and navigation through search results.",
+          "details": "- Create SearchScreen/SearchBox component\n- Implement '/' key to activate search mode\n- Add search input with real-time filtering\n- Implement search result highlighting in task titles\n- Add 'n' and 'N' keys for next/previous search result navigation\n- Implement ESC key to exit search mode\n- Add search query display in UI\n- Create case-insensitive search functionality\n- Handle search across task titles, descriptions, and details\n- Clear search highlighting when exiting search mode\n- Test search with various query types and edge cases",
+          "status": "pending",
+          "dependencies": [
+            "102.5"
+          ],
+          "parentTaskId": 102
+        },
+        {
+          "id": 7,
+          "title": "Phase 2: Advanced Navigation and Status Bar",
+          "description": "Add advanced navigation features and a comprehensive status bar with keyboard shortcuts help.",
+          "details": "- Implement Ctrl+f/Page Down and Ctrl+b/Page Up for page navigation\n- Add h/l keys for horizontal scrolling (if content is wide)\n- Create StatusBar component with keyboard shortcut hints\n- Add dynamic status messages (search mode, loading, errors)\n- Implement 'r' key for manual task list refresh\n- Add '?' key for help overlay showing all keyboard shortcuts\n- Create help screen/modal with complete key binding reference\n- Add visual feedback for keyboard actions (loading spinners, etc.)\n- Implement responsive layout adjustments for different terminal sizes\n- Test navigation with large task lists (100+ tasks)",
+          "status": "pending",
+          "dependencies": [
+            "102.6"
+          ],
+          "parentTaskId": 102
+        },
+        {
+          "id": 8,
+          "title": "Phase 3: Enhanced UI and Error Handling",
+          "description": "Improve the visual design, add comprehensive error handling, and implement performance optimizations.",
+          "details": "- Create theme.js with color schemes and styling configurations\n- Implement proper error handling for CLI command failures\n- Add loading states and progress indicators\n- Create graceful degradation for terminal resize events\n- Implement lazy loading for large task lists (performance optimization)\n- Add debounced search to prevent excessive filtering\n- Create proper ANSI escape sequences for screen reader compatibility\n- Add non-color status indicators for accessibility\n- Implement memory usage optimization for large task lists\n- Test across different terminal emulators (iTerm, Terminal.app, etc.)\n- Add configuration support for TUI preferences",
+          "status": "pending",
+          "dependencies": [
+            "102.7"
+          ],
+          "parentTaskId": 102
+        },
+        {
+          "id": 9,
+          "title": "Phase 4: Interactive Features - Task Status Updates",
+          "description": "Add the ability to update task status directly from the TUI interface.",
+          "details": "- Extend CLI adapter with updateTaskStatus() method\n- Add 'u' key in task detail view to update status\n- Create status selection modal/menu (pending, in-progress, done, etc.)\n- Implement CLI integration for 'task-master set-status' command\n- Add visual feedback for successful status updates\n- Update task list display after status changes\n- Handle concurrent updates and refresh conflicts\n- Add undo functionality for accidental status changes\n- Implement bulk status updates for future enhancement\n- Test status update workflows thoroughly",
+          "status": "pending",
+          "dependencies": [
+            "102.8"
+          ],
+          "parentTaskId": 102
+        },
+        {
+          "id": 10,
+          "title": "Phase 4: Testing and Documentation",
+          "description": "Create comprehensive tests and documentation for the TUI feature.",
+          "details": "- Create unit tests for CLI adapter functions\n- Add integration tests for TUI navigation workflows\n- Test keyboard shortcut functionality comprehensively\n- Create manual testing procedures for UI components\n- Write user documentation for TUI usage\n- Add TUI section to main README.md\n- Create troubleshooting guide for common issues\n- Test performance with large task lists (1000+ tasks)\n- Validate accessibility features and screen reader compatibility\n- Document configuration options and customization\n- Create example .taskmasterconfig entries for TUI preferences",
+          "status": "pending",
+          "dependencies": [
+            "102.9"
+          ],
+          "parentTaskId": 102
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "title": "TUI Theme Tweaking and Visual Improvements",
+      "description": "Refine the visual aesthetics of the TaskMaster TUI interface by adjusting colors, borders, spacing, and other minor elements to improve the overall user experience.",
+      "details": "Review the current TUI implementation (from Task 102) and identify visual inconsistencies, such as non-uniform spacing, color clashes, or misaligned borders. Update the styling configuration to include a refreshed color palette and standardized spacing and border styles. Ensure that the layout is responsive and the improvements do not negatively impact usability or performance. Consider adding light/dark mode toggling options if time permits, and include code examples and documentation to assist in future TUI style updates.",
+      "testStrategy": "Perform manual testing in various terminal sizes and color schemes to verify that the updated visual elements render correctly. Run automated visual regression tests, checking that the new style configurations are applied consistently. Conduct user experience reviews to gather feedback on the visual improvements, and include test cases to ensure that both normal and edge cases (e.g., minimal terminal sizes) display appropriately.",
+      "status": "pending",
+      "dependencies": [
+        102
+      ],
+      "priority": "medium",
+      "subtasks": []
     }
   ]
 }
