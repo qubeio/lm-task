@@ -10,6 +10,7 @@ export class SearchScreen {
     this.app = app;
     this.searchBox = null;
     this.query = "";
+    this.searchTimeout = null; // Add debouncing for search
 
     this.createComponents();
   }
@@ -70,14 +71,19 @@ export class SearchScreen {
 
     // Handle real-time search as user types
     this.searchBox.on("keypress", (ch, key) => {
-      // Small delay to allow the character to be added to the input
-      setTimeout(() => {
+      // Clear previous timeout
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
+
+      // Debounce search to reduce render frequency
+      this.searchTimeout = setTimeout(() => {
         const currentValue = this.searchBox.getValue();
         if (currentValue !== this.query) {
           this.query = currentValue;
           this.app.performSearch(this.query);
         }
-      }, 10);
+      }, 150); // Increased delay to reduce render frequency
     });
   }
 
@@ -95,6 +101,12 @@ export class SearchScreen {
    * Hide the search screen
    */
   hide() {
+    // Clear any pending search timeout
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+      this.searchTimeout = null;
+    }
+
     this.searchBox.hide();
     this.app.hideSearch();
     this.app.render();
@@ -111,6 +123,12 @@ export class SearchScreen {
    * Clear the search query
    */
   clear() {
+    // Clear any pending search timeout
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+      this.searchTimeout = null;
+    }
+
     this.query = "";
     this.searchBox.setValue("");
   }

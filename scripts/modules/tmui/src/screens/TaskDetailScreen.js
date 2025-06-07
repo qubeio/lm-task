@@ -11,6 +11,7 @@ export class TaskDetailScreen {
     this.container = null;
     this.task = null;
     this.currentSubtaskIndex = 0;
+    this.focusedComponent = "subtasks"; // Track focus state: 'subtasks' or 'parentTask'
 
     // UI Components
     this.parentTaskBox = null;
@@ -20,6 +21,7 @@ export class TaskDetailScreen {
 
     this.createComponents();
     this.setupKeyHandlers();
+    this.attachResizeHandler();
   }
 
   /**
@@ -47,12 +49,12 @@ export class TaskDetailScreen {
       vi: true,
     });
 
-    // Parent task information section (top 30% of screen)
+    // Parent task information section (top portion)
     this.parentTaskBox = blessed.box({
       parent: this.container,
       top: 0,
       left: 0,
-      width: "100%",
+      width: "98%", // leave space for the border
       height: "30%",
       border: {
         type: "line",
@@ -64,23 +66,23 @@ export class TaskDetailScreen {
       },
       label: " Parent Task ",
       tags: true,
+      keys: true,
+      input: true,
       scrollable: true,
       alwaysScroll: true,
       padding: {
         left: 1,
         right: 1,
-        top: 0,
-        bottom: 0,
       },
     });
 
-    // Subtask list (left side, bottom 70%)
+    // Subtask list (left side, bottom portion)
     this.subtaskList = blessed.list({
       parent: this.container,
       top: "30%",
       left: 0,
-      width: "50%",
-      height: "65%",
+      width: "49%",
+      height: "60%",
       border: {
         type: "line",
       },
@@ -88,9 +90,12 @@ export class TaskDetailScreen {
         border: {
           fg: this.app.theme.border,
         },
+        item: {
+          fg: this.app.theme.text,
+        },
         selected: {
-          bg: this.app.theme.selectedBg,
-          fg: this.app.theme.selectedFg,
+          bg: this.app.theme.selected,
+          fg: this.app.theme.selectedText,
         },
       },
       label: " Subtasks ",
@@ -100,15 +105,32 @@ export class TaskDetailScreen {
       mouse: true,
       scrollable: true,
       alwaysScroll: true,
+      // padding: {
+      //   right: 1,
+      // },
+      wrap: true,
     });
 
-    // Subtask detail pane (right side, bottom 70%)
+    // Handle subtask list selection changes
+    this.subtaskList.on("select", (item, index) => {
+      if (
+        this.task &&
+        this.task.subtasks &&
+        index >= 0 &&
+        index < this.task.subtasks.length
+      ) {
+        this.currentSubtaskIndex = index;
+        this.updateSubtaskDetail();
+      }
+    });
+
+    // Subtask detail pane (right side, bottom portion)
     this.subtaskDetailBox = blessed.box({
       parent: this.container,
       top: "30%",
       left: "50%",
-      width: "50%",
-      height: "65%",
+      width: "49%",
+      height: "60%",
       border: {
         type: "line",
       },
@@ -122,27 +144,28 @@ export class TaskDetailScreen {
       scrollable: true,
       alwaysScroll: true,
       wrap: true,
-      padding: {
-        left: 1,
-        right: 1,
-        top: 0,
-        bottom: 0,
-      },
+      // padding: {
+      //   left: 1,
+      //   right: 1,
+      //   top: 0,
+      //   bottom: 0,
+      // },
     });
 
-    // Status bar (bottom 5%)
+    // Status bar (bottom)
     this.statusBar = blessed.box({
       parent: this.container,
       bottom: 0,
       left: 0,
-      width: "100%",
-      height: 1,
+      width: "95%",
+      height: 2,
       style: {
         bg: this.app.theme.statusBarBg,
         fg: this.app.theme.statusBarFg,
       },
       tags: true,
-      content: " j/k: navigate subtasks | Enter: select | ESC/q: back to list ",
+      content:
+        " j/k: navigate subtasks | Tab: focus parent task | Enter: select | ESC/q: back to list ",
     });
 
     // Initially hidden
@@ -153,22 +176,60 @@ export class TaskDetailScreen {
    * Setup keyboard event handlers for this screen
    */
   setupKeyHandlers() {
-    // Navigation within subtasks
+    // Navigation within subtasks (default mode)
     this.container.key(["j", "down"], () => {
-      this.moveSubtaskDown();
+      if (this.focusedComponent === "parentTask") {
+        // Scroll parent task box down
+        this.parentTaskBox.scroll(1);
+        this.app.render();
+      } else {
+        // Navigate subtasks
+        this.moveSubtaskDown();
+      }
     });
 
     this.container.key(["k", "up"], () => {
-      this.moveSubtaskUp();
+      if (this.focusedComponent === "parentTask") {
+        // Scroll parent task box up
+        this.parentTaskBox.scroll(-1);
+        this.app.render();
+      } else {
+        // Navigate subtasks
+        this.moveSubtaskUp();
+      }
     });
 
-    // Go to first/last subtask
+    // Tab to switch focus between parent task and subtasks
+    this.container.key(["tab"], () => {
+      if (this.focusedComponent === "parentTask") {
+        // Switch focus to subtasks
+        this.focusedComponent = "subtasks";
+        this.parentTaskBox.style.border.fg = this.app.theme.border;
+        this.subtaskList.style.border.fg = this.app.theme.selected;
+        this.subtaskList.focus();
+        this.updateStatusBarForSubtasks();
+      } else {
+        // Switch focus to parent task
+        this.focusedComponent = "parentTask";
+        this.subtaskList.style.border.fg = this.app.theme.border;
+        this.parentTaskBox.style.border.fg = this.app.theme.selected;
+        this.parentTaskBox.focus();
+        this.updateStatusBarForParentTask();
+      }
+      this.app.render();
+    });
+
+    // Go to first/last subtask (only when subtasks are focused)
     this.container.key(["g"], () => {
-      this.waitForSecondG();
+      if (this.focusedComponent === "subtasks") {
+        this.waitForSecondG();
+      }
     });
 
     this.container.key(["G"], () => {
-      this.moveToLastSubtask();
+      if (this.focusedComponent === "subtasks") {
+        this.moveToLastSubtask();
+      }
     });
 
     // Return to task list
@@ -178,8 +239,10 @@ export class TaskDetailScreen {
 
     // Enter key - could be used for future subtask actions
     this.container.key(["enter"], () => {
-      // For now, just update the detail view
-      this.updateSubtaskDetail();
+      if (this.focusedComponent === "subtasks") {
+        // For now, just update the detail view
+        this.updateSubtaskDetail();
+      }
     });
   }
 
@@ -205,7 +268,7 @@ export class TaskDetailScreen {
   }
 
   /**
-   * Update the parent task information display
+   * Update the parent task display
    */
   updateParentTaskDisplay() {
     if (!this.task) return;
@@ -213,41 +276,61 @@ export class TaskDetailScreen {
     const lines = [];
 
     // Basic information
-    lines.push(`{bold}Status:{/} ${this.getStatusDisplay(this.task.status)}`);
+    lines.push(`{bold}Status:{/bold} ${this.task.status}`);
     lines.push(
-      `{bold}Priority:{/} ${this.getPriorityDisplay(this.task.priority)}`
+      `{bold}Priority:{/bold} ${this.getPriorityDisplay(this.task.priority)}`
     );
 
     if (this.task.dependencies && this.task.dependencies.length > 0) {
       const depText = this.task.dependencies
         .map((dep) => `[${dep}]`)
         .join(", ");
-      lines.push(`{bold}Dependencies:{/} ${depText}`);
+      lines.push(`{bold}Dependencies:{/bold} ${depText}`);
     }
 
     lines.push("");
 
     // Description
     if (this.task.description) {
-      lines.push(`{bold}Description:{/}`);
+      lines.push(`{bold}Description:{/bold}`);
       lines.push(this.task.description);
       lines.push("");
     }
 
     // Details
     if (this.task.details) {
-      lines.push(`{bold}Details:{/}`);
+      lines.push(`{bold}Details:{/bold}`);
       lines.push(this.task.details);
       lines.push("");
     }
 
     // Test Strategy
     if (this.task.testStrategy) {
-      lines.push(`{bold}Test Strategy:{/}`);
+      lines.push(`{bold}Test Strategy:{/bold}`);
       lines.push(this.task.testStrategy);
     }
 
-    this.parentTaskBox.setContent(lines.join("\n"));
+    const wrappedLines = this.wrapLinesToBoxWidth(lines, this.parentTaskBox);
+    this.parentTaskBox.setContent(wrappedLines.join("\n").trim());
+  }
+
+  /**
+   * Helper to truncate list items to box width
+   */
+  truncateListItem(item, box) {
+    let maxWidth = typeof box.width === "number" ? box.width : box.width || 80;
+    maxWidth -= 2; // borders
+    if (box.padding) {
+      maxWidth -= (box.padding.left || 0) + (box.padding.right || 0);
+    }
+    if (typeof maxWidth !== "number" || maxWidth < 10) maxWidth = 80;
+    // Remove blessed tags for length calculation
+    const visible = item.replace(/\{[^}]+\}/g, "");
+    if (visible.length > maxWidth) {
+      // Truncate and add ellipsis
+      return item.slice(0, maxWidth - 1) + "…";
+    }
+    return item;
   }
 
   /**
@@ -257,20 +340,25 @@ export class TaskDetailScreen {
     if (!this.task || !this.task.subtasks || this.task.subtasks.length === 0) {
       this.subtaskList.setItems(["No subtasks"]);
       this.subtaskList.setLabel(" Subtasks (0) ");
-      this.subtaskDetailBox.setContent("No subtasks available for this task.");
+      this.subtaskDetailBox.setContent("No subtasks available.");
       return;
     }
 
     const subtaskItems = this.task.subtasks.map((subtask) => {
       const statusIcon = this.getStatusIcon(subtask.status);
-      const priorityColor = this.getPriorityColor(subtask.priority);
-      return `${statusIcon} ${String(this.task.id)}.${String(subtask.id)}. ${subtask.title}`;
+      const item = `${statusIcon} ${String(this.task.id)}.${String(subtask.id)}. ${subtask.title}`;
+      return this.truncateListItem(item, this.subtaskList);
     });
 
     this.subtaskList.setItems(subtaskItems);
     this.subtaskList.setLabel(` Subtasks (${this.task.subtasks.length}) `);
 
-    // Select the current subtask
+    // Ensure valid subtask index and select it
+    this.currentSubtaskIndex = Math.max(
+      0,
+      Math.min(this.currentSubtaskIndex, this.task.subtasks.length - 1)
+    );
+
     this.subtaskList.select(this.currentSubtaskIndex);
   }
 
@@ -285,114 +373,63 @@ export class TaskDetailScreen {
     }
 
     const subtask = this.task.subtasks[this.currentSubtaskIndex];
-    if (!subtask) return;
+    if (!subtask) {
+      this.subtaskDetailBox.setContent("Subtask not found.");
+      return;
+    }
 
     const lines = [];
 
     // Subtask header
     lines.push(
-      `{bold}Subtask ${String(this.task.id)}.${String(subtask.id)} - ${subtask.title}{/}`
+      `{bold}Subtask ${String(this.task.id)}.${String(subtask.id)} - ${subtask.title}{/bold}`
     );
     lines.push("");
 
     // Status and priority
-    lines.push(`{bold}Status:{/} ${this.getStatusDisplay(subtask.status)}`);
+    lines.push(`{bold}Status:{/bold} ${subtask.status}`);
     if (subtask.priority) {
       lines.push(
-        `{bold}Priority:{/} ${this.getPriorityDisplay(subtask.priority)}`
+        `{bold}Priority:{/bold} ${this.getPriorityDisplay(subtask.priority)}`
       );
     }
 
     // Dependencies
     if (subtask.dependencies && subtask.dependencies.length > 0) {
       const depText = subtask.dependencies.map((dep) => `${dep}`).join(", ");
-      lines.push(`{bold}Dependencies:{/} ${depText}`);
+      lines.push(`{bold}Dependencies:{/bold} ${depText}`);
     } else {
-      lines.push(`{bold}Dependencies:{/} None`);
+      lines.push(`{bold}Dependencies:{/bold} None`);
     }
 
     lines.push("");
 
     // Description
     if (subtask.description) {
-      lines.push(`{bold}Description:{/}`);
-      // Split long lines for better wrapping
-      const descLines = this.wrapText(subtask.description, 60);
-      lines.push(...descLines);
+      lines.push(`{bold}Description:{/bold}`);
+      lines.push(subtask.description);
       lines.push("");
     }
 
     // Details
     if (subtask.details) {
-      lines.push(`{bold}Details:{/}`);
-      // Split long lines for better wrapping
-      const detailLines = this.wrapText(subtask.details, 60);
-      lines.push(...detailLines);
+      lines.push(`{bold}Details:{/bold}`);
+      lines.push(subtask.details);
       lines.push("");
     }
 
     // Test Strategy
     if (subtask.testStrategy) {
-      lines.push(`{bold}Test Strategy:{/}`);
-      const testLines = this.wrapText(subtask.testStrategy, 60);
-      lines.push(...testLines);
+      lines.push(`{bold}Test Strategy:{/bold}`);
+      lines.push(subtask.testStrategy);
     }
 
-    this.subtaskDetailBox.setContent(lines.join("\n"));
+    const wrappedLines = this.wrapLinesToBoxWidth(lines, this.subtaskDetailBox);
+    this.subtaskDetailBox.setContent(wrappedLines.join("\n").trim());
 
-    // Create a responsive label that adapts to terminal width
+    // Set label
     const subtaskId = `${String(this.task.id)}.${String(subtask.id)}`;
-    const availableWidth = this.subtaskDetailBox.width - 4; // Account for borders and padding
-    const fullLabel = ` Subtask ${subtaskId} Details `;
-    const shortLabel = ` ${subtaskId} `;
-
-    // Use shorter label if the full one would be too long
-    const label = fullLabel.length <= availableWidth ? fullLabel : shortLabel;
-    this.subtaskDetailBox.setLabel(label);
-  }
-
-  /**
-   * Wrap text to specified width
-   */
-  wrapText(text, width) {
-    if (!text || typeof text !== "string") return [];
-
-    const lines = text.split("\n");
-    const wrappedLines = [];
-
-    for (const line of lines) {
-      if (line.trim() === "") {
-        wrappedLines.push("");
-        continue;
-      }
-
-      if (line.length <= width) {
-        wrappedLines.push(line);
-      } else {
-        // Simple word-based wrapping
-        const words = line.trim().split(/\s+/);
-        let currentLine = "";
-
-        for (const word of words) {
-          if (!word) continue; // Skip empty words
-
-          if (currentLine === "") {
-            currentLine = word;
-          } else if ((currentLine + " " + word).length <= width) {
-            currentLine += " " + word;
-          } else {
-            wrappedLines.push(currentLine);
-            currentLine = word;
-          }
-        }
-
-        if (currentLine) {
-          wrappedLines.push(currentLine);
-        }
-      }
-    }
-
-    return wrappedLines;
+    this.subtaskDetailBox.setLabel(` Subtask ${subtaskId} Details `);
   }
 
   /**
@@ -474,24 +511,16 @@ export class TaskDetailScreen {
   }
 
   /**
-   * Get status display with icon
-   */
-  getStatusDisplay(status) {
-    const icon = this.getStatusIcon(status);
-    return `${icon} ${status}`;
-  }
-
-  /**
    * Get priority display with color
    */
   getPriorityDisplay(priority) {
     switch (priority) {
       case "high":
-        return `{red-fg}${priority}{/}`;
+        return `{red-fg}${priority}{/red-fg}`;
       case "medium":
-        return `{yellow-fg}${priority}{/}`;
+        return `{yellow-fg}${priority}{/yellow-fg}`;
       case "low":
-        return `{green-fg}${priority}{/}`;
+        return `{green-fg}${priority}{/green-fg}`;
       default:
         return priority || "medium";
     }
@@ -519,20 +548,38 @@ export class TaskDetailScreen {
   getStatusIcon(status) {
     switch (status) {
       case "done":
-        return "✅";
+        return "{green-fg}[✓]{/green-fg}";
       case "in-progress":
-        return "🔄";
+        return "{blue-fg}[~]{/blue-fg}";
       case "pending":
-        return "⏳";
+        return "{yellow-fg}[.]{/yellow-fg}";
       case "blocked":
-        return "🚫";
+        return "{red-fg}[X]{/red-fg}";
       case "cancelled":
-        return "❌";
+        return "{gray-fg}[!]{/gray-fg}";
       case "deferred":
-        return "⏸️";
+        return "{magenta-fg}[-]{/magenta-fg}";
       default:
-        return "⏳";
+        return "{yellow-fg}[.]{/yellow-fg}";
     }
+  }
+
+  /**
+   * Update status bar for subtask navigation mode
+   */
+  updateStatusBarForSubtasks() {
+    this.statusBar.setContent(
+      " j/k: navigate subtasks | Tab: focus parent task | Enter: select | ESC/q: back to list "
+    );
+  }
+
+  /**
+   * Update status bar for parent task scrolling mode
+   */
+  updateStatusBarForParentTask() {
+    this.statusBar.setContent(
+      " j/k: scroll parent task | Tab: focus subtasks | ESC/q: back to list "
+    );
   }
 
   /**
@@ -540,7 +587,11 @@ export class TaskDetailScreen {
    */
   show() {
     this.container.show();
-    this.focus();
+    // Set initial focus to subtasks (default behavior)
+    this.focusedComponent = "subtasks";
+    this.subtaskList.focus();
+    this.updateStatusBarForSubtasks();
+    this.app.screen.render(); // force redraw so the new borders appear
   }
 
   /**
@@ -554,6 +605,57 @@ export class TaskDetailScreen {
    * Focus the screen
    */
   focus() {
-    this.container.focus();
+    // Default focus to subtasks
+    this.focusedComponent = "subtasks";
+    this.subtaskList.focus();
+    this.updateStatusBarForSubtasks();
+  }
+
+  /**
+   * Helper to wrap lines to box width, with truncation fallback
+   */
+  wrapLinesToBoxWidth(lines, box) {
+    // Get the actual width in columns (after rendering)
+    let maxWidth = typeof box.width === "number" ? box.width : box.width || 80;
+    maxWidth -= 2; // for borders
+    if (box.padding) {
+      maxWidth -= (box.padding.left || 0) + (box.padding.right || 0);
+    }
+    if (typeof maxWidth !== "number" || maxWidth < 10) maxWidth = 80;
+    const wrapped = [];
+    for (const line of lines) {
+      let l = line;
+      // Remove blessed tags for length calculation
+      let visible = l.replace(/\{[^}]+\}/g, "");
+      while (visible.length > maxWidth) {
+        // Try to break at a space if possible
+        let breakIdx = visible.lastIndexOf(" ", maxWidth);
+        if (breakIdx <= 0) breakIdx = maxWidth;
+        wrapped.push(l.slice(0, breakIdx));
+        l = l.slice(breakIdx).replace(/^\s+/, "");
+        visible = l.replace(/\{[^}]+\}/g, "");
+      }
+      // Truncate as a final fallback if still too long (e.g., unbreakable word)
+      let finalVisible = l.replace(/\{[^}]+\}/g, "");
+      if (finalVisible.length > maxWidth) {
+        // Truncate and add ellipsis
+        wrapped.push(l.slice(0, maxWidth - 1) + "…");
+      } else {
+        wrapped.push(l);
+      }
+    }
+    return wrapped;
+  }
+
+  /**
+   * Listen for screen resize and re-render display for wrapping
+   */
+  attachResizeHandler() {
+    if (this.app && this.app.screen) {
+      this.app.screen.on("resize", () => {
+        this.updateDisplay();
+        this.app.render();
+      });
+    }
   }
 }

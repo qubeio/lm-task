@@ -1,6 +1,6 @@
 # Task ID: 103
 # Title: TUI Theme Tweaking and Visual Improvements
-# Status: pending
+# Status: done
 # Dependencies: 102
 # Priority: medium
 # Description: Refine the visual aesthetics of the TaskMaster TUI interface by adjusting colors, borders, spacing, and other minor elements to improve the overall user experience.

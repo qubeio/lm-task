@@ -96,6 +96,11 @@ export class TUIApp {
       dockBorders: true,
       fullUnicode: true,
       autoPadding: true,
+      // More conservative terminal handling
+      sendFocus: false,
+      warnings: false,
+      // Disable problematic features that might cause color issues
+      useBCE: false,
     });
 
     // Initialize CLI adapter
@@ -315,6 +320,29 @@ export class TUIApp {
     this.screen.on("resize", () => {
       this.render();
     });
+
+    // Handle process exit events to ensure clean terminal restoration
+    process.on("SIGINT", () => {
+      this.cleanup();
+      process.exit(0);
+    });
+
+    process.on("SIGTERM", () => {
+      this.cleanup();
+      process.exit(0);
+    });
+
+    // Handle uncaught exceptions during exit
+    process.on("exit", () => {
+      try {
+        if (this.screen && this.screen.program) {
+          this.screen.program.reset();
+          this.screen.program.showCursor();
+        }
+      } catch (error) {
+        // Silently handle any final cleanup errors
+      }
+    });
   }
 
   /**
@@ -378,7 +406,15 @@ export class TUIApp {
     }
 
     if (this.screen) {
-      this.screen.destroy();
+      try {
+        // Try to reset terminal state before destroying
+        this.screen.program.reset();
+        this.screen.program.showCursor();
+        this.screen.destroy();
+      } catch (error) {
+        // Silently handle cleanup errors to prevent exit noise
+        // The terminal will restore itself anyway
+      }
     }
   }
 

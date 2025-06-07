@@ -110,7 +110,7 @@
     {
       "id": 5,
       "title": "Integrate Anthropic Claude API",
-      "description": "Set up the integration with Claude API for AI-powered task generation and expansion.",
+      "description": "Set up the integration with Claude API for AI-powered task generation and expansion.\n\nThis task is a placeholder for the actual implementation of the Claude API integration. It is not yet implemented.\n\nLore ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       "status": "done",
       "dependencies": [
         1
@@ -6042,7 +6042,7 @@
       "description": "Refine the visual aesthetics of the TaskMaster TUI interface by adjusting colors, borders, spacing, and other minor elements to improve the overall user experience.",
       "details": "Review the current TUI implementation (from Task 102) and identify visual inconsistencies, such as non-uniform spacing, color clashes, or misaligned borders. Update the styling configuration to include a refreshed color palette and standardized spacing and border styles. Ensure that the layout is responsive and the improvements do not negatively impact usability or performance. Consider adding light/dark mode toggling options if time permits, and include code examples and documentation to assist in future TUI style updates.",
       "testStrategy": "Perform manual testing in various terminal sizes and color schemes to verify that the updated visual elements render correctly. Run automated visual regression tests, checking that the new style configurations are applied consistently. Conduct user experience reviews to gather feedback on the visual improvements, and include test cases to ensure that both normal and edge cases (e.g., minimal terminal sizes) display appropriately.",
-      "status": "pending",
+      "status": "done",
       "dependencies": [
         102
       ],

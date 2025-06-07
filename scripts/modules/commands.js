@@ -2677,8 +2677,11 @@ async function runCLI(argv = process.argv) {
     // Check if --json flag is present to suppress banners
     const isJsonOutput = argv.includes("--json");
 
-    // Display banner if not in a pipe and not JSON output
-    if (process.stdout.isTTY && !isJsonOutput) {
+    // Check if this is a TUI command (tmui or tui)
+    const isTUICommand = argv.includes("tmui") || argv.includes("tui");
+
+    // Display banner if not in a pipe and not JSON output and not TUI
+    if (process.stdout.isTTY && !isJsonOutput && !isTUICommand) {
       displayBanner();
     }
 
@@ -2697,8 +2700,8 @@ async function runCLI(argv = process.argv) {
     const programInstance = setupCLI();
     await programInstance.parseAsync(argv);
 
-    // After command execution, check if an update is available (but not for JSON output)
-    if (!isJsonOutput) {
+    // After command execution, check if an update is available (but not for JSON output or TUI)
+    if (!isJsonOutput && !isTUICommand) {
       const updateInfo = await updateCheckPromise;
       if (updateInfo.needsUpdate) {
         displayUpgradeNotification(

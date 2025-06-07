@@ -16,6 +16,7 @@ export class TaskTable {
     this.selectedIndex = 0;
 
     this.createTable();
+    this.attachResizeHandler();
   }
 
   /**
@@ -26,8 +27,8 @@ export class TaskTable {
       parent: this.screen.getContainer(),
       top: 1,
       left: 1,
-      width: "100%-2",
-      height: "100%-3", // Leave space for status bar
+      width: "98%",
+      height: "92%", // Leave space for status bar
       border: {
         type: "line",
       },
@@ -59,8 +60,12 @@ export class TaskTable {
       parent: this.container,
       top: 1,
       left: 0,
-      width: "100%-2",
-      height: "100%-3",
+      width: "98%",
+      height: "95%",
+      padding: {
+        left: 1,
+        right: 1,
+      },
       style: {
         item: {
           fg: this.app.theme.text,
@@ -120,15 +125,59 @@ export class TaskTable {
   }
 
   /**
+   * Calculate visual length of text (excluding blessed tags)
+   */
+  getVisualLength(text) {
+    return text.replace(/\{[^}]*\}/g, "").length;
+  }
+
+  /**
+   * Pad text to a specific visual width, accounting for blessed tags
+   */
+  padToWidth(text, width) {
+    const visualLength = this.getVisualLength(text);
+    const padding = Math.max(0, width - visualLength);
+    return text + " ".repeat(padding);
+  }
+
+  /**
    * Format the header row
    */
   formatHeader() {
-    const idCol = "ID".padEnd(4);
-    const statusCol = "Status".padEnd(15);
-    const priorityCol = "Priority".padEnd(8);
+    const idCol = this.padToWidth("ID", 4);
+    const statusCol = this.padToWidth("Status", 18);
+    const priorityCol = this.padToWidth("Priority", 10);
     const titleCol = "Title";
 
-    return `{bold}{underline}${idCol}  ${statusCol}  ${priorityCol}  ${titleCol}{/underline}{/bold}`;
+    return `{bold}{underline}${idCol} ${statusCol} ${priorityCol} ${titleCol}{/underline}{/bold}`;
+  }
+
+  /**
+   * Calculate available width for title column
+   */
+  calculateTitleWidth() {
+    // Get the table's actual width
+    let tableWidth =
+      typeof this.table.width === "number"
+        ? this.table.width
+        : this.table.width || 80;
+
+    // Account for table padding
+    if (this.table.padding) {
+      tableWidth -=
+        (this.table.padding.left || 0) + (this.table.padding.right || 0);
+    }
+
+    // Account for borders (table has borders)
+    tableWidth -= 2;
+
+    // Fixed column widths: ID(4) + Status(18) + Priority(10) + spaces between columns(3)
+    const fixedColumnsWidth = 4 + 18 + 10 + 3;
+
+    // Calculate remaining width for title, with minimum of 20 characters
+    const titleWidth = Math.max(20, tableWidth - fixedColumnsWidth);
+
+    return titleWidth;
   }
 
   /**
@@ -138,20 +187,22 @@ export class TaskTable {
     const statusIcon = this.getStatusIcon(task.status);
     const priorityColor = this.getPriorityColor(task.priority);
 
-    const idCol = task.id.toString().padEnd(4);
+    // Column 1: ID (4 chars)
+    const idCol = this.padToWidth(task.id.toString(), 4);
 
-    // Handle emoji padding properly - emojis take up 2 visual spaces but count as 1 character
+    // Column 2: Status with icon (18 chars total)
     const statusText = `${statusIcon} ${task.status}`;
-    const statusVisualLength = statusText.length + 1; // Add 1 for emoji visual width
-    const statusPadding = Math.max(0, 15 - statusVisualLength);
-    const statusCol = statusText + " ".repeat(statusPadding);
+    const statusCol = this.padToWidth(statusText, 18);
 
-    // For priority, we need to account for color tags but pad the actual text content
-    const priorityText = (task.priority || "medium").padEnd(8);
-    const priorityCol = `{${priorityColor}}${priorityText}{/${priorityColor}}`;
-    const titleCol = this.truncateTitle(task.title, 60);
+    // Column 3: Priority with color (10 chars)
+    const priorityText = `{${priorityColor}}${task.priority || "medium"}{/${priorityColor}}`;
+    const priorityCol = this.padToWidth(priorityText, 10);
 
-    return `${idCol}  ${statusCol}  ${priorityCol}  ${titleCol}`;
+    // Column 4: Title (dynamic width based on available space)
+    const titleWidth = this.calculateTitleWidth();
+    const titleCol = this.truncateTitle(task.title, titleWidth);
+
+    return `${idCol} ${statusCol} ${priorityCol} ${titleCol}`;
   }
 
   /**
@@ -160,17 +211,17 @@ export class TaskTable {
   getStatusIcon(status) {
     switch (status) {
       case "done":
-        return "✅";
+        return "{green-fg}[✓]{/green-fg}";
       case "in-progress":
-        return "🔄";
+        return "{blue-fg}[~]{/blue-fg}";
       case "pending":
-        return "⏳";
+        return "{yellow-fg}[.]{/yellow-fg}";
       case "blocked":
-        return "🚫";
+        return "{red-fg}[X]{/red-fg}";
       case "cancelled":
-        return "❌";
+        return "{gray-fg}[!]{/gray-fg}";
       default:
-        return "⏳";
+        return "{yellow-fg}[.]{/yellow-fg}";
     }
   }
 
@@ -228,5 +279,19 @@ export class TaskTable {
    */
   getWidget() {
     return this.container;
+  }
+
+  /**
+   * Listen for screen resize and refresh the table display
+   */
+  attachResizeHandler() {
+    if (this.app && this.app.screen) {
+      this.app.screen.on("resize", () => {
+        // Refresh the table with current tasks to recalculate column widths
+        if (this.tasks && this.tasks.length > 0) {
+          this.updateTasks(this.tasks);
+        }
+      });
+    }
   }
 }
