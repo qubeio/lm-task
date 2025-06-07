@@ -200,9 +200,14 @@ export class TaskTable {
 
     // Column 4: Title (dynamic width based on available space)
     const titleWidth = this.calculateTitleWidth();
-    const titleCol = this.truncateTitle(task.title, titleWidth);
+    let titleText = this.truncateTitle(task.title, titleWidth);
 
-    return `${idCol} ${statusCol} ${priorityCol} ${titleCol}`;
+    // Apply search highlighting if there's an active search query
+    if (this.app.searchQuery) {
+      titleText = this.highlightSearchTerms(titleText, this.app.searchQuery);
+    }
+
+    return `${idCol} ${statusCol} ${priorityCol} ${titleText}`;
   }
 
   /**
@@ -249,6 +254,24 @@ export class TaskTable {
       return title;
     }
     return title.substring(0, maxLength - 3) + "...";
+  }
+
+  /**
+   * Highlight search terms in text using blessed.js tags
+   */
+  highlightSearchTerms(text, searchQuery) {
+    if (!searchQuery || !text) {
+      return text;
+    }
+
+    // Escape special regex characters in search query
+    const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    // Create case-insensitive regex
+    const regex = new RegExp(`(${escapedQuery})`, "gi");
+
+    // Replace matches with highlighted version
+    return text.replace(regex, "{black-bg}{white-fg}$1{/white-fg}{/black-bg}");
   }
 
   /**

@@ -58,6 +58,26 @@ export class KeyHandlers {
       }
     });
 
+    // Search result navigation
+    this.app.screen.key(["n"], () => {
+      if (!this.app.searchMode && this.app.searchQuery) {
+        this.app.nextSearchResult();
+      }
+    });
+
+    this.app.screen.key(["N"], () => {
+      if (!this.app.searchMode && this.app.searchQuery) {
+        this.app.previousSearchResult();
+      }
+    });
+
+    // Clear search
+    this.app.screen.key(["c"], () => {
+      if (!this.app.searchMode && this.app.searchQuery) {
+        this.app.clearSearch();
+      }
+    });
+
     // Refresh
     this.app.screen.key(["r"], () => {
       if (!this.app.searchMode) {
@@ -160,6 +180,7 @@ export class KeyHandlers {
 {bold}Actions:{/}
   Enter       View task details
   /           Start search
+  c           Clear search (when search active)
   r           Refresh task list
   q, Ctrl+c   Quit application
   ?           Show this help
@@ -167,6 +188,8 @@ export class KeyHandlers {
 {bold}Search Mode:{/}
   ESC         Exit search
   Enter       Select highlighted task
+  n           Next search result
+  N           Previous search result
   
 {bold}Task Detail View:{/}
   ESC, q      Return to task list

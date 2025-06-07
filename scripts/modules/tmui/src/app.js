@@ -40,6 +40,7 @@ export class TUIApp {
     this.searchMode = false;
     this.searchQuery = "";
     this.filteredTasks = [];
+    this.searchResultIndex = 0; // Track current search result for n/N navigation
 
     // Render debouncing to prevent character artifacts
     this.renderTimeout = null;
@@ -187,6 +188,24 @@ export class TUIApp {
     this.searchMode = false;
     this.searchScreen.hide();
     this.taskListScreen.focus();
+
+    // Clear search highlighting by refreshing the task list
+    this.taskListScreen.updateTasks(this.filteredTasks);
+    this.render();
+  }
+
+  /**
+   * Clear search completely and return to full task list
+   */
+  clearSearch() {
+    this.searchQuery = "";
+    this.searchResultIndex = 0;
+    this.filteredTasks = [...this.tasks];
+    this.currentTaskIndex = 0;
+    this.searchScreen.clear();
+    this.taskListScreen.updateTasks(this.filteredTasks);
+    this.taskListScreen.setSelectedIndex(0);
+    this.render();
   }
 
   /**
@@ -208,6 +227,7 @@ export class TUIApp {
     }
 
     this.currentTaskIndex = 0;
+    this.searchResultIndex = 0; // Reset search result navigation
     this.taskListScreen.updateTasks(this.filteredTasks);
     this.render();
   }
@@ -259,6 +279,34 @@ export class TUIApp {
   moveToLast() {
     if (this.filteredTasks.length === 0) return;
     this.currentTaskIndex = this.filteredTasks.length - 1;
+    this.taskListScreen.setSelectedIndex(this.currentTaskIndex);
+    this.render();
+  }
+
+  /**
+   * Navigate to next search result
+   */
+  nextSearchResult() {
+    if (!this.searchQuery || this.filteredTasks.length === 0) return;
+
+    this.searchResultIndex =
+      (this.searchResultIndex + 1) % this.filteredTasks.length;
+    this.currentTaskIndex = this.searchResultIndex;
+    this.taskListScreen.setSelectedIndex(this.currentTaskIndex);
+    this.render();
+  }
+
+  /**
+   * Navigate to previous search result
+   */
+  previousSearchResult() {
+    if (!this.searchQuery || this.filteredTasks.length === 0) return;
+
+    this.searchResultIndex =
+      this.searchResultIndex === 0
+        ? this.filteredTasks.length - 1
+        : this.searchResultIndex - 1;
+    this.currentTaskIndex = this.searchResultIndex;
     this.taskListScreen.setSelectedIndex(this.currentTaskIndex);
     this.render();
   }

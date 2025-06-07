@@ -91,7 +91,7 @@ Ready to proceed to Phase 2: Search & Navigation implementation with forward sla
 - Add boundary checking (don't go past first/last task)
 - Test navigation with various task list sizes
 
-## 5. Phase 1: Task Detail View [in-progress]
+## 5. Phase 1: Task Detail View [done]
 ### Dependencies: 102.4
 ### Description: Create the task detail screen that displays comprehensive task information when Enter is pressed on a task.
 ### Details:
@@ -137,7 +137,7 @@ Fixed subtask details display issues:
 All major subtask details display issues are resolved and the TaskDetailScreen is ready for final testing and validation.
 </info added on 2025-06-07T18:24:53.486Z>
 
-## 6. Phase 2: Search Functionality Implementation [pending]
+## 6. Phase 2: Search Functionality Implementation [in-progress]
 ### Dependencies: 102.5
 ### Description: Implement the forward slash (/) search feature with highlighting and navigation through search results.
 ### Details:
@@ -152,6 +152,12 @@ All major subtask details display issues are resolved and the TaskDetailScreen i
 - Handle search across task titles, descriptions, and details
 - Clear search highlighting when exiting search mode
 - Test search with various query types and edge cases
+<info added on 2025-06-07T22:30:55.093Z>
+- Integrate search result highlighting in TaskTable.formatTaskRow() using blessed.js tags for matched terms.
+- Implement 'n' and 'N' key handlers to navigate to next/previous search results, updating the focused result in the UI.
+- Track current search result index in application state to support navigation and highlighting.
+- Ensure all search highlighting is cleared when exiting search mode.
+</info added on 2025-06-07T22:30:55.093Z>
 
 ## 7. Phase 2: Advanced Navigation and Status Bar [pending]
 ### Dependencies: 102.6

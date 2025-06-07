@@ -321,7 +321,29 @@ export class TaskDetailScreen {
   setTask(task) {
     this.task = task;
     this.currentSubtaskIndex = 0;
+
+    // Reset scroll positions and focus state when switching tasks
+    this.resetViewState();
+
     this.updateDisplay();
+  }
+
+  /**
+   * Reset the view state when switching tasks
+   */
+  resetViewState() {
+    // Reset parent task box scroll position
+    if (this.parentTaskBox) {
+      this.parentTaskBox.scrollTo(0);
+    }
+
+    // Reset subtask detail box scroll position
+    if (this.subtaskDetailBox) {
+      this.subtaskDetailBox.scrollTo(0);
+    }
+
+    // Reset focus to subtasks (default state)
+    this.focusedComponent = "subtasks";
   }
 
   /**
@@ -681,7 +703,10 @@ export class TaskDetailScreen {
   show() {
     this.container.show();
     // Set initial focus to subtasks (default behavior)
-    this.focusSubtasks();
+    // Use a small delay to ensure the container is fully shown before focusing
+    setTimeout(() => {
+      this.focusSubtasks();
+    }, 0);
   }
 
   /**
