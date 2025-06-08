@@ -11,7 +11,7 @@ export class TaskDetailScreen {
     this.container = null;
     this.task = null;
     this.currentSubtaskIndex = 0;
-    this.focusedComponent = "subtasks"; // Track focus state: 'subtasks' or 'parentTask'
+    this.focusedComponent = "subtasks"; // Track focus state: 'subtasks', 'parentTask', or 'subtaskDetails'
 
     // UI Components
     this.parentTaskBox = null;
@@ -71,6 +71,8 @@ export class TaskDetailScreen {
       input: true,
       scrollable: true,
       alwaysScroll: true,
+      mouse: true,
+      clickable: true,
       scrollbar: {
         ch: " ",
         inverse: true,
@@ -152,15 +154,27 @@ export class TaskDetailScreen {
       },
       label: " Subtask Details ",
       tags: true,
+      keys: true,
+      input: true,
       scrollable: true,
       alwaysScroll: true,
       wrap: true,
-      // padding: {
-      //   left: 1,
-      //   right: 1,
-      //   top: 0,
-      //   bottom: 0,
-      // },
+      mouse: true,
+      clickable: true,
+      scrollbar: {
+        ch: " ",
+        inverse: true,
+        style: {
+          bg: this.app.theme.selected || "blue",
+        },
+        track: {
+          bg: this.app.theme.border || "grey",
+        },
+      },
+      padding: {
+        left: 1,
+        right: 1,
+      },
     });
 
     // Status bar (bottom, above search box)
@@ -176,7 +190,23 @@ export class TaskDetailScreen {
       },
       tags: true,
       content:
-        " j/k: navigate subtasks | s: update status | 1: parent task | 2: subtasks | ESC/q: back to list ",
+        " j/k: navigate subtasks | s: update status | 1: parent task | 2: subtasks | 3: details | ESC/q: back to list ",
+    });
+    
+    // Add click-to-focus handlers
+    this.parentTaskBox.on('click', () => {
+      this.focusParentTask();
+      this.app.render();
+    });
+    
+    this.subtaskList.on('click', () => {
+      this.focusSubtasks();
+      this.app.render();
+    });
+    
+    this.subtaskDetailBox.on('click', () => {
+      this.focusSubtaskDetails();
+      this.app.render();
     });
   }
 
@@ -214,6 +244,10 @@ export class TaskDetailScreen {
 
     this.container.key(["2"], () => {
       this.focusSubtasks();
+    });
+    
+    this.container.key(["3"], () => {
+      this.focusSubtaskDetails();
     });
 
     // Go to first/last subtask (only when subtasks are focused)
@@ -267,6 +301,10 @@ export class TaskDetailScreen {
     this.subtaskList.key(["2"], () => {
       this.focusSubtasks();
     });
+    
+    this.subtaskList.key(["3"], () => {
+      this.focusSubtaskDetails();
+    });
 
     this.subtaskList.key(["g"], () => {
       if (this.focusedComponent === "subtasks") {
@@ -316,12 +354,65 @@ export class TaskDetailScreen {
     this.parentTaskBox.key(["2"], () => {
       this.focusSubtasks();
     });
+    
+    this.parentTaskBox.key(["3"], () => {
+      this.focusSubtaskDetails();
+    });
 
     this.parentTaskBox.key(["escape", "q"], () => {
       this.app.showTaskList();
     });
 
     this.parentTaskBox.key(["s"], () => {
+      this.showStatusUpdate();
+    });
+    
+    // Setup subtask details box key handlers
+    this.subtaskDetailBox.key(["j", "down"], () => {
+      if (this.focusedComponent === "subtaskDetails") {
+        this.subtaskDetailBox.scroll(1);
+        this.app.render();
+      }
+    });
+
+    this.subtaskDetailBox.key(["k", "up"], () => {
+      if (this.focusedComponent === "subtaskDetails") {
+        this.subtaskDetailBox.scroll(-1);
+        this.app.render();
+      }
+    });
+    
+    this.subtaskDetailBox.key(["space"], () => {
+      if (this.focusedComponent === "subtaskDetails") {
+        this.subtaskDetailBox.scroll(this.subtaskDetailBox.height - 2);
+        this.app.render();
+      }
+    });
+    
+    this.subtaskDetailBox.key(["b"], () => {
+      if (this.focusedComponent === "subtaskDetails") {
+        this.subtaskDetailBox.scroll(-(this.subtaskDetailBox.height - 2));
+        this.app.render();
+      }
+    });
+
+    this.subtaskDetailBox.key(["1"], () => {
+      this.focusParentTask();
+    });
+
+    this.subtaskDetailBox.key(["2"], () => {
+      this.focusSubtasks();
+    });
+    
+    this.subtaskDetailBox.key(["3"], () => {
+      this.focusSubtaskDetails();
+    });
+
+    this.subtaskDetailBox.key(["escape", "q"], () => {
+      this.app.showTaskList();
+    });
+
+    this.subtaskDetailBox.key(["s"], () => {
       this.showStatusUpdate();
     });
   }
@@ -671,7 +762,7 @@ export class TaskDetailScreen {
    */
   updateStatusBarForSubtasks() {
     this.statusBar.setContent(
-      " j/k: navigate subtasks | s: update status | 1: parent task | 2: subtasks | ESC/q: back to list "
+      " j/k: navigate subtasks | s: update status | 1: parent task | 2: subtasks | 3: details | ESC/q: back to list "
     );
   }
 
@@ -680,7 +771,16 @@ export class TaskDetailScreen {
    */
   updateStatusBarForParentTask() {
     this.statusBar.setContent(
-      " j/k: scroll parent task | s: update status | 1: parent task | 2: subtasks | ESC/q: back to list "
+      " j/k: scroll parent task | s: update status | 1: parent task | 2: subtasks | 3: details | ESC/q: back to list "
+    );
+  }
+  
+  /**
+   * Update status bar for subtask details scrolling mode
+   */
+  updateStatusBarForSubtaskDetails() {
+    this.statusBar.setContent(
+      " j/k: scroll details | s: update status | 1: parent task | 2: subtasks | 3: details | ESC/q: back to list "
     );
   }
 
@@ -690,6 +790,7 @@ export class TaskDetailScreen {
   focusParentTask() {
     this.focusedComponent = "parentTask";
     this.subtaskList.style.border.fg = this.app.theme.border;
+    this.subtaskDetailBox.style.border.fg = this.app.theme.border;
     this.parentTaskBox.style.border.fg = this.app.theme.selected;
     this.parentTaskBox.focus();
     this.updateStatusBarForParentTask();
@@ -704,9 +805,25 @@ export class TaskDetailScreen {
   focusSubtasks() {
     this.focusedComponent = "subtasks";
     this.parentTaskBox.style.border.fg = this.app.theme.border;
+    this.subtaskDetailBox.style.border.fg = this.app.theme.border;
     this.subtaskList.style.border.fg = this.app.theme.selected;
     this.subtaskList.focus();
     this.updateStatusBarForSubtasks();
+    if (!this.container.hidden) {
+      this.app.render();
+    }
+  }
+  
+  /**
+   * Focus the subtask details box
+   */
+  focusSubtaskDetails() {
+    this.focusedComponent = "subtaskDetails";
+    this.parentTaskBox.style.border.fg = this.app.theme.border;
+    this.subtaskList.style.border.fg = this.app.theme.border;
+    this.subtaskDetailBox.style.border.fg = this.app.theme.selected;
+    this.subtaskDetailBox.focus();
+    this.updateStatusBarForSubtaskDetails();
     if (!this.container.hidden) {
       this.app.render();
     }
@@ -751,14 +868,24 @@ export class TaskDetailScreen {
    */
   async updateTaskStatus(taskId, newStatus) {
     try {
-      // Update via CLI adapter
-      await this.app.cliAdapter.updateTaskStatus(taskId, newStatus);
+      // Update via JsonLoader (with fallback to CLI adapter)
+      if (this.app.jsonLoader) {
+        await this.app.jsonLoader.updateTaskStatus(taskId, newStatus);
+      } else {
+        await this.app.cliAdapter.updateTaskStatus(taskId, newStatus);
+      }
 
       // Refresh the task data
-      const updatedTask = await this.app.cliAdapter.getTask(this.task.id);
+      let updatedTask;
+      if (this.app.jsonLoader) {
+        updatedTask = await this.app.jsonLoader.getTask(this.task.id);
+      } else {
+        updatedTask = await this.app.cliAdapter.getTask(this.task.id);
+      }
+      
       this.setTask(updatedTask);
 
-      // Show success message (we'll add a simple message display)
+      // Show success message
       this.showStatusMessage(`Task ${taskId} status updated to ${newStatus}!`);
     } catch (error) {
       this.app.showError(`Failed to update task status: ${error.message}`);

@@ -6094,6 +6094,190 @@
       ],
       "priority": "medium",
       "subtasks": []
+    },
+    {
+      "id": 105,
+      "title": "Implement Insert Task Functionality with Order Field",
+      "description": "Develop functionality to allow insertion of tasks at specific positions using an optional 'order' field without renumbering existing task IDs.",
+      "details": "Enhance the task management system by extending the task schema with an optional 'order' field for display positioning. Develop the following functions:\n- insert-task: Shifts existing tasks' order values to insert a new task at a specific position.\n- insert-between: Determines a fractional position between tasks to facilitate insertion without disrupting order continuity.\n- reorder-task: Allows existing tasks to be moved to new positions by updating their order values.\n- migrate-order: Automatically migrate the system from relying on ID-based sorting to order-based sorting while maintaining backward compatibility.\n\nIntegrate these functionalities with CLI commands (insert-task, insert-between, reorder-task, migrate-order) and create corresponding MCP tools. Adhere to the 5-phase approach from the planning document, starting with core infrastructure, then inserting, reordering, integrating with MCP, and final polish. Incorporate comprehensive error handling to manage invalid inputs and ensure smooth operation alongside legacy functionality.",
+      "testStrategy": "1. Unit Test each function: Verify that insert-task correctly shifts order values and places the new task at the specified position; test insert-between for correct fractional positioning; test reorder-task to ensure tasks can be moved successfully; and validate migrate-order for accurate conversion from ID-based to order-based sorting. \n2. CLI Integration Tests: Execute each new CLI command to ensure they trigger the expected functionality and handle errors gracefully. \n3. Regression Testing: Run existing task operations to confirm backward compatibility is maintained. \n4. Edge Cases: Test boundary conditions such as inserting at the beginning, middle, or end of the task list, and ensure error messages for invalid order inputs are descriptive and helpful.",
+      "status": "pending",
+      "dependencies": [
+        1,
+        2,
+        3
+      ],
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Phase 1: Core Infrastructure - Add Order Field Schema",
+          "description": "Implement the foundational infrastructure for the order field approach by updating the task schema and adding migration utilities.",
+          "details": "Add optional 'order: z.number()' field to the task schema in the appropriate location (likely in add-task.js or a new schemas file). Update validation to ensure order values are numeric. Implement default order assignment logic where new tasks get order = id if no explicit order provided. Create migration detection logic to identify tasks without order field.",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 105
+        },
+        {
+          "id": 2,
+          "title": "Phase 1: Implement Migration Utilities",
+          "description": "Create migration utilities to transition existing tasks to use the order field while maintaining backward compatibility.",
+          "details": "Create scripts/modules/task-manager/migrate-order.js with functions to: 1) Detect if migration is needed (check if tasks have order field), 2) Auto-migrate by assigning order = id for tasks without order field, 3) Provide explicit migration command for controlled updates, 4) Ensure sorted order after migration. Include comprehensive error handling and logging.",
+          "status": "pending",
+          "dependencies": [
+            1
+          ],
+          "parentTaskId": 105
+        },
+        {
+          "id": 3,
+          "title": "Phase 1: Update Display Logic for Order-Based Sorting",
+          "description": "Update all list and display functions to sort tasks by order field instead of ID, with fallback to ID for backward compatibility.",
+          "details": "Create scripts/modules/task-manager/order-utils.js with sortTasksByOrder() function that sorts by order field (fallback to ID). Update list-tasks.js, find-next-task.js, and generate-task-files.js to use order-based sorting. Ensure all display logic respects the new ordering while maintaining compatibility with tasks that don't have order field.",
+          "status": "pending",
+          "dependencies": [
+            1
+          ],
+          "parentTaskId": 105
+        },
+        {
+          "id": 4,
+          "title": "Phase 2: Implement Insert Task Core Function",
+          "description": "Create the core insert-task functionality that can insert tasks at specific positions by shifting order values.",
+          "details": "Create scripts/modules/task-manager/insert-task.js with insertTask() function. Logic: 1) Read existing tasks, 2) Auto-migrate to order field if needed, 3) Generate new task using existing AI logic from add-task.js, 4) Shift order values for existing tasks (>= insertPosition) by +1, 5) Assign new task order = insertPosition, 6) Sort tasks by order field, 7) Write updated tasks and regenerate files. Include comprehensive validation and error handling.",
+          "status": "pending",
+          "dependencies": [
+            2,
+            3
+          ],
+          "parentTaskId": 105
+        },
+        {
+          "id": 5,
+          "title": "Phase 2: Implement Insert Between Function",
+          "description": "Create the insert-between functionality for fractional positioning between existing tasks.",
+          "details": "Create scripts/modules/task-manager/insert-between.js with insertTaskBetween() function. Logic: 1) Find task at afterPosition and next task, 2) Calculate fractional order: (afterOrder + nextOrder) / 2, 3) Insert new task with fractional order, 4) No other tasks need updating. Handle edge cases like inserting after the last task. Use the same AI task generation logic as insert-task.",
+          "status": "pending",
+          "dependencies": [
+            4
+          ],
+          "parentTaskId": 105
+        },
+        {
+          "id": 6,
+          "title": "Phase 2: Add CLI Commands for Insert Operations",
+          "description": "Add CLI commands for insert-task and insert-between operations to the commands.js file.",
+          "details": "Add to scripts/modules/commands.js: 1) 'insert-task' command with position argument and same options as add-task (--prompt, --title, --description, --details, --dependencies, --priority), 2) 'insert-between' command with after-position argument and same options. Include proper argument validation, error handling, and user feedback. Follow the same patterns as existing commands.",
+          "status": "pending",
+          "dependencies": [
+            4,
+            5
+          ],
+          "parentTaskId": 105
+        },
+        {
+          "id": 7,
+          "title": "Phase 3: Implement Reorder Task Functionality",
+          "description": "Create functionality to reorder existing tasks to new positions without creating new tasks.",
+          "details": "Create scripts/modules/task-manager/reorder-task.js with reorderTask() function. Logic: 1) Find task by ID, 2) Remove from current position, 3) Shift tasks to make space at new position, 4) Update task's order field, 5) Sort and save. Add CLI command 'reorder-task' with task-id and --to-position options. Include validation that task exists and position is valid.",
+          "status": "pending",
+          "dependencies": [
+            6
+          ],
+          "parentTaskId": 105
+        },
+        {
+          "id": 8,
+          "title": "Phase 4: Create MCP Direct Function Wrappers",
+          "description": "Create MCP direct function wrappers for all new functionality following the established pattern.",
+          "details": "Create in mcp-server/src/core/direct-functions/: 1) insert-task.js - wrapper for insertTask(), 2) insert-between.js - wrapper for insertTaskBetween(), 3) reorder-task.js - wrapper for reorderTask(), 4) migrate-order.js - wrapper for migrateTasksToOrderField(). Follow the same pattern as existing direct functions (add-task.js, move-task.js) with proper error handling and silent mode.",
+          "status": "pending",
+          "dependencies": [
+            7
+          ],
+          "parentTaskId": 105
+        },
+        {
+          "id": 9,
+          "title": "Phase 4: Implement MCP Tools",
+          "description": "Create MCP tools that expose the new functionality to MCP clients like Cursor.",
+          "details": "Create in mcp-server/src/tools/: 1) insert-task.js - MCP tool for insert_task, 2) insert-between.js - MCP tool for insert_task_between, 3) reorder-task.js - MCP tool for reorder_task, 4) migrate-order.js - MCP tool for migrate_order. Follow the same pattern as existing tools with proper Zod schemas, parameter validation, and tool registration. Update tool registration in the MCP server.",
+          "status": "pending",
+          "dependencies": [
+            8
+          ],
+          "parentTaskId": 105
+        },
+        {
+          "id": 10,
+          "title": "Phase 5: Create Comprehensive Tests",
+          "description": "Create comprehensive unit and integration tests for all new functionality.",
+          "details": "Create test files in tests/ directory: 1) Unit tests for order field migration logic, insert position calculations, fractional ordering edge cases, dependency preservation during reordering, 2) Integration tests for full insert workflow (CLI + file operations), MCP tool functionality, cross-command interactions, file generation after ordering changes, 3) Edge case tests for empty task lists, single task lists, tasks with no order field (mixed state), very large order values, fractional precision limits.",
+          "status": "pending",
+          "dependencies": [
+            9
+          ],
+          "parentTaskId": 105
+        },
+        {
+          "id": 11,
+          "title": "Phase 5: Update Documentation and Add Examples",
+          "description": "Update user documentation to include the new insert task functionality with examples and workflows.",
+          "details": "Update documentation files: 1) Add insert task commands to README.md and command reference, 2) Update rules/taskmaster.mdc with new MCP tools and CLI commands, 3) Add examples showing insert-task, insert-between, and reorder-task usage, 4) Document the migration process and backward compatibility guarantees, 5) Add workflow examples showing when to use each type of insertion, 6) Update help text in CLI commands.",
+          "status": "pending",
+          "dependencies": [
+            10
+          ],
+          "parentTaskId": 105
+        }
+      ]
+    },
+    {
+      "id": 106,
+      "title": "Switch TUI to Direct Task JSON Querying",
+      "description": "Refactor the TUI so that it reads and parses tasks directly from tasks.json, instead of relying on CLI command output. This ensures all fields (such as 'details') are available to the UI and improves reliability. Update all relevant screens and data-fetching logic to use direct file access. Add robust error handling and update documentation/tests as needed.",
+      "details": "",
+      "testStrategy": "",
+      "status": "pending",
+      "dependencies": [],
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Refactor TUI data loader to use tasks.json",
+          "description": "Replace CLI-based task fetching in the TUI with direct reading/parsing of tasks.json. Ensure all task fields are loaded, including 'details'.",
+          "status": "done",
+          "dependencies": []
+        },
+        {
+          "id": 2,
+          "title": "Update all TUI screens to use new loader",
+          "description": "Update all relevant TUI screens/components to consume task data from the new direct JSON loader, removing any reliance on CLI output.",
+          "status": "done",
+          "dependencies": [
+            1
+          ]
+        },
+        {
+          "id": 3,
+          "title": "Add error handling and fallback",
+          "description": "Implement robust error handling for file access and JSON parsing in the new loader. Provide user-friendly error messages and fallback states in the UI.",
+          "status": "deferred",
+          "dependencies": [
+            1
+          ]
+        },
+        {
+          "id": 4,
+          "title": "Update documentation and tests",
+          "description": "Update project documentation to describe the new data loading approach. Add or update unit tests for the loader and regression tests for TUI functionality.",
+          "status": "done",
+          "dependencies": [
+            2,
+            3
+          ]
+        }
+      ]
     }
   ]
 }

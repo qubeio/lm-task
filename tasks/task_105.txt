@@ -1,0 +1,88 @@
+# Task ID: 105
+# Title: Implement Insert Task Functionality with Order Field
+# Status: pending
+# Dependencies: 1, 2, 3
+# Priority: high
+# Description: Develop functionality to allow insertion of tasks at specific positions using an optional 'order' field without renumbering existing task IDs.
+# Details:
+Enhance the task management system by extending the task schema with an optional 'order' field for display positioning. Develop the following functions:
+- insert-task: Shifts existing tasks' order values to insert a new task at a specific position.
+- insert-between: Determines a fractional position between tasks to facilitate insertion without disrupting order continuity.
+- reorder-task: Allows existing tasks to be moved to new positions by updating their order values.
+- migrate-order: Automatically migrate the system from relying on ID-based sorting to order-based sorting while maintaining backward compatibility.
+
+Integrate these functionalities with CLI commands (insert-task, insert-between, reorder-task, migrate-order) and create corresponding MCP tools. Adhere to the 5-phase approach from the planning document, starting with core infrastructure, then inserting, reordering, integrating with MCP, and final polish. Incorporate comprehensive error handling to manage invalid inputs and ensure smooth operation alongside legacy functionality.
+
+# Test Strategy:
+1. Unit Test each function: Verify that insert-task correctly shifts order values and places the new task at the specified position; test insert-between for correct fractional positioning; test reorder-task to ensure tasks can be moved successfully; and validate migrate-order for accurate conversion from ID-based to order-based sorting. 
+2. CLI Integration Tests: Execute each new CLI command to ensure they trigger the expected functionality and handle errors gracefully. 
+3. Regression Testing: Run existing task operations to confirm backward compatibility is maintained. 
+4. Edge Cases: Test boundary conditions such as inserting at the beginning, middle, or end of the task list, and ensure error messages for invalid order inputs are descriptive and helpful.
+
+# Subtasks:
+## 1. Phase 1: Core Infrastructure - Add Order Field Schema [pending]
+### Dependencies: None
+### Description: Implement the foundational infrastructure for the order field approach by updating the task schema and adding migration utilities.
+### Details:
+Add optional 'order: z.number()' field to the task schema in the appropriate location (likely in add-task.js or a new schemas file). Update validation to ensure order values are numeric. Implement default order assignment logic where new tasks get order = id if no explicit order provided. Create migration detection logic to identify tasks without order field.
+
+## 2. Phase 1: Implement Migration Utilities [pending]
+### Dependencies: 105.1
+### Description: Create migration utilities to transition existing tasks to use the order field while maintaining backward compatibility.
+### Details:
+Create scripts/modules/task-manager/migrate-order.js with functions to: 1) Detect if migration is needed (check if tasks have order field), 2) Auto-migrate by assigning order = id for tasks without order field, 3) Provide explicit migration command for controlled updates, 4) Ensure sorted order after migration. Include comprehensive error handling and logging.
+
+## 3. Phase 1: Update Display Logic for Order-Based Sorting [pending]
+### Dependencies: 105.1
+### Description: Update all list and display functions to sort tasks by order field instead of ID, with fallback to ID for backward compatibility.
+### Details:
+Create scripts/modules/task-manager/order-utils.js with sortTasksByOrder() function that sorts by order field (fallback to ID). Update list-tasks.js, find-next-task.js, and generate-task-files.js to use order-based sorting. Ensure all display logic respects the new ordering while maintaining compatibility with tasks that don't have order field.
+
+## 4. Phase 2: Implement Insert Task Core Function [pending]
+### Dependencies: 105.2, 105.3
+### Description: Create the core insert-task functionality that can insert tasks at specific positions by shifting order values.
+### Details:
+Create scripts/modules/task-manager/insert-task.js with insertTask() function. Logic: 1) Read existing tasks, 2) Auto-migrate to order field if needed, 3) Generate new task using existing AI logic from add-task.js, 4) Shift order values for existing tasks (>= insertPosition) by +1, 5) Assign new task order = insertPosition, 6) Sort tasks by order field, 7) Write updated tasks and regenerate files. Include comprehensive validation and error handling.
+
+## 5. Phase 2: Implement Insert Between Function [pending]
+### Dependencies: 105.4
+### Description: Create the insert-between functionality for fractional positioning between existing tasks.
+### Details:
+Create scripts/modules/task-manager/insert-between.js with insertTaskBetween() function. Logic: 1) Find task at afterPosition and next task, 2) Calculate fractional order: (afterOrder + nextOrder) / 2, 3) Insert new task with fractional order, 4) No other tasks need updating. Handle edge cases like inserting after the last task. Use the same AI task generation logic as insert-task.
+
+## 6. Phase 2: Add CLI Commands for Insert Operations [pending]
+### Dependencies: 105.4, 105.5
+### Description: Add CLI commands for insert-task and insert-between operations to the commands.js file.
+### Details:
+Add to scripts/modules/commands.js: 1) 'insert-task' command with position argument and same options as add-task (--prompt, --title, --description, --details, --dependencies, --priority), 2) 'insert-between' command with after-position argument and same options. Include proper argument validation, error handling, and user feedback. Follow the same patterns as existing commands.
+
+## 7. Phase 3: Implement Reorder Task Functionality [pending]
+### Dependencies: 105.6
+### Description: Create functionality to reorder existing tasks to new positions without creating new tasks.
+### Details:
+Create scripts/modules/task-manager/reorder-task.js with reorderTask() function. Logic: 1) Find task by ID, 2) Remove from current position, 3) Shift tasks to make space at new position, 4) Update task's order field, 5) Sort and save. Add CLI command 'reorder-task' with task-id and --to-position options. Include validation that task exists and position is valid.
+
+## 8. Phase 4: Create MCP Direct Function Wrappers [pending]
+### Dependencies: 105.7
+### Description: Create MCP direct function wrappers for all new functionality following the established pattern.
+### Details:
+Create in mcp-server/src/core/direct-functions/: 1) insert-task.js - wrapper for insertTask(), 2) insert-between.js - wrapper for insertTaskBetween(), 3) reorder-task.js - wrapper for reorderTask(), 4) migrate-order.js - wrapper for migrateTasksToOrderField(). Follow the same pattern as existing direct functions (add-task.js, move-task.js) with proper error handling and silent mode.
+
+## 9. Phase 4: Implement MCP Tools [pending]
+### Dependencies: 105.8
+### Description: Create MCP tools that expose the new functionality to MCP clients like Cursor.
+### Details:
+Create in mcp-server/src/tools/: 1) insert-task.js - MCP tool for insert_task, 2) insert-between.js - MCP tool for insert_task_between, 3) reorder-task.js - MCP tool for reorder_task, 4) migrate-order.js - MCP tool for migrate_order. Follow the same pattern as existing tools with proper Zod schemas, parameter validation, and tool registration. Update tool registration in the MCP server.
+
+## 10. Phase 5: Create Comprehensive Tests [pending]
+### Dependencies: 105.9
+### Description: Create comprehensive unit and integration tests for all new functionality.
+### Details:
+Create test files in tests/ directory: 1) Unit tests for order field migration logic, insert position calculations, fractional ordering edge cases, dependency preservation during reordering, 2) Integration tests for full insert workflow (CLI + file operations), MCP tool functionality, cross-command interactions, file generation after ordering changes, 3) Edge case tests for empty task lists, single task lists, tasks with no order field (mixed state), very large order values, fractional precision limits.
+
+## 11. Phase 5: Update Documentation and Add Examples [pending]
+### Dependencies: 105.10
+### Description: Update user documentation to include the new insert task functionality with examples and workflows.
+### Details:
+Update documentation files: 1) Add insert task commands to README.md and command reference, 2) Update rules/taskmaster.mdc with new MCP tools and CLI commands, 3) Add examples showing insert-task, insert-between, and reorder-task usage, 4) Document the migration process and backward compatibility guarantees, 5) Add workflow examples showing when to use each type of insertion, 6) Update help text in CLI commands.
+

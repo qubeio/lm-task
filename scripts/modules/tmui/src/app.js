@@ -3,14 +3,15 @@
  * Main application class for the TaskMaster Terminal User Interface
  */
 
-import blessed from "blessed";
 import fs from "fs";
 import path from "path";
+import blessed from "blessed";
+import { CliAdapter } from "./utils/cliAdapter.js";
+import { JsonLoader } from "./utils/jsonLoader.js";
 import { TaskListScreen } from "./screens/TaskListScreen.js";
 import { TaskDetailScreen } from "./screens/TaskDetailScreen.js";
 import { SearchScreen } from "./screens/SearchScreen.js";
 import { StatusModal } from "./components/StatusModal.js";
-import { CliAdapter } from "./utils/cliAdapter.js";
 import { KeyHandlers } from "./utils/keyHandlers.js";
 import { getTheme } from "./styles/theme.js";
 
@@ -31,6 +32,7 @@ export class TUIApp {
     this.screen = null;
     this.currentScreen = null;
     this.cliAdapter = null;
+    this.jsonLoader = null;
     this.keyHandlers = null;
     this.theme = getTheme(this.options.theme);
 
@@ -113,6 +115,8 @@ export class TUIApp {
       dockBorders: true,
       fullUnicode: true,
       autoPadding: true,
+      // Enable mouse support
+      mouse: true,
       // More conservative terminal handling
       sendFocus: false,
       warnings: false,
@@ -120,14 +124,20 @@ export class TUIApp {
       useBCE: false,
     });
 
-    // Initialize CLI adapter
+    // Initialize CLI adapter (keeping for backward compatibility)
     this.cliAdapter = new CliAdapter({
+      projectRoot: this.options.projectRoot,
+      tasksFile: this.options.tasksFile,
+    });
+    
+    // Initialize JSON loader for direct file access
+    this.jsonLoader = new JsonLoader({
       projectRoot: this.options.projectRoot,
       tasksFile: this.options.tasksFile,
     });
 
     // Set up tasks file path for auto-refresh
-    this.tasksFilePath = this.cliAdapter.tasksFile;
+    this.tasksFilePath = this.jsonLoader.tasksFile || this.cliAdapter.tasksFile;
 
     // Initialize key handlers
     this.keyHandlers = new KeyHandlers(this);
@@ -140,11 +150,11 @@ export class TUIApp {
   }
 
   /**
-   * Load tasks from CLI adapter
+   * Load tasks directly from tasks.json file
    */
   async loadTasks() {
     try {
-      const result = await this.cliAdapter.getTasks();
+      const result = await this.jsonLoader.getTasks({ withSubtasks: true });
       this.tasks = result.tasks || [];
       this.filteredTasks = [...this.tasks];
       this.currentTaskIndex = Math.min(
@@ -252,7 +262,7 @@ export class TUIApp {
       } else if (currentScreen === this.taskDetailScreen && currentTaskId) {
         // Refresh task detail view if we're currently viewing a task
         try {
-          const updatedTask = await this.cliAdapter.getTask(currentTaskId);
+          const updatedTask = await this.jsonLoader.getTask(currentTaskId);
           this.taskDetailScreen.setTask(updatedTask);
         } catch (error) {
           // Task might have been deleted, return to task list
@@ -303,7 +313,7 @@ export class TUIApp {
    */
   async showTaskDetail(taskId) {
     try {
-      const taskData = await this.cliAdapter.getTask(taskId);
+      const taskData = await this.jsonLoader.getTask(taskId);
 
       if (this.currentScreen) {
         this.currentScreen.hide();
@@ -547,8 +557,8 @@ export class TUIApp {
         1000
       );
 
-      // Update via CLI adapter
-      await this.cliAdapter.updateTaskStatus(taskId, newStatus);
+      // Update via JSON loader
+      await this.jsonLoader.updateTaskStatus(taskId, newStatus);
 
       // Refresh the task list to show the change
       await this.refresh();
