@@ -1931,7 +1931,7 @@
           "title": "Implement --context-file Flag for AI Commands",
           "description": "Add the --context-file <file> option to all AI-related commands and implement file reading functionality",
           "details": "1. Update the contextOptions array in commands.js to include the --context-file option\\n2. Modify AI command action handlers to check for the context-file option\\n3. Implement file reading functionality that loads content from the specified file\\n4. Add content integration into Claude API prompts with appropriate formatting\\n5. Add error handling for file not found or permission issues\\n6. Update help documentation to explain the new option with examples",
-          "status": "cancelled",
+          "status": "pending",
           "dependencies": [],
           "parentTaskId": 26
         },

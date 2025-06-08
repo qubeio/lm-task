@@ -179,8 +179,12 @@ export class StatusModal {
     this.currentTask = null;
     this.onStatusSelected = null;
 
-    // Return focus to the task list
-    this.app.taskListScreen.focus();
+    // Return focus to the appropriate screen based on current context
+    if (this.app.currentScreen === this.app.taskDetailScreen) {
+      this.app.taskDetailScreen.focus();
+    } else {
+      this.app.taskListScreen.focus();
+    }
     this.app.render();
   }
 

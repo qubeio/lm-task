@@ -64,7 +64,7 @@ Testing should verify that the context foundation works as expected and adds val
 The testing focus should be on proving immediate value to users while ensuring robust error handling.
 
 # Subtasks:
-## 1. Implement --context-file Flag for AI Commands [cancelled]
+## 1. Implement --context-file Flag for AI Commands [pending]
 ### Dependencies: None
 ### Description: Add the --context-file <file> option to all AI-related commands and implement file reading functionality
 ### Details:
