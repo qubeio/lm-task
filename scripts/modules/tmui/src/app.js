@@ -231,7 +231,19 @@ export class TUIApp {
    */
   getCurrentTask() {
     if (this.filteredTasks.length === 0) return null;
-    return this.filteredTasks[this.currentTaskIndex] || null;
+
+    // Ensure currentTaskIndex is within bounds
+    const validIndex = Math.max(
+      0,
+      Math.min(this.currentTaskIndex, this.filteredTasks.length - 1)
+    );
+
+    // Update currentTaskIndex if it was out of bounds
+    if (validIndex !== this.currentTaskIndex) {
+      this.currentTaskIndex = validIndex;
+    }
+
+    return this.filteredTasks[validIndex] || null;
   }
 
   /**

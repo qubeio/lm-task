@@ -16,80 +16,61 @@ export class KeyHandlers {
 
     // Go to first/last task
     this.app.screen.key(["g"], () => {
-      if (!this.app.searchMode) {
-        // Wait for second 'g' for 'gg' command
-        this.waitForSecondG();
-      }
+      // Wait for second 'g' for 'gg' command
+      this.waitForSecondG();
     });
 
     this.app.screen.key(["G"], () => {
-      if (!this.app.searchMode) {
-        this.app.moveToLast();
-      }
+      this.app.moveToLast();
     });
 
     // Page navigation
     this.app.screen.key(["C-f", "pagedown"], () => {
-      if (!this.app.searchMode) {
-        this.pageDown();
-      }
+      this.pageDown();
     });
 
     this.app.screen.key(["C-b", "pageup"], () => {
-      if (!this.app.searchMode) {
-        this.pageUp();
-      }
+      this.pageUp();
     });
 
     // Enter key - view task details
     this.app.screen.key(["enter"], () => {
-      if (!this.app.searchMode) {
-        const currentTask = this.app.getCurrentTask();
-        if (currentTask) {
-          this.app.showTaskDetail(currentTask.id);
-        }
+      const currentTask = this.app.getCurrentTask();
+      if (
+        currentTask &&
+        this.app.screen.focused !== this.app.searchScreen.searchBox
+      ) {
+        this.app.showTaskDetail(currentTask.id);
       }
     });
 
     // Search
     this.app.screen.key(["/"], () => {
-      if (!this.app.searchMode) {
-        this.app.showSearch();
-      }
+      this.app.showSearch();
     });
 
     // Search result navigation
     this.app.screen.key(["n"], () => {
-      if (!this.app.searchMode && this.app.searchQuery) {
-        this.app.nextSearchResult();
-      }
+      this.app.nextSearchResult();
     });
 
     this.app.screen.key(["N"], () => {
-      if (!this.app.searchMode && this.app.searchQuery) {
-        this.app.previousSearchResult();
-      }
+      this.app.previousSearchResult();
     });
 
     // Clear search
     this.app.screen.key(["c"], () => {
-      if (!this.app.searchMode && this.app.searchQuery) {
-        this.app.clearSearch();
-      }
+      this.app.clearSearch();
     });
 
     // Refresh
     this.app.screen.key(["r"], () => {
-      if (!this.app.searchMode) {
-        this.refresh();
-      }
+      this.refresh();
     });
 
     // Help
     this.app.screen.key(["?"], () => {
-      if (!this.app.searchMode) {
-        this.showHelp();
-      }
+      this.showHelp();
     });
 
     // Escape key - context-sensitive
@@ -228,9 +209,7 @@ Press any key to close this help...`;
    * Handle escape key based on current context
    */
   handleEscape() {
-    if (this.app.searchMode) {
-      this.app.hideSearch();
-    } else if (this.app.currentScreen === this.app.taskDetailScreen) {
+    if (this.app.currentScreen === this.app.taskDetailScreen) {
       this.app.showTaskList();
     }
     // If in task list, escape does nothing (use 'q' to quit)

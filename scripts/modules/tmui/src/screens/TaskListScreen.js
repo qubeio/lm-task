@@ -30,6 +30,7 @@ export class TaskListScreen {
       left: 0,
       width: "100%",
       height: this.options.height || "100%",
+      hidden: true,
       border: {
         type: "line",
       },
@@ -47,9 +48,6 @@ export class TaskListScreen {
 
     // Status bar
     this.statusBar = new StatusBar(this);
-
-    // Initially hidden
-    this.container.hide();
   }
 
   /**

@@ -35,6 +35,7 @@ export class TaskDetailScreen {
       left: 0,
       width: "100%",
       height: "100%",
+      hidden: true,
       border: {
         type: "line",
       },
@@ -177,9 +178,6 @@ export class TaskDetailScreen {
       content:
         " j/k: navigate subtasks | 1: parent task | 2: subtasks | Enter: select | ESC/q: back to list ",
     });
-
-    // Initially hidden
-    this.container.hide();
   }
 
   /**
@@ -682,7 +680,9 @@ export class TaskDetailScreen {
     this.parentTaskBox.style.border.fg = this.app.theme.selected;
     this.parentTaskBox.focus();
     this.updateStatusBarForParentTask();
-    this.app.render();
+    if (!this.container.hidden) {
+      this.app.render();
+    }
   }
 
   /**
@@ -694,7 +694,9 @@ export class TaskDetailScreen {
     this.subtaskList.style.border.fg = this.app.theme.selected;
     this.subtaskList.focus();
     this.updateStatusBarForSubtasks();
-    this.app.render();
+    if (!this.container.hidden) {
+      this.app.render();
+    }
   }
 
   /**
@@ -702,11 +704,7 @@ export class TaskDetailScreen {
    */
   show() {
     this.container.show();
-    // Set initial focus to subtasks (default behavior)
-    // Use a small delay to ensure the container is fully shown before focusing
-    setTimeout(() => {
-      this.focusSubtasks();
-    }, 0);
+    this.focusSubtasks();
   }
 
   /**

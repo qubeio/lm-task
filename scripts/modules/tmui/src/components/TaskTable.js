@@ -102,7 +102,8 @@ export class TaskTable {
 
     // Handle Enter key on the list widget directly
     this.table.key(["enter"], () => {
-      const selectedTask = this.tasks[this.table.selected];
+      // Use the app's getCurrentTask method for consistency
+      const selectedTask = this.app.getCurrentTask();
       if (selectedTask && this.app) {
         this.app.showTaskDetail(selectedTask.id);
       }
@@ -121,7 +122,8 @@ export class TaskTable {
     const items = tasks.map((task) => this.formatTaskRow(task));
 
     this.table.setItems(items);
-    this.setSelectedIndex(this.selectedIndex);
+    // Ensure we use the app's current index, not our cached one
+    this.setSelectedIndex(this.app.currentTaskIndex);
   }
 
   /**
@@ -278,15 +280,18 @@ export class TaskTable {
    * Set the selected row index with natural blessed.js scrolling behavior
    */
   setSelectedIndex(index) {
-    this.selectedIndex = Math.max(0, Math.min(index, this.tasks.length - 1));
+    const validIndex = Math.max(0, Math.min(index, this.tasks.length - 1));
+    this.selectedIndex = validIndex;
+
+    // Ensure app's currentTaskIndex is also updated
+    if (this.app) {
+      this.app.currentTaskIndex = validIndex;
+    }
 
     // Use blessed's built-in selection method with natural scrolling
-    if (
-      this.selectedIndex >= 0 &&
-      this.selectedIndex < this.table.items.length
-    ) {
+    if (validIndex >= 0 && validIndex < this.table.items.length) {
       // Let blessed.js handle selection and scrolling naturally
-      this.table.select(this.selectedIndex);
+      this.table.select(validIndex);
     }
   }
 
