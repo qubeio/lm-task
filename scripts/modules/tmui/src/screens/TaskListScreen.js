@@ -8,8 +8,9 @@ import { TaskTable } from "../components/TaskTable.js";
 import { StatusBar } from "../components/StatusBar.js";
 
 export class TaskListScreen {
-  constructor(app) {
+  constructor(app, options = {}) {
     this.app = app;
+    this.options = options;
     this.container = null;
     this.taskTable = null;
     this.statusBar = null;
@@ -28,7 +29,7 @@ export class TaskListScreen {
       top: 0,
       left: 0,
       width: "100%",
-      height: "100%",
+      height: this.options.height || "100%",
       border: {
         type: "line",
       },

@@ -22,7 +22,7 @@ export class SearchScreen {
     // Search input box
     this.searchBox = blessed.textbox({
       parent: this.app.screen,
-      top: 0,
+      bottom: 0,
       left: 0,
       width: "100%",
       height: 3,
@@ -46,9 +46,6 @@ export class SearchScreen {
       inputOnFocus: true,
     });
 
-    // Initially hidden
-    this.searchBox.hide();
-
     // Set up event handlers
     this.setupEventHandlers();
   }
@@ -61,12 +58,12 @@ export class SearchScreen {
     this.searchBox.on("submit", (value) => {
       this.query = value || "";
       this.app.performSearch(this.query);
-      this.hide();
+      this.app.focusTaskList();
     });
 
     // Handle escape key
     this.searchBox.key("escape", () => {
-      this.hide();
+      this.app.focusTaskList();
     });
 
     // Handle real-time search as user types
@@ -88,16 +85,6 @@ export class SearchScreen {
   }
 
   /**
-   * Show the search screen
-   */
-  show() {
-    this.searchBox.show();
-    this.searchBox.focus();
-    this.searchBox.setValue(this.query);
-    this.app.render();
-  }
-
-  /**
    * Hide the search screen
    */
   hide() {
@@ -108,7 +95,7 @@ export class SearchScreen {
     }
 
     this.searchBox.hide();
-    this.app.hideSearch();
+    this.app.focusTaskList();
     this.app.render();
   }
 
@@ -117,6 +104,7 @@ export class SearchScreen {
    */
   focus() {
     this.searchBox.focus();
+    this.app.render();
   }
 
   /**

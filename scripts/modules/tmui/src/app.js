@@ -37,7 +37,6 @@ export class TUIApp {
     // Application state
     this.tasks = [];
     this.currentTaskIndex = 0;
-    this.searchMode = false;
     this.searchQuery = "";
     this.filteredTasks = [];
     this.searchResultIndex = 0; // Track current search result for n/N navigation
@@ -114,7 +113,7 @@ export class TUIApp {
     this.keyHandlers = new KeyHandlers(this);
 
     // Initialize screens
-    this.taskListScreen = new TaskListScreen(this);
+    this.taskListScreen = new TaskListScreen(this, { height: "100%-3" });
     this.taskDetailScreen = new TaskDetailScreen(this);
     this.searchScreen = new SearchScreen(this);
   }
@@ -148,7 +147,6 @@ export class TUIApp {
 
     this.currentScreen = this.taskListScreen;
     this.taskListScreen.show();
-    this.searchMode = false;
     this.render(); // Ensure the screen updates immediately
   }
 
@@ -176,17 +174,13 @@ export class TUIApp {
    * Show the search screen
    */
   showSearch() {
-    this.searchMode = true;
-    this.searchScreen.show();
     this.searchScreen.focus();
   }
 
   /**
-   * Hide the search screen
+   * Focus the main task list
    */
-  hideSearch() {
-    this.searchMode = false;
-    this.searchScreen.hide();
+  focusTaskList() {
     this.taskListScreen.focus();
 
     // Clear search highlighting by refreshing the task list

@@ -158,6 +158,20 @@ All major subtask details display issues are resolved and the TaskDetailScreen i
 - Track current search result index in application state to support navigation and highlighting.
 - Ensure all search highlighting is cleared when exiting search mode.
 </info added on 2025-06-07T22:30:55.093Z>
+<info added on 2025-06-07T22:35:20.781Z>
+Resolved duplicate key input issue in the search box by removing the conflicting keypress event handler and switching to a polling-based real-time search using setInterval. SearchScreen now starts polling the textbox value every 200ms on focus and stops polling on blur, hide, or clear, ensuring single keystrokes are registered correctly. Updated SearchScreen.setupEventHandlers() to use focus/blur events, and added startRealTimeSearch() and stopRealTimeSearch() methods for interval management. Real-time search remains functional without duplicate character input.
+</info added on 2025-06-07T22:35:20.781Z>
+<info added on 2025-06-07T22:37:49.932Z>
+Applied targeted fix for duplicate key handling in the search textbox:
+
+- Identified that setting `keys: true` on the textbox caused conflicts with global key handlers, resulting in duplicate keystroke processing.
+- Updated SearchScreen textbox configuration to use `keys: false` while retaining `inputOnFocus: true` for proper text input.
+- Removed the textbox-specific escape key handler, relying instead on the global escape handler in KeyHandlers.js.
+- This change ensures the textbox only processes text input, while navigation and special keys are handled globally, eliminating duplicate character input without impacting other functionality.
+</info added on 2025-06-07T22:37:49.932Z>
+<info added on 2025-06-07T22:39:48.800Z>
+Implemented comprehensive fix for duplicate key handling by isolating global key handlers during search mode. Introduced disableGlobalKeys() to temporarily remove all global keypress handlers when the search UI is shown, and enableGlobalKeys() to restore them when search is hidden. Restored keys: true on the search textbox, as global interference is now prevented. Added a dedicated escape key handler active only during search mode. Original key handlers are saved in a savedKeyHandlers property and properly restored after search, with KeyHandlers re-initialized to ensure correct application state. This approach fully separates search input from global key processing, eliminating duplicate input issues while preserving all other app functionality.
+</info added on 2025-06-07T22:39:48.800Z>
 
 ## 7. Phase 2: Advanced Navigation and Status Bar [pending]
 ### Dependencies: 102.6
