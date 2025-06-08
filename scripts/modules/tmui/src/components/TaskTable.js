@@ -131,6 +131,11 @@ export class TaskTable {
 
     // Handle Enter key on the list widget directly
     this.table.key(["enter"], () => {
+      // Don't handle Enter if the status modal is currently showing
+      if (this.app.statusModal && this.app.statusModal.isShowing()) {
+        return;
+      }
+
       // Use the app's getCurrentTask method for consistency
       const selectedTask = this.app.getCurrentTask();
       if (selectedTask && this.app) {

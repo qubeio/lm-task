@@ -25,6 +25,13 @@ export function registerTUICommand(programInstance) {
       "Auto-refresh interval in seconds",
       "30"
     )
+    .option("--auto-refresh", "Enable automatic refresh (default: true)")
+    .option("--no-auto-refresh", "Disable automatic refresh")
+    .option(
+      "--auto-refresh-interval <ms>",
+      "Auto-refresh interval in milliseconds",
+      "2000"
+    )
     .option(
       "--snapshot",
       "Take a snapshot of the TUI and exit (for debugging/testing)"
@@ -44,6 +51,8 @@ export function registerTUICommand(programInstance) {
           tasksFile: options.file,
           theme: options.theme,
           refreshInterval: parseInt(options.refreshInterval, 10),
+          autoRefresh: options.autoRefresh !== false, // Default to true unless --no-auto-refresh is used
+          autoRefreshInterval: parseInt(options.autoRefreshInterval, 10),
           snapshotMode: options.snapshot,
           snapshotDelay: parseInt(options.snapshotDelay, 10),
         });

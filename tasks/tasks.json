@@ -1916,7 +1916,7 @@
       "id": 26,
       "title": "Implement Context Foundation for AI Operations",
       "description": "Implement the foundation for context integration in Task Master, enabling AI operations to leverage file-based context, cursor rules, and basic code context to improve generated outputs.",
-      "status": "pending",
+      "status": "cancelled",
       "dependencies": [
         5,
         6,
@@ -1931,7 +1931,7 @@
           "title": "Implement --context-file Flag for AI Commands",
           "description": "Add the --context-file <file> option to all AI-related commands and implement file reading functionality",
           "details": "1. Update the contextOptions array in commands.js to include the --context-file option\\n2. Modify AI command action handlers to check for the context-file option\\n3. Implement file reading functionality that loads content from the specified file\\n4. Add content integration into Claude API prompts with appropriate formatting\\n5. Add error handling for file not found or permission issues\\n6. Update help documentation to explain the new option with examples",
-          "status": "pending",
+          "status": "cancelled",
           "dependencies": [],
           "parentTaskId": 26
         },
@@ -1940,7 +1940,7 @@
           "title": "Implement --context Flag for AI Commands",
           "description": "Add support for directly passing context in the command line",
           "details": "1. Update AI command options to include a --context option\\n2. Modify action handlers to process context from command line\\n3. Sanitize and truncate long context inputs\\n4. Add content integration into Claude API prompts\\n5. Update help documentation to explain the new option with examples",
-          "status": "pending",
+          "status": "cancelled",
           "dependencies": [],
           "parentTaskId": 26
         },
@@ -2119,7 +2119,7 @@
           "title": "Create Initial File Structure",
           "description": "Set up the basic file structure for the learn command implementation",
           "details": "Create the following files with basic exports:\n- commands/learn.js\n- rules/cursor-rules-manager.js\n- utils/chat-history-analyzer.js\n- utils/cursor-path-helper.js",
-          "status": "pending"
+          "status": "cancelled"
         },
         {
           "id": 2,
@@ -2303,7 +2303,7 @@
       "id": 35,
       "title": "Integrate Grok3 API for Research Capabilities",
       "description": "Replace the current Perplexity API integration with Grok3 API for all research-related functionalities while maintaining existing feature parity.",
-      "status": "cancelled",
+      "status": "deferred",
       "dependencies": [],
       "priority": "medium",
       "details": "This task involves migrating from Perplexity to Grok3 API for research capabilities throughout the application. Implementation steps include:\n\n1. Create a new API client module for Grok3 in `src/api/grok3.ts` that handles authentication, request formatting, and response parsing\n2. Update the research service layer to use the new Grok3 client instead of Perplexity\n3. Modify the request payload structure to match Grok3's expected format (parameters like temperature, max_tokens, etc.)\n4. Update response handling to properly parse and extract Grok3's response format\n5. Implement proper error handling for Grok3-specific error codes and messages\n6. Update environment variables and configuration files to include Grok3 API keys and endpoints\n7. Ensure rate limiting and quota management are properly implemented according to Grok3's specifications\n8. Update any UI components that display research provider information to show Grok3 instead of Perplexity\n9. Maintain backward compatibility for any stored research results from Perplexity\n10. Document the new API integration in the developer documentation\n\nGrok3 API has different parameter requirements and response formats compared to Perplexity, so careful attention must be paid to these differences during implementation.",
@@ -6038,10 +6038,21 @@
           "id": 11,
           "title": "Add Status Update to Task Detail Screen",
           "description": "Extend the TaskDetailScreen to support status updates for both parent tasks and subtasks using the same StatusModal component.",
-          "details": "- Add 's' key binding to TaskDetailScreen for status updates\n- Support status updates for both parent task and currently selected subtask\n- Integrate with existing StatusModal component\n- Update display after status changes\n- Handle focus context (parent task vs subtask) appropriately\n- Update status bar instructions to include status update option",
-          "status": "in-progress",
+          "details": "- Add 's' key binding to TaskDetailScreen for status updates\n- Support status updates for both parent task and currently selected subtask\n- Integrate with existing StatusModal component\n- Update display after status changes\n- Handle focus context (parent task vs subtask) appropriately\n- Update status bar instructions to include status update option\n<info added on 2025-06-08T00:50:43.052Z>\nImplementation complete: Status update functionality has been successfully added to TaskDetailScreen. The 's' key binding is now available across all relevant components, enabling users to update the status of either the parent task or the currently selected subtask, depending on focus. The showStatusUpdate() method manages context-aware status updates, integrating with the existing StatusModal for a unified experience. Backend updates are handled via updateTaskStatus(), and users receive immediate feedback through showStatusMessage(). Status bar instructions have been updated to reflect the new option. The modal displays the correct task or subtask information, and task data refreshes automatically after updates. The user experience is seamless, with clear visual cues and consistent behavior throughout the interface.\n</info added on 2025-06-08T00:50:43.052Z>",
+          "status": "done",
           "dependencies": [
             "102.9"
+          ],
+          "parentTaskId": 102
+        },
+        {
+          "id": 12,
+          "title": "Implement Automatic Refresh for TUI",
+          "description": "Add automatic periodic refresh functionality to the TUI that updates the task list every 2 seconds without disrupting user navigation or interaction.",
+          "details": "- Implement asynchronous periodic refresh mechanism that runs every 2 seconds\n- Ensure refresh doesn't interfere with user navigation or input\n- Preserve current selection and scroll position during refresh\n- Add visual indicator when refresh is occurring (optional subtle indicator)\n- Handle refresh gracefully during search mode and task detail view\n- Implement smart refresh that only updates when tasks.json has actually changed\n- Add configuration option to enable/disable auto-refresh or adjust interval\n- Ensure refresh works seamlessly with existing manual refresh ('r' key)\n- Test performance impact and ensure smooth navigation during refresh\n- Handle edge cases like file system errors or temporary unavailability",
+          "status": "pending",
+          "dependencies": [
+            "102.11"
           ],
           "parentTaskId": 102
         }
@@ -6069,6 +6080,20 @@
           "parentTaskId": 103
         }
       ]
+    },
+    {
+      "id": 104,
+      "title": "Implement Exit Confirmation Dialog for TUI",
+      "description": "Develop a reusable exit confirmation dialog component for the TaskMaster TUI that displays a confirmation prompt when the user presses escape.",
+      "details": "Design and implement a modal popup that is triggered when the user presses the escape key in the TUI. The popup should display the message 'Are you sure you want to exit? (y/N)' and allow the user to confirm exit with 'y' or 'Y', or cancel with 'n', 'N', or additional escape key press, with the enter key defaulting to cancel. The component must use the existing theme colors and styling as defined in Task 103, and be a reusable module callable from the main TUI app. Ensure proper handling of keyboard navigation, focus restoration to the previous interface when cancelled, and robust error handling for unexpected inputs.",
+      "testStrategy": "Manually test by triggering the modal via escape key in the TUI to ensure it appears as expected with proper styling. Verify that pressing 'y' or 'Y' exits the application, while pressing 'n', 'N', escape, or enter (without valid input) properly cancels the exit and returns focus to the previous screen. Perform cross-terminal testing to validate consistency in rendering and keyboard event handling.",
+      "status": "pending",
+      "dependencies": [
+        102,
+        103
+      ],
+      "priority": "medium",
+      "subtasks": []
     }
   ]
 }

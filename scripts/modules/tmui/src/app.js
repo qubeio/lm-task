@@ -4,6 +4,8 @@
  */
 
 import blessed from "blessed";
+import fs from "fs";
+import path from "path";
 import { TaskListScreen } from "./screens/TaskListScreen.js";
 import { TaskDetailScreen } from "./screens/TaskDetailScreen.js";
 import { SearchScreen } from "./screens/SearchScreen.js";
@@ -19,6 +21,8 @@ export class TUIApp {
       tasksFile: options.tasksFile,
       theme: options.theme || "default",
       refreshInterval: options.refreshInterval || 30,
+      autoRefresh: options.autoRefresh !== false, // Default to true
+      autoRefreshInterval: options.autoRefreshInterval || 2000, // 2 seconds
       snapshotMode: options.snapshotMode || false,
       snapshotDelay: options.snapshotDelay || 2000,
       ...options,
@@ -46,6 +50,12 @@ export class TUIApp {
     // Render debouncing to prevent character artifacts
     this.renderTimeout = null;
     this.isRendering = false;
+
+    // Auto-refresh state
+    this.autoRefreshTimer = null;
+    this.lastTasksFileModTime = null;
+    this.isRefreshing = false;
+    this.tasksFilePath = null;
   }
 
   /**
@@ -62,6 +72,11 @@ export class TUIApp {
       // );
       this.showTaskList();
       // console.log("DEBUG: Task list shown");
+
+      // Start auto-refresh if enabled and not in snapshot mode
+      if (this.options.autoRefresh && !this.options.snapshotMode) {
+        this.startAutoRefresh();
+      }
 
       if (this.options.snapshotMode) {
         // console.log(
@@ -111,6 +126,9 @@ export class TUIApp {
       tasksFile: this.options.tasksFile,
     });
 
+    // Set up tasks file path for auto-refresh
+    this.tasksFilePath = this.cliAdapter.tasksFile;
+
     // Initialize key handlers
     this.keyHandlers = new KeyHandlers(this);
 
@@ -133,10 +151,137 @@ export class TUIApp {
         this.currentTaskIndex,
         this.tasks.length - 1
       );
+
+      // Update last modification time for auto-refresh
+      this.updateLastModTime();
     } catch (error) {
       this.showError(`Failed to load tasks: ${error.message}`);
       this.tasks = [];
       this.filteredTasks = [];
+    }
+  }
+
+  /**
+   * Start automatic refresh
+   */
+  startAutoRefresh() {
+    if (this.autoRefreshTimer) {
+      return; // Already started
+    }
+
+    this.autoRefreshTimer = setInterval(async () => {
+      await this.checkAndRefresh();
+    }, this.options.autoRefreshInterval);
+  }
+
+  /**
+   * Stop automatic refresh
+   */
+  stopAutoRefresh() {
+    if (this.autoRefreshTimer) {
+      clearInterval(this.autoRefreshTimer);
+      this.autoRefreshTimer = null;
+    }
+  }
+
+  /**
+   * Check if tasks file has changed and refresh if needed
+   */
+  async checkAndRefresh() {
+    if (this.isRefreshing || !this.tasksFilePath) {
+      return;
+    }
+
+    try {
+      // Check if file exists and get modification time
+      const stats = await fs.promises.stat(this.tasksFilePath);
+      const currentModTime = stats.mtime.getTime();
+
+      // If this is the first check or file has been modified
+      if (
+        this.lastTasksFileModTime === null ||
+        currentModTime > this.lastTasksFileModTime
+      ) {
+        await this.autoRefresh();
+      }
+    } catch (error) {
+      // File might not exist or be temporarily unavailable
+      // Don't show error for auto-refresh failures to avoid spam
+    }
+  }
+
+  /**
+   * Perform automatic refresh while preserving user state
+   */
+  async autoRefresh() {
+    if (this.isRefreshing) {
+      return;
+    }
+
+    this.isRefreshing = true;
+
+    try {
+      // Save current state
+      const currentTask = this.getCurrentTask();
+      const currentTaskId = currentTask ? currentTask.id : null;
+      const currentSearchQuery = this.searchQuery;
+      const currentScreen = this.currentScreen;
+
+      // Load new tasks
+      await this.loadTasks();
+
+      // Restore search if it was active
+      if (currentSearchQuery) {
+        this.performSearch(currentSearchQuery);
+      }
+
+      // Try to restore selection to the same task
+      if (currentTaskId) {
+        const newIndex = this.filteredTasks.findIndex(
+          (task) => task.id === currentTaskId
+        );
+        if (newIndex >= 0) {
+          this.currentTaskIndex = newIndex;
+        }
+      }
+
+      // Update the current screen
+      if (currentScreen === this.taskListScreen) {
+        this.taskListScreen.updateTasks(this.filteredTasks);
+        this.taskListScreen.setSelectedIndex(this.currentTaskIndex);
+      } else if (currentScreen === this.taskDetailScreen && currentTaskId) {
+        // Refresh task detail view if we're currently viewing a task
+        try {
+          const updatedTask = await this.cliAdapter.getTask(currentTaskId);
+          this.taskDetailScreen.setTask(updatedTask);
+        } catch (error) {
+          // Task might have been deleted, return to task list
+          this.showTaskList();
+        }
+      }
+
+      this.render();
+    } catch (error) {
+      // Silently handle auto-refresh errors to avoid disrupting user experience
+    } finally {
+      this.isRefreshing = false;
+    }
+  }
+
+  /**
+   * Update the last modification time of the tasks file
+   */
+  updateLastModTime() {
+    if (!this.tasksFilePath) {
+      return;
+    }
+
+    try {
+      const stats = fs.statSync(this.tasksFilePath);
+      this.lastTasksFileModTime = stats.mtime.getTime();
+    } catch (error) {
+      // File might not exist yet
+      this.lastTasksFileModTime = null;
     }
   }
 
@@ -337,12 +482,43 @@ export class TUIApp {
   }
 
   /**
-   * Refresh task list
+   * Refresh task list (manual refresh)
    */
   async refresh() {
-    await this.loadTasks();
-    this.performSearch(this.searchQuery); // Re-apply current search
-    this.render();
+    // Temporarily disable auto-refresh during manual refresh
+    const wasAutoRefreshEnabled = this.autoRefreshTimer !== null;
+    if (wasAutoRefreshEnabled) {
+      this.stopAutoRefresh();
+    }
+
+    try {
+      // Save current state
+      const currentTask = this.getCurrentTask();
+      const currentTaskId = currentTask ? currentTask.id : null;
+
+      await this.loadTasks();
+      this.performSearch(this.searchQuery); // Re-apply current search
+
+      // Try to restore selection to the same task
+      if (currentTaskId) {
+        const newIndex = this.filteredTasks.findIndex(
+          (task) => task.id === currentTaskId
+        );
+        if (newIndex >= 0) {
+          this.currentTaskIndex = newIndex;
+          if (this.currentScreen === this.taskListScreen) {
+            this.taskListScreen.setSelectedIndex(this.currentTaskIndex);
+          }
+        }
+      }
+
+      this.render();
+    } finally {
+      // Re-enable auto-refresh if it was enabled
+      if (wasAutoRefreshEnabled && this.options.autoRefresh) {
+        this.startAutoRefresh();
+      }
+    }
   }
 
   /**
@@ -514,6 +690,9 @@ export class TUIApp {
    * Cleanup resources
    */
   cleanup() {
+    // Stop auto-refresh timer
+    this.stopAutoRefresh();
+
     // Clear any pending render timeout
     if (this.renderTimeout) {
       clearTimeout(this.renderTimeout);

@@ -1,6 +1,6 @@
 # Task ID: 26
 # Title: Implement Context Foundation for AI Operations
-# Status: pending
+# Status: cancelled
 # Dependencies: 5, 6, 7
 # Priority: high
 # Description: Implement the foundation for context integration in Task Master, enabling AI operations to leverage file-based context, cursor rules, and basic code context to improve generated outputs.
@@ -64,13 +64,13 @@ Testing should verify that the context foundation works as expected and adds val
 The testing focus should be on proving immediate value to users while ensuring robust error handling.
 
 # Subtasks:
-## 1. Implement --context-file Flag for AI Commands [pending]
+## 1. Implement --context-file Flag for AI Commands [cancelled]
 ### Dependencies: None
 ### Description: Add the --context-file <file> option to all AI-related commands and implement file reading functionality
 ### Details:
 1. Update the contextOptions array in commands.js to include the --context-file option\n2. Modify AI command action handlers to check for the context-file option\n3. Implement file reading functionality that loads content from the specified file\n4. Add content integration into Claude API prompts with appropriate formatting\n5. Add error handling for file not found or permission issues\n6. Update help documentation to explain the new option with examples
 
-## 2. Implement --context Flag for AI Commands [pending]
+## 2. Implement --context Flag for AI Commands [cancelled]
 ### Dependencies: None
 ### Description: Add support for directly passing context in the command line
 ### Details:

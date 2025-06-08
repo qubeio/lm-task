@@ -80,10 +80,14 @@ export class StatusBar {
    * Get keyboard shortcuts text
    */
   getKeyboardShortcuts() {
+    const autoRefreshIndicator = this.app.options.autoRefresh
+      ? " {dim}●{/}"
+      : "";
+
     if (this.app.searchMode) {
-      return " {bold}ESC{/}: close search │ {bold}Enter{/}: select │ {bold}n/N{/}: next/prev match ";
+      return ` {bold}ESC{/}: close search │ {bold}Enter{/}: select │ {bold}n/N{/}: next/prev match${autoRefreshIndicator} `;
     } else {
-      return " {bold}j/k{/}: up/down │ {bold}/{/}: search │ {bold}Enter{/}: details │ {bold}r{/}: refresh │ {bold}q{/}: quit │ {bold}?{/}: help ";
+      return ` {bold}j/k{/}: up/down │ {bold}s{/}: update status │ {bold}/{/}: search │ {bold}Enter{/}: details │ {bold}r{/}: refresh │ {bold}q{/}: quit │ {bold}?{/}: help${autoRefreshIndicator} `;
     }
   }
 

@@ -35,6 +35,11 @@ export class KeyHandlers {
 
     // Enter key - view task details
     this.app.screen.key(["enter"], () => {
+      // Don't handle Enter if the status modal is currently showing
+      if (this.app.statusModal && this.app.statusModal.isShowing()) {
+        return;
+      }
+
       const currentTask = this.app.getCurrentTask();
       if (
         currentTask &&

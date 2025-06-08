@@ -163,20 +163,20 @@ export class TaskDetailScreen {
       // },
     });
 
-    // Status bar (bottom)
+    // Status bar (bottom, above search box)
     this.statusBar = blessed.box({
       parent: this.container,
-      bottom: 0,
+      bottom: 2, // Position above the search box (which has height 3)
       left: 0,
-      width: "95%",
-      height: 2,
+      width: "100%",
+      height: 1,
       style: {
         bg: this.app.theme.statusBarBg,
         fg: this.app.theme.statusBarFg,
       },
       tags: true,
       content:
-        " j/k: navigate subtasks | 1: parent task | 2: subtasks | Enter: select | ESC/q: back to list ",
+        " j/k: navigate subtasks | s: update status | 1: parent task | 2: subtasks | ESC/q: back to list ",
     });
   }
 
@@ -680,7 +680,7 @@ export class TaskDetailScreen {
    */
   updateStatusBarForParentTask() {
     this.statusBar.setContent(
-      " j/k: scroll parent task | 1: parent task | 2: subtasks | ESC/q: back to list "
+      " j/k: scroll parent task | s: update status | 1: parent task | 2: subtasks | ESC/q: back to list "
     );
   }
 
