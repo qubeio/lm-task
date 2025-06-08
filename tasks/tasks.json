@@ -2313,7 +2313,7 @@
       "id": 36,
       "title": "Add Ollama Support for AI Services as Claude Alternative",
       "description": "Implement Ollama integration as an alternative to Claude for all main AI services, allowing users to run local language models instead of relying on cloud-based Claude API.",
-      "status": "deferred",
+      "status": "cancelled",
       "dependencies": [],
       "priority": "medium",
       "details": "This task involves creating a comprehensive Ollama integration that can replace Claude across all main AI services in the application. Implementation should include:\n\n1. Create an OllamaService class that implements the same interface as the ClaudeService to ensure compatibility\n2. Add configuration options to specify Ollama endpoint URL (default: http://localhost:11434)\n3. Implement model selection functionality to allow users to choose which Ollama model to use (e.g., llama3, mistral, etc.)\n4. Handle prompt formatting specific to Ollama models, ensuring proper system/user message separation\n5. Implement proper error handling for cases where Ollama server is unavailable or returns errors\n6. Add fallback mechanism to Claude when Ollama fails or isn't configured\n7. Update the AI service factory to conditionally create either Claude or Ollama service based on configuration\n8. Ensure token counting and rate limiting are appropriately handled for Ollama models\n9. Add documentation for users explaining how to set up and use Ollama with the application\n10. Optimize prompt templates specifically for Ollama models if needed\n\nThe implementation should be toggled through a configuration option (useOllama: true/false) and should maintain all existing functionality currently provided by Claude.",
@@ -5984,7 +5984,7 @@
           "title": "Phase 2: Search Functionality Implementation",
           "description": "Implement the forward slash (/) search feature with highlighting and navigation through search results.",
           "details": "- Create SearchScreen/SearchBox component\n- Implement '/' key to activate search mode\n- Add search input with real-time filtering\n- Implement search result highlighting in task titles\n- Add 'n' and 'N' keys for next/previous search result navigation\n- Implement ESC key to exit search mode\n- Add search query display in UI\n- Create case-insensitive search functionality\n- Handle search across task titles, descriptions, and details\n- Clear search highlighting when exiting search mode\n- Test search with various query types and edge cases\n<info added on 2025-06-07T22:30:55.093Z>\n- Integrate search result highlighting in TaskTable.formatTaskRow() using blessed.js tags for matched terms.\n- Implement 'n' and 'N' key handlers to navigate to next/previous search results, updating the focused result in the UI.\n- Track current search result index in application state to support navigation and highlighting.\n- Ensure all search highlighting is cleared when exiting search mode.\n</info added on 2025-06-07T22:30:55.093Z>\n<info added on 2025-06-07T22:35:20.781Z>\nResolved duplicate key input issue in the search box by removing the conflicting keypress event handler and switching to a polling-based real-time search using setInterval. SearchScreen now starts polling the textbox value every 200ms on focus and stops polling on blur, hide, or clear, ensuring single keystrokes are registered correctly. Updated SearchScreen.setupEventHandlers() to use focus/blur events, and added startRealTimeSearch() and stopRealTimeSearch() methods for interval management. Real-time search remains functional without duplicate character input.\n</info added on 2025-06-07T22:35:20.781Z>\n<info added on 2025-06-07T22:37:49.932Z>\nApplied targeted fix for duplicate key handling in the search textbox:\n\n- Identified that setting `keys: true` on the textbox caused conflicts with global key handlers, resulting in duplicate keystroke processing.\n- Updated SearchScreen textbox configuration to use `keys: false` while retaining `inputOnFocus: true` for proper text input.\n- Removed the textbox-specific escape key handler, relying instead on the global escape handler in KeyHandlers.js.\n- This change ensures the textbox only processes text input, while navigation and special keys are handled globally, eliminating duplicate character input without impacting other functionality.\n</info added on 2025-06-07T22:37:49.932Z>\n<info added on 2025-06-07T22:39:48.800Z>\nImplemented comprehensive fix for duplicate key handling by isolating global key handlers during search mode. Introduced disableGlobalKeys() to temporarily remove all global keypress handlers when the search UI is shown, and enableGlobalKeys() to restore them when search is hidden. Restored keys: true on the search textbox, as global interference is now prevented. Added a dedicated escape key handler active only during search mode. Original key handlers are saved in a savedKeyHandlers property and properly restored after search, with KeyHandlers re-initialized to ensure correct application state. This approach fully separates search input from global key processing, eliminating duplicate input issues while preserving all other app functionality.\n</info added on 2025-06-07T22:39:48.800Z>",
-          "status": "in-progress",
+          "status": "done",
           "dependencies": [
             "102.5"
           ],
@@ -5995,7 +5995,7 @@
           "title": "Phase 2: Advanced Navigation and Status Bar",
           "description": "Add advanced navigation features and a comprehensive status bar with keyboard shortcuts help.",
           "details": "- Implement Ctrl+f/Page Down and Ctrl+b/Page Up for page navigation\n- Add h/l keys for horizontal scrolling (if content is wide)\n- Create StatusBar component with keyboard shortcut hints\n- Add dynamic status messages (search mode, loading, errors)\n- Implement 'r' key for manual task list refresh\n- Add '?' key for help overlay showing all keyboard shortcuts\n- Create help screen/modal with complete key binding reference\n- Add visual feedback for keyboard actions (loading spinners, etc.)\n- Implement responsive layout adjustments for different terminal sizes\n- Test navigation with large task lists (100+ tasks)",
-          "status": "pending",
+          "status": "done",
           "dependencies": [
             "102.6"
           ],
@@ -6006,7 +6006,7 @@
           "title": "Phase 3: Enhanced UI and Error Handling",
           "description": "Improve the visual design, add comprehensive error handling, and implement performance optimizations.",
           "details": "- Create theme.js with color schemes and styling configurations\n- Implement proper error handling for CLI command failures\n- Add loading states and progress indicators\n- Create graceful degradation for terminal resize events\n- Implement lazy loading for large task lists (performance optimization)\n- Add debounced search to prevent excessive filtering\n- Create proper ANSI escape sequences for screen reader compatibility\n- Add non-color status indicators for accessibility\n- Implement memory usage optimization for large task lists\n- Test across different terminal emulators (iTerm, Terminal.app, etc.)\n- Add configuration support for TUI preferences",
-          "status": "pending",
+          "status": "done",
           "dependencies": [
             "102.7"
           ],
@@ -6016,8 +6016,8 @@
           "id": 9,
           "title": "Phase 4: Interactive Features - Task Status Updates",
           "description": "Add the ability to update task status directly from the TUI interface.",
-          "details": "- Extend CLI adapter with updateTaskStatus() method\n- Add 'u' key in task detail view to update status\n- Create status selection modal/menu (pending, in-progress, done, etc.)\n- Implement CLI integration for 'task-master set-status' command\n- Add visual feedback for successful status updates\n- Update task list display after status changes\n- Handle concurrent updates and refresh conflicts\n- Add undo functionality for accidental status changes\n- Implement bulk status updates for future enhancement\n- Test status update workflows thoroughly",
-          "status": "pending",
+          "details": "- Extend CLI adapter with updateTaskStatus() method\n- Add 'u' key in task detail view to update status\n- Create status selection modal/menu (pending, in-progress, done, etc.)\n- Implement CLI integration for 'task-master set-status' command\n- Add visual feedback for successful status updates\n- Update task list display after status changes\n- Handle concurrent updates and refresh conflicts\n- Add undo functionality for accidental status changes\n- Implement bulk status updates for future enhancement\n- Test status update workflows thoroughly\n<info added on 2025-06-08T00:34:56.645Z>\nScope is limited to status updates only—no editing of task titles, descriptions, or details. Only three status options are supported: \"pending\", \"in-progress\", and \"done\". Implement a simple status toggle feature with a key binding (e.g., 's') in the TaskListScreen, opening a minimal modal for status selection. Integrate with updateTaskStatus() in the CLI adapter, ensuring immediate visual feedback and task list refresh. Exclude text editing, complex status options, bulk operations, and undo functionality to maintain a clean, focused UI.\n</info added on 2025-06-08T00:34:56.645Z>\n<info added on 2025-06-08T00:42:48.167Z>\nIMPLEMENTATION COMPLETE: Successfully implemented interactive status update functionality.\n\n- Developed StatusModal component supporting four status options: pending, in-progress, done, and cancelled.\n- Added 's' key binding in TaskListScreen to trigger the status update modal.\n- Modal displays current task information in the title.\n- Enabled navigation through status options using arrow keys and selection via Enter key.\n- Implemented quick selection using number keys 1-4 and Escape key to cancel.\n- Integrated with CLI adapter's updateTaskStatus() method for backend updates.\n- Provided immediate visual feedback and status bar messages for success or error.\n- Ensured automatic task list refresh after status changes.\n- Managed focus and key events for smooth user experience.\n- UI remains clean and focused, with no text editing or bulk operations, in line with scope requirements.\n</info added on 2025-06-08T00:42:48.167Z>",
+          "status": "done",
           "dependencies": [
             "102.8"
           ],
@@ -6029,6 +6029,17 @@
           "description": "Create comprehensive tests and documentation for the TUI feature.",
           "details": "- Create unit tests for CLI adapter functions\n- Add integration tests for TUI navigation workflows\n- Test keyboard shortcut functionality comprehensively\n- Create manual testing procedures for UI components\n- Write user documentation for TUI usage\n- Add TUI section to main README.md\n- Create troubleshooting guide for common issues\n- Test performance with large task lists (1000+ tasks)\n- Validate accessibility features and screen reader compatibility\n- Document configuration options and customization\n- Create example .taskmasterconfig entries for TUI preferences",
           "status": "pending",
+          "dependencies": [
+            "102.9"
+          ],
+          "parentTaskId": 102
+        },
+        {
+          "id": 11,
+          "title": "Add Status Update to Task Detail Screen",
+          "description": "Extend the TaskDetailScreen to support status updates for both parent tasks and subtasks using the same StatusModal component.",
+          "details": "- Add 's' key binding to TaskDetailScreen for status updates\n- Support status updates for both parent task and currently selected subtask\n- Integrate with existing StatusModal component\n- Update display after status changes\n- Handle focus context (parent task vs subtask) appropriately\n- Update status bar instructions to include status update option",
+          "status": "in-progress",
           "dependencies": [
             "102.9"
           ],

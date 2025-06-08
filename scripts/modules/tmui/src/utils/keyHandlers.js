@@ -68,6 +68,14 @@ export class KeyHandlers {
       this.refresh();
     });
 
+    // Status update
+    this.app.screen.key(["s"], () => {
+      // Only show status update if modal is not already visible
+      if (!this.app.statusModal.isShowing()) {
+        this.app.showStatusUpdate();
+      }
+    });
+
     // Help
     this.app.screen.key(["?"], () => {
       this.showHelp();
@@ -160,6 +168,7 @@ export class KeyHandlers {
 
 {bold}Actions:{/}
   Enter       View task details
+  s           Update task status
   /           Start search
   c           Clear search (when search active)
   r           Refresh task list

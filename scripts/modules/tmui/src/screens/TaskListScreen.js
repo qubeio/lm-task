@@ -57,6 +57,12 @@ export class TaskListScreen {
     this.container.show();
     this.updateDisplay();
     this.focus();
+
+    // Ensure selection is properly synchronized after the screen is shown
+    // Use setImmediate to ensure the blessed widget is fully rendered
+    setImmediate(() => {
+      this.taskTable.forceSyncSelection();
+    });
   }
 
   /**
@@ -95,7 +101,7 @@ export class TaskListScreen {
   updateDisplay() {
     const tasks = this.app.filteredTasks;
     this.updateTasks(tasks);
-    this.setSelectedIndex(this.app.currentTaskIndex);
+    // Note: setSelectedIndex is now called within updateTasks to ensure proper timing
 
     // Update header with task count
     const totalTasks = this.app.tasks.length;

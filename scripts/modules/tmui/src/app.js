@@ -7,6 +7,7 @@ import blessed from "blessed";
 import { TaskListScreen } from "./screens/TaskListScreen.js";
 import { TaskDetailScreen } from "./screens/TaskDetailScreen.js";
 import { SearchScreen } from "./screens/SearchScreen.js";
+import { StatusModal } from "./components/StatusModal.js";
 import { CliAdapter } from "./utils/cliAdapter.js";
 import { KeyHandlers } from "./utils/keyHandlers.js";
 import { getTheme } from "./styles/theme.js";
@@ -33,6 +34,7 @@ export class TUIApp {
     this.taskListScreen = null;
     this.taskDetailScreen = null;
     this.searchScreen = null;
+    this.statusModal = null;
 
     // Application state
     this.tasks = [];
@@ -116,6 +118,7 @@ export class TUIApp {
     this.taskListScreen = new TaskListScreen(this, { height: "100%-3" });
     this.taskDetailScreen = new TaskDetailScreen(this);
     this.searchScreen = new SearchScreen(this);
+    this.statusModal = new StatusModal(this);
   }
 
   /**
@@ -198,7 +201,7 @@ export class TUIApp {
     this.currentTaskIndex = 0;
     this.searchScreen.clear();
     this.taskListScreen.updateTasks(this.filteredTasks);
-    this.taskListScreen.setSelectedIndex(0);
+    // Note: setSelectedIndex is now called within updateTasks to ensure proper timing
     this.render();
   }
 
@@ -231,6 +234,22 @@ export class TUIApp {
    */
   getCurrentTask() {
     if (this.filteredTasks.length === 0) return null;
+
+    // Sync with the blessed list widget's actual selection if available
+    if (
+      this.taskListScreen &&
+      this.taskListScreen.taskTable &&
+      this.taskListScreen.taskTable.table
+    ) {
+      const blessedSelection = this.taskListScreen.taskTable.table.selected;
+      if (
+        typeof blessedSelection === "number" &&
+        blessedSelection >= 0 &&
+        blessedSelection < this.filteredTasks.length
+      ) {
+        this.currentTaskIndex = blessedSelection;
+      }
+    }
 
     // Ensure currentTaskIndex is within bounds
     const validIndex = Math.max(
@@ -324,6 +343,48 @@ export class TUIApp {
     await this.loadTasks();
     this.performSearch(this.searchQuery); // Re-apply current search
     this.render();
+  }
+
+  /**
+   * Show status update modal for the current task
+   */
+  showStatusUpdate() {
+    const currentTask = this.getCurrentTask();
+    if (!currentTask) {
+      this.showError("No task selected");
+      return;
+    }
+
+    this.statusModal.show(currentTask, async (newStatus) => {
+      await this.updateTaskStatus(currentTask.id, newStatus);
+    });
+  }
+
+  /**
+   * Update task status and refresh the display
+   */
+  async updateTaskStatus(taskId, newStatus) {
+    try {
+      // Show loading message
+      this.taskListScreen.statusBar.setMessage(
+        `Updating task ${taskId} status to ${newStatus}...`,
+        1000
+      );
+
+      // Update via CLI adapter
+      await this.cliAdapter.updateTaskStatus(taskId, newStatus);
+
+      // Refresh the task list to show the change
+      await this.refresh();
+
+      // Show success message
+      this.taskListScreen.statusBar.setMessage(
+        `Task ${taskId} status updated to ${newStatus}!`,
+        2000
+      );
+    } catch (error) {
+      this.showError(`Failed to update task status: ${error.message}`);
+    }
   }
 
   /**

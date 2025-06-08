@@ -242,6 +242,11 @@ export class TaskDetailScreen {
       }
     });
 
+    // Status update
+    this.container.key(["s"], () => {
+      this.showStatusUpdate();
+    });
+
     // Setup subtask list key handlers
     this.subtaskList.key(["j", "down"], () => {
       if (this.focusedComponent === "subtasks") {
@@ -285,6 +290,10 @@ export class TaskDetailScreen {
       }
     });
 
+    this.subtaskList.key(["s"], () => {
+      this.showStatusUpdate();
+    });
+
     // Setup parent task box key handlers
     this.parentTaskBox.key(["j", "down"], () => {
       if (this.focusedComponent === "parentTask") {
@@ -310,6 +319,10 @@ export class TaskDetailScreen {
 
     this.parentTaskBox.key(["escape", "q"], () => {
       this.app.showTaskList();
+    });
+
+    this.parentTaskBox.key(["s"], () => {
+      this.showStatusUpdate();
     });
   }
 
@@ -658,7 +671,7 @@ export class TaskDetailScreen {
    */
   updateStatusBarForSubtasks() {
     this.statusBar.setContent(
-      " j/k: navigate subtasks | 1: parent task | 2: subtasks | Enter: select | ESC/q: back to list "
+      " j/k: navigate subtasks | s: update status | 1: parent task | 2: subtasks | ESC/q: back to list "
     );
   }
 
@@ -697,6 +710,78 @@ export class TaskDetailScreen {
     if (!this.container.hidden) {
       this.app.render();
     }
+  }
+
+  /**
+   * Show status update modal for the current context (parent task or subtask)
+   */
+  showStatusUpdate() {
+    if (this.focusedComponent === "parentTask") {
+      // Update parent task status
+      if (this.task) {
+        this.app.statusModal.show(this.task, async (newStatus) => {
+          await this.updateTaskStatus(this.task.id, newStatus);
+        });
+      }
+    } else {
+      // Update subtask status
+      if (this.task && this.task.subtasks && this.task.subtasks.length > 0) {
+        const currentSubtask = this.task.subtasks[this.currentSubtaskIndex];
+        if (currentSubtask) {
+          // Create a task-like object for the subtask
+          const subtaskForModal = {
+            id: `${this.task.id}.${currentSubtask.id}`,
+            title: currentSubtask.title,
+            status: currentSubtask.status,
+          };
+
+          this.app.statusModal.show(subtaskForModal, async (newStatus) => {
+            await this.updateTaskStatus(
+              `${this.task.id}.${currentSubtask.id}`,
+              newStatus
+            );
+          });
+        }
+      }
+    }
+  }
+
+  /**
+   * Update task or subtask status and refresh the display
+   */
+  async updateTaskStatus(taskId, newStatus) {
+    try {
+      // Update via CLI adapter
+      await this.app.cliAdapter.updateTaskStatus(taskId, newStatus);
+
+      // Refresh the task data
+      const updatedTask = await this.app.cliAdapter.getTask(this.task.id);
+      this.setTask(updatedTask);
+
+      // Show success message (we'll add a simple message display)
+      this.showStatusMessage(`Task ${taskId} status updated to ${newStatus}!`);
+    } catch (error) {
+      this.app.showError(`Failed to update task status: ${error.message}`);
+    }
+  }
+
+  /**
+   * Show a temporary status message
+   */
+  showStatusMessage(message) {
+    const originalContent = this.statusBar.content;
+    this.statusBar.setContent(` ${message} `);
+    this.app.render();
+
+    // Restore original content after 2 seconds
+    setTimeout(() => {
+      if (this.focusedComponent === "parentTask") {
+        this.updateStatusBarForParentTask();
+      } else {
+        this.updateStatusBarForSubtasks();
+      }
+      this.app.render();
+    }, 2000);
   }
 
   /**

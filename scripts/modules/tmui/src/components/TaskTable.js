@@ -95,8 +95,37 @@ export class TaskTable {
     // Sync app's currentTaskIndex when blessed list selection changes
     this.table.on("select", (item, index) => {
       this.selectedIndex = index;
-      if (this.app) {
+      // Only update app's currentTaskIndex if it's actually different
+      // and we have tasks to avoid sync issues on initial load
+      if (
+        this.app &&
+        this.tasks.length > 0 &&
+        this.app.currentTaskIndex !== index
+      ) {
         this.app.currentTaskIndex = index;
+      }
+    });
+
+    // Also listen for key events that change selection to ensure sync
+    this.table.on("keypress", (ch, key) => {
+      // After any key that might change selection, sync the app state
+      if (
+        key &&
+        (key.name === "up" ||
+          key.name === "down" ||
+          key.name === "j" ||
+          key.name === "k")
+      ) {
+        setImmediate(() => {
+          const currentSelection = this.table.selected;
+          if (
+            this.app &&
+            typeof currentSelection === "number" &&
+            currentSelection !== this.app.currentTaskIndex
+          ) {
+            this.app.currentTaskIndex = currentSelection;
+          }
+        });
       }
     });
 
@@ -121,9 +150,23 @@ export class TaskTable {
 
     const items = tasks.map((task) => this.formatTaskRow(task));
 
+    // Temporarily disable the select event handler to prevent
+    // blessed from overriding our currentTaskIndex when setItems is called
+    const originalSelectHandler = this.table.listeners("select");
+    this.table.removeAllListeners("select");
+
     this.table.setItems(items);
+
+    // Restore the select event handler
+    originalSelectHandler.forEach((handler) => {
+      this.table.on("select", handler);
+    });
+
     // Ensure we use the app's current index, not our cached one
-    this.setSelectedIndex(this.app.currentTaskIndex);
+    // But only set it if we have items to avoid blessed defaulting to 0
+    if (items.length > 0) {
+      this.setSelectedIndex(this.app.currentTaskIndex);
+    }
   }
 
   /**
@@ -280,18 +323,33 @@ export class TaskTable {
    * Set the selected row index with natural blessed.js scrolling behavior
    */
   setSelectedIndex(index) {
+    // Don't proceed if we don't have any tasks
+    if (this.tasks.length === 0) {
+      return;
+    }
+
     const validIndex = Math.max(0, Math.min(index, this.tasks.length - 1));
     this.selectedIndex = validIndex;
 
-    // Ensure app's currentTaskIndex is also updated
-    if (this.app) {
+    // Only update app's currentTaskIndex if it's actually different
+    // This prevents unnecessary updates that could cause sync issues
+    if (this.app && this.app.currentTaskIndex !== validIndex) {
       this.app.currentTaskIndex = validIndex;
     }
 
     // Use blessed's built-in selection method with natural scrolling
     if (validIndex >= 0 && validIndex < this.table.items.length) {
-      // Let blessed.js handle selection and scrolling naturally
+      // Temporarily disable the select event to prevent feedback loops
+      const selectHandlers = this.table.listeners("select");
+      this.table.removeAllListeners("select");
+
+      // Set the selection
       this.table.select(validIndex);
+
+      // Restore the select event handlers
+      selectHandlers.forEach((handler) => {
+        this.table.on("select", handler);
+      });
     }
   }
 
@@ -300,6 +358,24 @@ export class TaskTable {
    */
   focus() {
     this.table.focus();
+  }
+
+  /**
+   * Force synchronization between blessed list selection and app state
+   */
+  forceSyncSelection() {
+    if (this.tasks.length === 0) return;
+
+    const blessedSelection = this.table.selected;
+    const appSelection = this.app.currentTaskIndex;
+
+    // If they're different, use the app's selection as the source of truth
+    if (
+      typeof blessedSelection === "number" &&
+      blessedSelection !== appSelection
+    ) {
+      this.setSelectedIndex(appSelection);
+    }
   }
 
   /**
