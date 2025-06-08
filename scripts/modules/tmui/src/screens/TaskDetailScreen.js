@@ -142,7 +142,7 @@ export class TaskDetailScreen {
       parent: this.container,
       top: "30%",
       left: "50%",
-      width: "49%",
+      width: "48%",
       height: "60%",
       border: {
         type: "line",
@@ -944,6 +944,12 @@ export class TaskDetailScreen {
     if (box.padding) {
       maxWidth -= (box.padding.left || 0) + (box.padding.right || 0);
     }
+    
+    // Reduce width further for subtaskDetailBox to account for scrollbar
+    if (box === this.subtaskDetailBox) {
+      maxWidth -= 5; // Additional reduction for scrollbar
+    }
+    
     if (typeof maxWidth !== "number" || maxWidth < 10) maxWidth = 80;
     const wrapped = [];
     for (const line of lines) {

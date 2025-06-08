@@ -5,6 +5,8 @@
 
 import fs from 'fs';
 import path from 'path';
+import { exec } from 'child_process';
+import { promisify } from 'util';
 
 export class JsonLoader {
   constructor(options = {}) {
@@ -172,6 +174,17 @@ export class JsonLoader {
 
       // Write updated data back to file
       fs.writeFileSync(this.tasksFile, JSON.stringify(data, null, 2), 'utf8');
+      
+      // Generate individual task files to keep them in sync with tasks.json
+      try {
+        // Use the CLI command to generate task files
+        const execAsync = promisify(exec);
+        await execAsync(`npx task-master generate --file="${this.tasksFile}"`);
+      } catch (genError) {
+        console.warn(`Warning: Failed to regenerate task files: ${genError.message}`);
+        // Continue even if file generation fails - the JSON is still updated
+      }
+      
       return true;
     } catch (error) {
       console.error(`Error updating task ${taskId} status:`, error.message);
