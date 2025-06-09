@@ -13,6 +13,7 @@ export class TaskListScreen {
     logger.log('TaskListScreen constructor called.');
     this.app = app;
     this.options = options;
+    this.repositoryName = options.repositoryName || "Tasks"; // Default if not provided
     this.container = null;
     this.taskTable = null;
     this.statusBar = null;
@@ -41,7 +42,7 @@ export class TaskListScreen {
           fg: this.app.theme.border,
         },
       },
-      label: " TaskMaster TUI \nPlaceholder Subtitle\n ",
+      label: ` TaskMaster TUI \n${this.repositoryName}\n `, // Use repositoryName here
       tags: true,
     });
 
@@ -119,8 +120,7 @@ export class TaskListScreen {
       headerText += `[${totalTasks} tasks] `;
     }
 
-    const newSubtitleLine = "Placeholder Subtitle";
-    const fullHeaderTextWithSubtitle = `${headerText}\n${newSubtitleLine}\n `;
+    const fullHeaderTextWithSubtitle = `${headerText}\n-Repository: ${this.repositoryName}-\n `;
     this.container.setLabel(fullHeaderTextWithSubtitle);
   }
 

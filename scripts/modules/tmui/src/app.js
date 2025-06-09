@@ -4,7 +4,8 @@
  */
 
 import fs from "fs";
-import path from "path";
+import path, { basename } from "path";
+import { execSync } from 'child_process';
 import blessed from "blessed";
 import { CliAdapter } from "./utils/cliAdapter.js";
 import { JsonLoader } from "./utils/jsonLoader.js";
@@ -146,8 +147,20 @@ export class TUIApp {
     // Initialize key handlers
     this.keyHandlers = new KeyHandlers(this);
 
+    // Get Git repository name
+    let repositoryName = "TaskMaster"; // Default value
+    try {
+      const repoPath = execSync('git rev-parse --show-toplevel', { encoding: 'utf8', stdio: 'pipe' }).trim();
+      if (repoPath) {
+        repositoryName = basename(repoPath);
+      }
+    } catch (error) {
+      logger.warn('Could not determine Git repository name. Using default "TaskMaster". Error: ' + error.message);
+    }
+
+
     // Initialize screens
-    this.taskListScreen = new TaskListScreen(this, { height: "100%-3" });
+    this.taskListScreen = new TaskListScreen(this, { height: "100%-3", repositoryName });
     this.taskDetailScreen = new TaskDetailScreen(this, { height: "100%-2" });
     this.searchScreen = new SearchScreen(this);
     this.statusModal = new StatusModal(this);
