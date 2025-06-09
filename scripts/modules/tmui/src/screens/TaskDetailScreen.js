@@ -18,6 +18,9 @@ export class TaskDetailScreen {
     this.subtaskList = null;
     this.subtaskDetailBox = null;
     this.statusBar = null;
+    
+    // Mouse wheel scroll configuration
+    this.wheelScrollAmount = 0.5; // Scroll half a line at a time to compensate for double events
 
     this.createComponents();
     this.setupKeyHandlers();
@@ -136,6 +139,19 @@ export class TaskDetailScreen {
         this.updateSubtaskDetail();
       }
     });
+    
+    // Control mouse wheel scroll amount for subtask list
+    this.subtaskList.on('wheeldown', () => {
+      this.subtaskList.scroll(this.wheelScrollAmount); // Scroll half a line to compensate for double events
+      this.app.render();
+      return false; // Prevent default handling
+    });
+    
+    this.subtaskList.on('wheelup', () => {
+      this.subtaskList.scroll(-this.wheelScrollAmount); // Scroll half a line to compensate for double events
+      this.app.render();
+      return false; // Prevent default handling
+    });
 
     // Subtask detail pane (right side, bottom portion)
     this.subtaskDetailBox = blessed.box({
@@ -177,6 +193,19 @@ export class TaskDetailScreen {
       },
     });
 
+    // Control mouse wheel scroll amount for subtask details
+    this.subtaskDetailBox.on('wheeldown', () => {
+      this.subtaskDetailBox.scroll(this.wheelScrollAmount); // Scroll half a line to compensate for double events
+      this.app.render();
+      return false; // Prevent default handling
+    });
+    
+    this.subtaskDetailBox.on('wheelup', () => {
+      this.subtaskDetailBox.scroll(-this.wheelScrollAmount); // Scroll half a line to compensate for double events
+      this.app.render();
+      return false; // Prevent default handling
+    });
+    
     // Status bar (bottom, above search box)
     this.statusBar = blessed.box({
       parent: this.container,
@@ -197,6 +226,19 @@ export class TaskDetailScreen {
     this.parentTaskBox.on('click', () => {
       this.focusParentTask();
       this.app.render();
+    });
+    
+    // Control mouse wheel scroll amount
+    this.parentTaskBox.on('wheeldown', () => {
+      this.parentTaskBox.scroll(this.wheelScrollAmount); // Scroll half a line to compensate for double events
+      this.app.render();
+      return false; // Prevent default handling
+    });
+    
+    this.parentTaskBox.on('wheelup', () => {
+      this.parentTaskBox.scroll(-this.wheelScrollAmount); // Scroll half a line to compensate for double events
+      this.app.render();
+      return false; // Prevent default handling
     });
     
     this.subtaskList.on('click', () => {
@@ -510,6 +552,24 @@ export class TaskDetailScreen {
   /**
    * Helper to truncate list items to box width
    */
+  /**
+   * Helper function to strip emojis from text
+   * @param {string} text - Text to strip emojis from
+   * @returns {string} - Text with emojis removed
+   */
+  stripEmojis(text) {
+    // Simply return the text as is - we'll handle emoji display differently
+    // This ensures we don't accidentally strip out status indicators like checkmarks
+    if (!text) return '';
+    return text;
+  }
+
+  /**
+   * Truncate list item text to fit box width
+   * @param {string} item - Text to truncate
+   * @param {object} box - Box to fit text into
+   * @returns {string} - Truncated text
+   */
   truncateListItem(item, box) {
     let maxWidth = typeof box.width === "number" ? box.width : box.width || 80;
     maxWidth -= 2; // borders
@@ -517,13 +577,17 @@ export class TaskDetailScreen {
       maxWidth -= (box.padding.left || 0) + (box.padding.right || 0);
     }
     if (typeof maxWidth !== "number" || maxWidth < 10) maxWidth = 80;
+    
+    // Strip emojis before processing
+    const cleanItem = this.stripEmojis(item);
+    
     // Remove blessed tags for length calculation
-    const visible = item.replace(/\{[^}]+\}/g, "");
+    const visible = cleanItem.replace(/\{[^}]+\}/g, "");
     if (visible.length > maxWidth) {
       // Truncate and add ellipsis
-      return item.slice(0, maxWidth - 1) + "…";
+      return cleanItem.slice(0, maxWidth - 1) + "…";
     }
-    return item;
+    return cleanItem;
   }
 
   /**
@@ -937,6 +1001,12 @@ export class TaskDetailScreen {
   /**
    * Helper to wrap lines to box width, with truncation fallback
    */
+  /**
+   * Wrap lines to fit box width
+   * @param {string[]} lines - Lines to wrap
+   * @param {object} box - Box to fit lines into
+   * @returns {string[]} - Wrapped lines
+   */
   wrapLinesToBoxWidth(lines, box) {
     // Get the actual width in columns (after rendering)
     let maxWidth = typeof box.width === "number" ? box.width : box.width || 80;
@@ -953,7 +1023,9 @@ export class TaskDetailScreen {
     if (typeof maxWidth !== "number" || maxWidth < 10) maxWidth = 80;
     const wrapped = [];
     for (const line of lines) {
-      let l = line;
+      // Strip emojis before processing
+      let l = this.stripEmojis(line);
+      
       // Remove blessed tags for length calculation
       let visible = l.replace(/\{[^}]+\}/g, "");
       while (visible.length > maxWidth) {
@@ -975,6 +1047,8 @@ export class TaskDetailScreen {
     }
     return wrapped;
   }
+
+  // No throttle method needed anymore
 
   /**
    * Listen for screen resize and re-render display for wrapping
