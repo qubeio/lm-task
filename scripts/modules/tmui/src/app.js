@@ -14,6 +14,7 @@ import { SearchScreen } from "./screens/SearchScreen.js";
 import { StatusModal } from "./components/StatusModal.js";
 import { KeyHandlers } from "./utils/keyHandlers.js";
 import { getTheme } from "./styles/theme.js";
+import { logger } from "./utils/logger.js";
 
 export class TUIApp {
   constructor(options = {}) {
@@ -64,6 +65,7 @@ export class TUIApp {
    * Initialize and start the TUI application
    */
   async start() {
+    logger.log('TUIApp.start() called.');
     try {
       // console.log("DEBUG: Starting TUI initialization...");
       await this.initialize();
@@ -99,6 +101,7 @@ export class TUIApp {
       }
     } catch (error) {
       // console.error("DEBUG: Error in TUI start:", error);
+      logger.error('Error during TUIApp.start()', error);
       this.cleanup();
       throw error;
     }
@@ -108,6 +111,7 @@ export class TUIApp {
    * Initialize the application components
    */
   async initialize() {
+    logger.log('TUIApp.initialize() called.');
     // Create the main screen
     this.screen = blessed.screen({
       smartCSR: true,
@@ -144,7 +148,7 @@ export class TUIApp {
 
     // Initialize screens
     this.taskListScreen = new TaskListScreen(this, { height: "100%-3" });
-    this.taskDetailScreen = new TaskDetailScreen(this);
+    this.taskDetailScreen = new TaskDetailScreen(this, { height: "100%-2" });
     this.searchScreen = new SearchScreen(this);
     this.statusModal = new StatusModal(this);
   }
@@ -153,6 +157,7 @@ export class TUIApp {
    * Load tasks directly from tasks.json file
    */
   async loadTasks() {
+    logger.log('TUIApp.loadTasks() called.');
     try {
       const result = await this.jsonLoader.getTasks({ withSubtasks: true });
       this.tasks = result.tasks || [];
@@ -165,6 +170,7 @@ export class TUIApp {
       // Update last modification time for auto-refresh
       this.updateLastModTime();
     } catch (error) {
+      logger.error('Error in TUIApp.loadTasks()', error);
       this.showError(`Failed to load tasks: ${error.message}`);
       this.tasks = [];
       this.filteredTasks = [];
@@ -495,6 +501,7 @@ export class TUIApp {
    * Refresh task list (manual refresh)
    */
   async refresh() {
+    logger.log('TUIApp.refresh() called.');
     // Temporarily disable auto-refresh during manual refresh
     const wasAutoRefreshEnabled = this.autoRefreshTimer !== null;
     if (wasAutoRefreshEnabled) {
@@ -700,6 +707,7 @@ export class TUIApp {
    * Cleanup resources
    */
   cleanup() {
+    logger.log('TUIApp.cleanup() called.');
     // Stop auto-refresh timer
     this.stopAutoRefresh();
 
@@ -715,11 +723,15 @@ export class TUIApp {
         this.screen.program.reset();
         this.screen.program.showCursor();
         this.screen.destroy();
+        logger.log('Screen destroyed successfully.');
       } catch (error) {
+        logger.error('Error destroying screen during cleanup', error);
         // Silently handle cleanup errors to prevent exit noise
         // The terminal will restore itself anyway
       }
+      this.screen = null; // Ensure screen is marked as null after attempt
     }
+    logger.log('TUIApp.cleanup() finished.');
   }
 
   /**

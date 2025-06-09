@@ -4,10 +4,14 @@
  */
 
 import blessed from "blessed";
+import { StatusBar } from "../components/StatusBar.js";
+import { logger } from "../utils/logger.js";
 
 export class TaskDetailScreen {
-  constructor(app) {
+  constructor(app, options = {}) {
+    logger.log('TaskDetailScreen constructor called.');
     this.app = app;
+    this.options = options; // Store options on the instance
     this.container = null;
     this.task = null;
     this.currentSubtaskIndex = 0;
@@ -28,6 +32,13 @@ export class TaskDetailScreen {
   }
 
   /**
+   * Get the container element for this screen
+   */
+  getContainer() {
+    return this.container;
+  }
+
+  /**
    * Create the screen components
    */
   createComponents() {
@@ -37,7 +48,7 @@ export class TaskDetailScreen {
       top: 0,
       left: 0,
       width: "100%",
-      height: "100%",
+      height: this.options.height || "100%",
       hidden: true,
       border: {
         type: "line",
@@ -98,7 +109,7 @@ export class TaskDetailScreen {
       top: "30%",
       left: 0,
       width: "49%",
-      height: "60%",
+      height: "65%",
       border: {
         type: "line",
       },
@@ -159,7 +170,7 @@ export class TaskDetailScreen {
       top: "30%",
       left: "50%",
       width: "48%",
-      height: "60%",
+      height: "65%",
       border: {
         type: "line",
       },
@@ -207,20 +218,22 @@ export class TaskDetailScreen {
     });
     
     // Status bar (bottom, above search box)
-    this.statusBar = blessed.box({
-      parent: this.container,
-      bottom: 2, // Position above the search box (which has height 3)
-      left: 0,
-      width: "100%",
-      height: 1,
-      style: {
-        bg: this.app.theme.statusBarBg,
-        fg: this.app.theme.statusBarFg,
-      },
-      tags: true,
-      content:
-        " j/k: navigate subtasks | s: update status | 1: parent task | 2: subtasks | 3: details | ESC/q: back to list ",
-    });
+    // The StatusBar component now has a height of 2, so adjust bottom position accordingly
+    this.statusBar = new StatusBar(this); 
+    // The actual blessed widget is accessed via this.statusBar.getWidget()
+    // We need to ensure it's positioned correctly, if its parent is this.container
+    // The StatusBar constructor sets parent to this.screen.getContainer() which is this.container
+    // It also sets bottom to 0 by default. We need to adjust it if there's a search box below.
+    // For TaskDetailScreen, there isn't a search box directly managed here like in App.js
+    // So, we might need to adjust the container's height or the status bar's position within its own logic if needed.
+    // For now, let's assume the StatusBar component handles its positioning correctly relative to its parent.
+    // If a search box is added later *below* this screen's container, this might need adjustment.
+    // The original TaskDetailScreen status bar was at bottom: 2. Our StatusBar is height 2.
+    // If we want it at the very bottom of this.container, its own logic (bottom:0, height:2) is fine.
+    // If there was something *below* the status bar within this.container, we'd need to adjust.
+    // Let's assume it should be at the absolute bottom of this.container.
+    // The StatusBar component itself sets its blessed box to bottom: 0 of its parent.
+
     
     // Add click-to-focus handlers
     this.parentTaskBox.on('click', () => {
@@ -463,13 +476,13 @@ export class TaskDetailScreen {
    * Set the task to display
    */
   setTask(task) {
+    logger.log(`TaskDetailScreen.setTask() called for task ID: ${task ? task.id : 'undefined'}.`);
     this.task = task;
-    this.currentSubtaskIndex = 0;
-
-    // Reset scroll positions and focus state when switching tasks
-    this.resetViewState();
-
+    this.currentSubtaskIndex = 0; // Reset to the first subtask
+    this.container.show();
     this.updateDisplay();
+    this.statusBar.setSecondLine("Placeholder: Task Detail View - Second Line"); // Add this line
+    this.focus(); // Focus the default component (subtasks list)
   }
 
   /**
@@ -494,7 +507,11 @@ export class TaskDetailScreen {
    * Update the entire display with task information
    */
   updateDisplay() {
-    if (!this.task) return;
+    logger.log('TaskDetailScreen.updateDisplay() called.');
+    if (!this.task) {
+      logger.log('TaskDetailScreen.updateDisplay - no task, returning.');
+      return;
+    }
 
     this.updateParentTaskDisplay();
     this.updateSubtaskList();
@@ -825,27 +842,37 @@ export class TaskDetailScreen {
    * Update status bar for subtask navigation mode
    */
   updateStatusBarForSubtasks() {
-    this.statusBar.setContent(
-      " j/k: navigate subtasks | s: update status | 1: parent task | 2: subtasks | 3: details | ESC/q: back to list "
-    );
+    // StatusBar.updateDisplay() will be called by updateStatusBarContent
+    // ensuring the correct dynamic first line is shown.
+    this.updateStatusBarContent();
+  }
+
+  updateStatusBarContent() {
+    // The StatusBar component now handles its own content updates via updateDisplay()
+    // We just need to ensure its stats are updated if they are relevant here (they are not currently)
+    // and that setSecondLine is called when the screen is shown.
+    // If there were dynamic changes to the first line based on TaskDetailScreen state (other than screen type),
+    // we might need a new method in StatusBar or pass more context.
+    // For now, calling updateDisplay on the statusBar instance will refresh its content based on screen type.
+    if (this.statusBar) {
+      this.statusBar.updateDisplay();
+    }
   }
 
   /**
    * Update status bar for parent task scrolling mode
    */
   updateStatusBarForParentTask() {
-    this.statusBar.setContent(
-      " j/k: scroll parent task | s: update status | 1: parent task | 2: subtasks | 3: details | ESC/q: back to list "
-    );
+    // StatusBar.updateDisplay() will be called by updateStatusBarContent
+    this.updateStatusBarContent();
   }
   
   /**
    * Update status bar for subtask details scrolling mode
    */
   updateStatusBarForSubtaskDetails() {
-    this.statusBar.setContent(
-      " j/k: scroll details | s: update status | 1: parent task | 2: subtasks | 3: details | ESC/q: back to list "
-    );
+    // StatusBar.updateDisplay() will be called by updateStatusBarContent
+    this.updateStatusBarContent();
   }
 
   /**

@@ -4,12 +4,15 @@
  */
 
 import blessed from "blessed";
+import { logger } from "../utils/logger.js";
 
 export class StatusBar {
   constructor(screen) {
+    logger.log(`StatusBar constructor called for screen: ${screen.constructor.name}`);
     this.screen = screen;
     this.app = screen.app;
     this.statusBar = null;
+    this.secondLineText = " "; // Text for the second line
     this.messageTimeout = null; // Track message timeout for cleanup
     this.stats = {
       total: 0,
@@ -30,7 +33,7 @@ export class StatusBar {
       bottom: 0,
       left: 0,
       width: "100%",
-      height: 1,
+      height: 2,
       style: {
         fg: this.app.theme.statusText,
         bg: this.app.theme.statusBg,
@@ -51,9 +54,25 @@ export class StatusBar {
   }
 
   /**
+   * Set the text for the second line of the status bar
+   * @param {string} text - The text to display on the second line
+   */
+  setSecondLine(text) {
+    logger.log(`StatusBar.setSecondLine called with text: "${text}"`);
+    this.secondLineText = text || "";
+    this.updateDisplay();
+  }
+
+  /**
+    this.stats = stats;
+    this.updateDisplay();
+  }
+
+  /**
    * Update the status bar display
    */
   updateDisplay() {
+    logger.log('StatusBar.updateDisplay called.');
     const shortcuts = this.getKeyboardShortcuts();
     const statsText = this.getStatsText();
 
@@ -73,7 +92,8 @@ export class StatusBar {
       content = shortcuts;
     }
 
-    this.statusBar.setContent(content);
+    const fullContent = `${content}\n${this.secondLineText.padEnd(totalWidth)}`;
+    this.statusBar.setContent(fullContent);
   }
 
   /**
@@ -86,8 +106,10 @@ export class StatusBar {
 
     if (this.app.searchMode) {
       return ` {bold}ESC{/}: close search │ {bold}Enter{/}: select │ {bold}n/N{/}: next/prev match${autoRefreshIndicator} `;
+    } else if (this.screen && this.screen.constructor.name === 'TaskDetailScreen') {
+      return ` {bold}j/k{/}: nav subtasks │ {bold}s{/}: status │ {bold}1/2/3{/}: focus P/S/D │ {bold}ESC/q{/}: back${autoRefreshIndicator} `;
     } else {
-      return ` {bold}j/k{/}: up/down │ {bold}s{/}: update status │ {bold}/{/}: search │ {bold}Enter{/}: details │ {bold}r{/}: refresh │ {bold}q{/}: quit │ {bold}?{/}: help${autoRefreshIndicator} `;
+      return ` {bold}j/k{/}: up/down │ {bold}s{/}: status │ {bold}/{/}: search │ {bold}Enter{/}: details │ {bold}r{/}: refresh │ {bold}q{/}: quit │ {bold}?{/}: help${autoRefreshIndicator} `;
     }
   }
 
@@ -123,15 +145,21 @@ export class StatusBar {
    * Set status message (for temporary messages)
    */
   setMessage(message, duration = 3000) {
+    logger.log(`StatusBar.setMessage called with message: "${message}", duration: ${duration}`);
     // Clear any existing message timeout
     if (this.messageTimeout) {
       clearTimeout(this.messageTimeout);
       this.messageTimeout = null;
     }
 
-    const originalContent = this.statusBar.getContent();
+    // Temporarily replace the first line with the message
+    const shortcuts = this.getKeyboardShortcuts();
+    const statsText = this.getStatsText();
+    const totalWidth = this.statusBar.width - 2;
+    const firstLineContent = ` ${message} `.padEnd(totalWidth);
+    const fullContent = `${firstLineContent}\n${this.secondLineText.padEnd(totalWidth)}`;
 
-    this.statusBar.setContent(` ${message} `);
+    this.statusBar.setContent(fullContent);
     this.app.render();
 
     // Restore original content after duration

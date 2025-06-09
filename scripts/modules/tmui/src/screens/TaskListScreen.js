@@ -5,10 +5,12 @@
 
 import blessed from "blessed";
 import { TaskTable } from "../components/TaskTable.js";
+import { logger } from "../utils/logger.js";
 import { StatusBar } from "../components/StatusBar.js";
 
 export class TaskListScreen {
   constructor(app, options = {}) {
+    logger.log('TaskListScreen constructor called.');
     this.app = app;
     this.options = options;
     this.container = null;
@@ -39,7 +41,7 @@ export class TaskListScreen {
           fg: this.app.theme.border,
         },
       },
-      label: " TaskMaster TUI ",
+      label: " TaskMaster TUI \nPlaceholder Subtitle\n ",
       tags: true,
     });
 
@@ -54,8 +56,10 @@ export class TaskListScreen {
    * Show the screen
    */
   show() {
+    logger.log('TaskListScreen.show() called.');
     this.container.show();
     this.updateDisplay();
+    this.statusBar.setSecondLine("Placeholder: Task List View - Second Line"); // Add this line
     this.focus();
 
     // Ensure selection is properly synchronized after the screen is shown
@@ -99,6 +103,7 @@ export class TaskListScreen {
    * Update the entire display
    */
   updateDisplay() {
+    logger.log('TaskListScreen.updateDisplay() called.');
     const tasks = this.app.filteredTasks;
     this.updateTasks(tasks);
     // Note: setSelectedIndex is now called within updateTasks to ensure proper timing
@@ -114,7 +119,9 @@ export class TaskListScreen {
       headerText += `[${totalTasks} tasks] `;
     }
 
-    this.container.setLabel(headerText);
+    const newSubtitleLine = "Placeholder Subtitle";
+    const fullHeaderTextWithSubtitle = `${headerText}\n${newSubtitleLine}\n `;
+    this.container.setLabel(fullHeaderTextWithSubtitle);
   }
 
   /**
