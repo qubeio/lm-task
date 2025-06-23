@@ -97,7 +97,7 @@ rl.on('close', async () => {
 			'\n' +
 				chalk.cyan.bold(
 					boxen(
-						`TASKMASTER E2E Log Analysis Report\nRun Time: ${chalk.yellow(formattedTime)}`, // Display formatted time
+						`LM-TASKER E2E Log Analysis Report\nRun Time: ${chalk.yellow(formattedTime)}`, // Display formatted time
 						{
 							padding: 1,
 							borderStyle: 'double',

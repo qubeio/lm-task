@@ -1,11 +1,11 @@
 # Example Cursor AI Interactions
 
-Here are some common interactions with Cursor AI when using Task Master:
+Here are some common interactions with Cursor AI when using LM-Tasker:
 
 ## Starting a new project
 
 ```
-I've just initialized a new project with Claude Task Master. I have a PRD.md file in the project root.
+I've just initialized a new project with LM-Tasker. I have a PRD.md file in the project root.
 Can you help me parse it and set up the initial tasks?
 ```
 
@@ -46,13 +46,13 @@ Please mark it as complete and tell me what I should work on next.
 I think subtask 5.2 would fit better as part of task 7. Can you move it there?
 ```
 
-(Agent runs: `task-master move --from=5.2 --to=7.3`)
+(Agent runs: `lm-tasker move --from=5.2 --to=7.3`)
 
 ```
 Task 8 should actually be a subtask of task 4. Can you reorganize this?
 ```
 
-(Agent runs: `task-master move --from=8 --to=4.1`)
+(Agent runs: `lm-tasker move --from=8 --to=4.1`)
 
 ```
 I just merged the main branch and there's a conflict in tasks.json. My teammates created tasks 10-15 on their branch while I created tasks 10-12 on my branch. Can you help me resolve this by moving my tasks?
@@ -61,9 +61,9 @@ I just merged the main branch and there's a conflict in tasks.json. My teammates
 (Agent runs:
 
 ```bash
-task-master move --from=10 --to=16
-task-master move --from=11 --to=17
-task-master move --from=12 --to=18
+lm-tasker move --from=10 --to=16
+lm-tasker move --from=11 --to=17
+lm-tasker move --from=12 --to=18
 ```
 
 )
@@ -75,7 +75,7 @@ Task 5 seems complex. Can you help me add some subtasks to break it down into sm
 ```
 
 (Agent runs:
-`task-master add-subtask --parent=5 --title="Setup authentication" --description="Implement user authentication system"`)
+`lm-tasker add-subtask --parent=5 --title="Setup authentication" --description="Implement user authentication system"`)
 
 ### Updating Tasks
 
@@ -83,7 +83,7 @@ Task 5 seems complex. Can you help me add some subtasks to break it down into sm
 We need to update task 15 based on the latest React Query v5 changes. Can you update the task?
 ```
 
-(Agent runs: `task-master update-task --id=15 --prompt="Update based on React Query v5 changes"`)
+(Agent runs: `lm-tasker update-task --id=15 --prompt="Update based on React Query v5 changes"`)
 
 ### Adding Tasks
 
@@ -91,4 +91,4 @@ We need to update task 15 based on the latest React Query v5 changes. Can you up
 Please add a new task to implement user profile image uploads using Cloudinary.
 ```
 
-(Agent runs: `task-master add-task --prompt="Implement user profile image uploads using Cloudinary"`)
+(Agent runs: `lm-tasker add-task --prompt="Implement user profile image uploads using Cloudinary"`)

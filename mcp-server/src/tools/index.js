@@ -1,6 +1,6 @@
 /**
  * tools/index.js
- * Export all Task Master CLI tools for MCP server
+ * Export all LM-Tasker CLI tools for MCP server
  */
 
 import { registerListTasksTool } from "./get-tasks.js";
@@ -28,8 +28,8 @@ import { registerMoveTaskTool } from "./move-task.js";
 import { registerMigratePRDTool } from "./migrate-prd.js";
 
 /**
- * Register all Task Master tools with the MCP server
- * @param {Object} server - FastMCP server instance
+ * Register all LM-Tasker tools with the MCP server
+ * @param {FastMCP} server - The MCP server instance
  */
 export function registerTaskMasterTools(server) {
   try {
@@ -67,7 +67,7 @@ export function registerTaskMasterTools(server) {
     registerValidateDependenciesTool(server);
     registerFixDependenciesTool(server);
   } catch (error) {
-    logger.error(`Error registering Task Master tools: ${error.message}`);
+    logger.error(`Error registering LM-Tasker tools: ${error.message}`);
     throw error;
   }
 }

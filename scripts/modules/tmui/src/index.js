@@ -5,7 +5,7 @@
 
 import { program } from "commander";
 import { TUIApp } from "./app.js";
-import { getTaskMasterVersion } from "../../../../src/utils/getVersion.js";
+import { getLmTaskerVersion } from "../../../../src/utils/getVersion.js";
 import { findProjectRoot } from "../../utils.js";
 import chalk from "chalk";
 
@@ -69,7 +69,7 @@ export function registerTUICommand(programInstance) {
  * Standalone CLI entry point for tmui command
  */
 export async function runTUI() {
-  const version = await getTaskMasterVersion();
+  	const version = await getLmTaskerVersion();
 
   program
     .name("tmui")

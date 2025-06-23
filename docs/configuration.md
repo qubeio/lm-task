@@ -1,12 +1,12 @@
 # Configuration
 
-Taskmaster uses two primary methods for configuration:
+LM-Tasker uses two primary methods for configuration:
 
-1.  **`.taskmasterconfig` File (Project Root - Recommended for most settings)**
+1.  **`.lmtaskerconfig` File (Project Root - Recommended for most settings)**
 
     - This JSON file stores most configuration settings, including AI model selections, parameters, logging levels, and project defaults.
-    - **Location:** This file is created in the root directory of your project when you run the `task-master models --setup` interactive setup. You typically do this during the initialization sequence. Do not manually edit this file beyond adjusting Temperature and Max Tokens depending on your model.
-    - **Management:** Use the `task-master models --setup` command (or `models` MCP tool) to interactively create and manage this file. You can also set specific models directly using `task-master models --set-main=<model_id>` or `task-master models --set-fallback=<model_id>`. Manual editing is possible but not recommended unless you understand the structure.
+    - **Location:** This file is created in the root directory of your project when you run the `lm-tasker models --setup` interactive setup. You typically do this during the initialization sequence. Do not manually edit this file beyond adjusting Temperature and Max Tokens depending on your model.
+    - **Management:** Use the `lm-tasker models --setup` command (or `models` MCP tool) to interactively create and manage this file. You can also set specific models directly using `lm-tasker models --set-main=<model_id>` or `lm-tasker models --set-fallback=<model_id>`. Manual editing is possible but not recommended unless you understand the structure.
     - **Example Structure:**
       ```json
       {
@@ -46,7 +46,7 @@ Taskmaster uses two primary methods for configuration:
       - `AZURE_OPENAI_API_KEY`: Your Azure OpenAI API key (required).
       - `AZURE_OPENAI_ENDPOINT`: Your Azure OpenAI endpoint URL (required).
 
-**Important:** Settings like model ID selections (`main`, `fallback`), `maxTokens`, `temperature`, `logLevel`, `defaultSubtasks`, `defaultPriority`, and `projectName` are **managed in `.taskmasterconfig`**, not environment variables.
+**Important:** Settings like model ID selections (`main`, `fallback`), `maxTokens`, `temperature`, `logLevel`, `defaultSubtasks`, `defaultPriority`, and `projectName` are **managed in `.lmtaskerconfig`**, not environment variables.
 
 ## Example `.env` File (for API Keys)
 
@@ -60,21 +60,21 @@ AZURE_OPENAI_ENDPOINT=https://your-endpoint.openai.azure.com/
 
 ### Configuration Errors
 
-- If Task Master reports errors about missing configuration or cannot find `.taskmasterconfig`, run `task-master models --setup` in your project root to create or repair the file.
+- If LM-Tasker reports errors about missing configuration or cannot find `.lmtaskerconfig`, run `lm-tasker models --setup` in your project root to create or repair the file.
 - Ensure API keys are correctly placed in your `.env` file (for CLI) or `.cursor/mcp.json` (for MCP) and are valid for Azure OpenAI.
 
-### If `task-master init` doesn't respond:
+### If `lm-tasker init` doesn't respond:
 
 Try running it with Node directly:
 
 ```bash
-node node_modules/claude-task-master/scripts/init.js
+node node_modules/lm-tasker/scripts/init.js
 ```
 
 Or clone the repository and run:
 
 ```bash
-git clone https://github.com/finastra-platform/MCP-TaskMaster.git
-cd MCP-TaskMaster
+git clone https://github.com/your-org/lm-tasker.git
+cd lm-tasker
 node scripts/init.js
 ```

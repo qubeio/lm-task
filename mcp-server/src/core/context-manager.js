@@ -1,6 +1,6 @@
 /**
  * context-manager.js
- * Context and cache management for Task Master MCP Server
+ * Context and cache management for LM-Tasker MCP Server
  */
 
 import { FastMCP } from 'fastmcp';

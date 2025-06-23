@@ -266,7 +266,7 @@ IMPLEMENTATION COMPLETE: Successfully implemented interactive status update func
 Implementation complete: Status update functionality has been successfully added to TaskDetailScreen. The 's' key binding is now available across all relevant components, enabling users to update the status of either the parent task or the currently selected subtask, depending on focus. The showStatusUpdate() method manages context-aware status updates, integrating with the existing StatusModal for a unified experience. Backend updates are handled via updateTaskStatus(), and users receive immediate feedback through showStatusMessage(). Status bar instructions have been updated to reflect the new option. The modal displays the correct task or subtask information, and task data refreshes automatically after updates. The user experience is seamless, with clear visual cues and consistent behavior throughout the interface.
 </info added on 2025-06-08T00:50:43.052Z>
 
-## 12. Implement Automatic Refresh for TUI [pending]
+## 12. Implement Automatic Refresh for TUI [done]
 ### Dependencies: 102.11
 ### Description: Add automatic periodic refresh functionality to the TUI that updates the task list every 2 seconds without disrupting user navigation or interaction.
 ### Details:

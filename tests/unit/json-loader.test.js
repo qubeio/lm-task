@@ -2,22 +2,45 @@
  * Unit tests for JsonLoader class
  */
 
-import fs from 'fs';
-import path from 'path';
 import { jest } from '@jest/globals';
-import { JsonLoader } from '../../scripts/modules/tmui/src/utils/jsonLoader.js';
 
-// Mock fs module
-jest.mock('fs', () => ({
+// Mock fs module before importing JsonLoader
+jest.unstable_mockModule('fs', () => ({
+  default: {
+    readFileSync: jest.fn(),
+    writeFileSync: jest.fn(),
+    statSync: jest.fn()
+  },
   readFileSync: jest.fn(),
   writeFileSync: jest.fn(),
   statSync: jest.fn()
 }));
 
+// Mock child_process module
+jest.unstable_mockModule('child_process', () => ({
+  exec: jest.fn((cmd, callback) => {
+    // Mock successful execution
+    callback(null, 'Mock output', '');
+  })
+}));
+
+// Mock util.promisify
+jest.unstable_mockModule('util', () => ({
+  promisify: jest.fn((fn) => {
+    return jest.fn().mockResolvedValue('Mock output');
+  })
+}));
+
+// Now import the modules after mocking
+const fs = await import('fs');
+const path = await import('path');
+const childProcess = await import('child_process');
+const { JsonLoader } = await import('../../scripts/modules/tmui/src/utils/jsonLoader.js');
+
 describe('JsonLoader', () => {
   let jsonLoader;
   const mockProjectRoot = '/mock/project/root';
-  const mockTasksFile = path.join(mockProjectRoot, 'tasks', 'tasks.json');
+  const mockTasksFile = path.default.join(mockProjectRoot, 'tasks', 'tasks.json');
   
   // Sample task data for testing
   const mockTasksData = {
@@ -63,6 +86,7 @@ describe('JsonLoader', () => {
     });
     
     // Default mock implementation for readFileSync
+    fs.default.readFileSync.mockImplementation(() => JSON.stringify(mockTasksData));
     fs.readFileSync.mockImplementation(() => JSON.stringify(mockTasksData));
   });
 
@@ -70,7 +94,7 @@ describe('JsonLoader', () => {
     test('should read and parse tasks.json file successfully', () => {
       const result = jsonLoader.readTasksJson();
       
-      expect(fs.readFileSync).toHaveBeenCalledWith(mockTasksFile, 'utf8');
+      expect(fs.default.readFileSync).toHaveBeenCalledWith(mockTasksFile, 'utf8');
       expect(result).toEqual(mockTasksData);
     });
 
@@ -79,6 +103,9 @@ describe('JsonLoader', () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       
       // Mock readFileSync to throw an error
+      fs.default.readFileSync.mockImplementation(() => {
+        throw new Error('File not found');
+      });
       fs.readFileSync.mockImplementation(() => {
         throw new Error('File not found');
       });
@@ -95,14 +122,14 @@ describe('JsonLoader', () => {
 
   describe('getTasks', () => {
     test('should return all tasks when no filter is provided', async () => {
-      const result = await jsonLoader.getTasks();
+      const result = await jsonLoader.getTasks({ withSubtasks: true });
       
       expect(result.tasks).toHaveLength(3);
       expect(result.tasks).toEqual(mockTasksData.tasks);
     });
 
     test('should filter tasks by status', async () => {
-      const result = await jsonLoader.getTasks({ status: 'pending' });
+      const result = await jsonLoader.getTasks({ status: 'pending', withSubtasks: true });
       
       expect(result.tasks).toHaveLength(1);
       expect(result.tasks[0].id).toBe(1);
@@ -166,10 +193,10 @@ describe('JsonLoader', () => {
       const result = await jsonLoader.updateTaskStatus(1, 'done');
       
       expect(result).toBe(true);
-      expect(fs.writeFileSync).toHaveBeenCalled();
+      expect(fs.default.writeFileSync).toHaveBeenCalled();
       
       // Verify the task status was updated in the data passed to writeFileSync
-      const writtenData = JSON.parse(fs.writeFileSync.mock.calls[0][1]);
+      const writtenData = JSON.parse(fs.default.writeFileSync.mock.calls[0][1]);
       expect(writtenData.tasks[0].status).toBe('done');
     });
 
@@ -177,10 +204,10 @@ describe('JsonLoader', () => {
       const result = await jsonLoader.updateTaskStatus('1.2', 'done');
       
       expect(result).toBe(true);
-      expect(fs.writeFileSync).toHaveBeenCalled();
+      expect(fs.default.writeFileSync).toHaveBeenCalled();
       
       // Verify the subtask status was updated in the data passed to writeFileSync
-      const writtenData = JSON.parse(fs.writeFileSync.mock.calls[0][1]);
+      const writtenData = JSON.parse(fs.default.writeFileSync.mock.calls[0][1]);
       expect(writtenData.tasks[0].subtasks[1].status).toBe('done');
     });
 
@@ -188,14 +215,14 @@ describe('JsonLoader', () => {
       const result = await jsonLoader.updateTaskStatus(999, 'done');
       
       expect(result).toBe(false);
-      expect(fs.writeFileSync).not.toHaveBeenCalled();
+      expect(fs.default.writeFileSync).not.toHaveBeenCalled();
     });
 
     test('should return false when subtask is not found', async () => {
       const result = await jsonLoader.updateTaskStatus('1.999', 'done');
       
       expect(result).toBe(false);
-      expect(fs.writeFileSync).not.toHaveBeenCalled();
+      expect(fs.default.writeFileSync).not.toHaveBeenCalled();
     });
   });
 

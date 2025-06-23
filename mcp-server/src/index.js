@@ -14,16 +14,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /**
- * Main MCP server class that integrates with Task Master
+ * Main MCP server class that integrates with LM-Tasker
  */
-class TaskMasterMCPServer {
+class LmTaskerMCPServer {
 	constructor() {
 		// Get version from package.json using synchronous fs
 		const packagePath = path.join(__dirname, '../../package.json');
 		const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
 
 		this.options = {
-			name: 'Task Master MCP Server',
+			name: 'LM-Tasker MCP Server',
 			version: packageJson.version
 		};
 
@@ -84,4 +84,4 @@ class TaskMasterMCPServer {
 	}
 }
 
-export default TaskMasterMCPServer;
+export default LmTaskerMCPServer;

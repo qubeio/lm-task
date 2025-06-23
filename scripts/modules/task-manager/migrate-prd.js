@@ -5,8 +5,16 @@ import boxen from "boxen";
 import { log } from "../utils.js";
 
 /**
- * Migration utility for converting old PRD.txt files to new PRD.md format
- * Provides backward compatibility and migration support for Task Master PRD refactor
+ * migrate-prd.js
+ * Migration support for transitioning from legacy PRD formats
+ * 
+ * This module handles the migration from older PRD formats to the current
+ * task structure. It maintains backward compatibility and provides a smooth
+ * transition path for existing projects.
+ * 
+ * Provides backward compatibility and migration support for LM-Tasker PRD refactor
+ * 
+ * @module migrate-prd
  */
 
 /**

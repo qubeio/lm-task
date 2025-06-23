@@ -152,17 +152,17 @@ async function getModelConfiguration(options = {}) {
 	let configExists = false;
 
 	if (projectRoot) {
-		configPath = path.join(projectRoot, '.taskmasterconfig');
+		configPath = path.join(projectRoot, '.lmtaskerconfig');
 		configExists = fs.existsSync(configPath);
 		report(
 			'info',
-			`Checking for .taskmasterconfig at: ${configPath}, exists: ${configExists}`
+			`Checking for .lmtaskerconfig at: ${configPath}, exists: ${configExists}`
 		);
 	} else {
 		configExists = isConfigFilePresent();
 		report(
 			'info',
-			`Checking for .taskmasterconfig using isConfigFilePresent(), exists: ${configExists}`
+			`Checking for .lmtaskerconfig using isConfigFilePresent(), exists: ${configExists}`
 		);
 	}
 
@@ -172,7 +172,7 @@ async function getModelConfiguration(options = {}) {
 			error: {
 				code: 'CONFIG_MISSING',
 				message:
-					'The .taskmasterconfig file is missing. Run "task-master models --setup" to create it.'
+					'The .lmtaskerconfig file is missing. Run "lm-tasker models --setup" to create it.'
 			}
 		};
 	}
@@ -268,17 +268,17 @@ async function getAvailableModelsList(options = {}) {
 	let configExists = false;
 
 	if (projectRoot) {
-		configPath = path.join(projectRoot, '.taskmasterconfig');
+		configPath = path.join(projectRoot, '.lmtaskerconfig');
 		configExists = fs.existsSync(configPath);
 		report(
 			'info',
-			`Checking for .taskmasterconfig at: ${configPath}, exists: ${configExists}`
+			`Checking for .lmtaskerconfig at: ${configPath}, exists: ${configExists}`
 		);
 	} else {
 		configExists = isConfigFilePresent();
 		report(
 			'info',
-			`Checking for .taskmasterconfig using isConfigFilePresent(), exists: ${configExists}`
+			`Checking for .lmtaskerconfig using isConfigFilePresent(), exists: ${configExists}`
 		);
 	}
 
@@ -288,7 +288,7 @@ async function getAvailableModelsList(options = {}) {
 			error: {
 				code: 'CONFIG_MISSING',
 				message:
-					'The .taskmasterconfig file is missing. Run "task-master models --setup" to create it.'
+					'The .lmtaskerconfig file is missing. Run "lm-tasker models --setup" to create it.'
 			}
 		};
 	}
@@ -365,17 +365,17 @@ async function setModel(role, modelId, options = {}) {
 	let configExists = false;
 
 	if (projectRoot) {
-		configPath = path.join(projectRoot, '.taskmasterconfig');
+		configPath = path.join(projectRoot, '.lmtaskerconfig');
 		configExists = fs.existsSync(configPath);
 		report(
 			'info',
-			`Checking for .taskmasterconfig at: ${configPath}, exists: ${configExists}`
+			`Checking for .lmtaskerconfig at: ${configPath}, exists: ${configExists}`
 		);
 	} else {
 		configExists = isConfigFilePresent();
 		report(
 			'info',
-			`Checking for .taskmasterconfig using isConfigFilePresent(), exists: ${configExists}`
+			`Checking for .lmtaskerconfig using isConfigFilePresent(), exists: ${configExists}`
 		);
 	}
 
@@ -385,7 +385,7 @@ async function setModel(role, modelId, options = {}) {
 			error: {
 				code: 'CONFIG_MISSING',
 				message:
-					'The .taskmasterconfig file is missing. Run "task-master models --setup" to create it.'
+					'The .lmtaskerconfig file is missing. Run "lm-tasker models --setup" to create it.'
 			}
 		};
 	}
@@ -531,7 +531,7 @@ async function setModel(role, modelId, options = {}) {
 				success: false,
 				error: {
 					code: 'WRITE_ERROR',
-					message: 'Error writing updated configuration to .taskmasterconfig'
+					message: 'Error writing updated configuration to .lmtaskerconfig'
 				}
 			};
 		}

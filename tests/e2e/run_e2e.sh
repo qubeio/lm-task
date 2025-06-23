@@ -47,7 +47,7 @@ fi
 
 
 # --- Configuration ---
-# Assumes script is run from the project root (claude-task-master)
+# Assumes script is run from the project root (lm-tasker)
 TASKMASTER_SOURCE_DIR="." # Current directory is the source
 # Base directory for test runs, relative to project root
 BASE_TEST_DIR="$TASKMASTER_SOURCE_DIR/tests/e2e/_runs"
@@ -278,7 +278,7 @@ log_step() {
   # --- Test Setup (Output to tee) ---
   log_step "Setting up test environment"
 
-  log_step "Creating global npm link for task-master-ai"
+  log_step "Creating global npm link for lm-tasker"
   if npm link; then
     log_success "Global link created/updated."
   else
@@ -327,20 +327,20 @@ log_step() {
 
   # --- Test Execution (Output to tee) ---
 
-  log_step "Linking task-master-ai package locally"
-  npm link task-master-ai
+  log_step "Linking lm-tasker package locally"
+  npm link lm-tasker
   log_success "Package linked locally."
 
   log_step "Initializing Task Master project (non-interactive)"
-  task-master init -y --name="E2E Test $TIMESTAMP" --description="Automated E2E test run"
-  if [ ! -f ".taskmasterconfig" ]; then
-    log_error "Initialization failed: .taskmasterconfig not found."
+  lm-tasker init -y --name="E2E Test $TIMESTAMP" --description="Automated E2E test run"
+  if [ ! -f ".lmtaskerconfig" ]; then
+    log_error "Initialization failed: .lmtaskerconfig not found."
     exit 1
   fi
   log_success "Project initialized."
 
   log_step "Parsing PRD"
-  cmd_output_prd=$(task-master parse-prd --force 2>&1)
+  cmd_output_prd=$(lm-tasker parse-prd --force 2>&1)
   exit_status_prd=$?
   echo "$cmd_output_prd"
   extract_and_sum_cost "$cmd_output_prd"
@@ -353,36 +353,36 @@ log_step() {
 
   log_step "Ensuring Task 1 has subtasks for testing"
   # Add a simple subtask to Task 1 for testing purposes
-  task-master add-subtask --parent=1 --title="Test subtask 1.1" --description="Test subtask for dependency testing"
+  lm-tasker add-subtask --parent=1 --title="Test subtask 1.1" --description="Test subtask for dependency testing"
   log_success "Added test subtask to Task 1."
 
   log_step "Setting status for Subtask 1.1 (assuming it exists)"
-  task-master set-status --id=1.1 --status=done
+  lm-tasker set-status --id=1.1 --status=done
   log_success "Attempted to set status for Subtask 1.1 to 'done'."
 
   log_step "Listing tasks again (after changes)"
-  task-master list --with-subtasks > task_list_after_changes.log
+  lm-tasker list --with-subtasks > task_list_after_changes.log
   log_success "Task list after changes saved to task_list_after_changes.log"
 
   # === Test Model Commands ===
   log_step "Checking initial model configuration"
-  task-master models > models_initial_config.log
+  lm-tasker models > models_initial_config.log
   log_success "Initial model config saved to models_initial_config.log"
 
   log_step "Setting main model"
-  task-master models --set-main o3-mini
+  lm-tasker models --set-main o3-mini
   log_success "Set main model."
 
   log_step "Setting fallback model"
-  task-master models --set-fallback gpt-4o-mini
+  lm-tasker models --set-fallback gpt-4o-mini
   log_success "Set fallback model."
 
   log_step "Checking final model configuration"
-  task-master models > models_final_config.log
+  lm-tasker models > models_final_config.log
   log_success "Final model config saved to models_final_config.log"
 
   log_step "Resetting main model to default before provider tests"
-  task-master models --set-main o3-mini
+  lm-tasker models --set-main o3-mini
   log_success "Main model reset to o3-mini."
 
   # === End Model Commands Test ===
@@ -445,7 +445,7 @@ log_step() {
 
     # 1. Set the main model for this provider
     log_info "Setting main model to $model for $provider ${flag:+using flag $flag}..."
-    set_model_cmd="task-master models --set-main \"$model\" $flag"
+    set_model_cmd="lm-tasker models --set-main \"$model\" $flag"
     echo "Executing: $set_model_cmd"
     if eval $set_model_cmd; then
       log_success "Successfully set main model for $provider."
@@ -460,7 +460,7 @@ log_step() {
     log_info "Running add-task with prompt..."
     add_task_output_file="add_task_raw_output_${provider}_${model//\//_}.log" # Sanitize ID
     # Run add-task and capture ALL output (stdout & stderr) to a file AND a variable
-    add_task_cmd_output=$(task-master add-task --prompt "$add_task_prompt" 2>&1 | tee "$add_task_output_file")
+    add_task_cmd_output=$(lm-tasker add-task --prompt "$add_task_prompt" 2>&1 | tee "$add_task_output_file")
     add_task_exit_code=${PIPESTATUS[0]}
 
     # 3. Check for success and extract task ID
@@ -487,7 +487,7 @@ log_step() {
     if [ "$new_task_id" != "FAILED" ] && [ "$new_task_id" != "UNKNOWN_ID_EXTRACTION_FAILED" ]; then
       log_info "Running task show for new task ID: $new_task_id"
       show_output_file="add_task_show_output_${provider}_id_${new_task_id}.log"
-      if task-master show "$new_task_id" > "$show_output_file"; then
+      if lm-tasker show "$new_task_id" > "$show_output_file"; then
         log_success "Task show output saved to $show_output_file"
       else
         log_error "task show command failed for ID $new_task_id. Check log."
@@ -506,48 +506,48 @@ log_step() {
   # === End Multi-Provider Add-Task Test ===
 
   log_step "Listing tasks again (after multi-add)"
-  task-master list --with-subtasks > task_list_after_multi_add.log
+  lm-tasker list --with-subtasks > task_list_after_multi_add.log
   log_success "Task list after multi-add saved to task_list_after_multi_add.log"
 
 
   # === Resume Core Task Commands Test ===
   log_step "Listing tasks (for core tests)"
-  task-master list > task_list_core_test_start.log
+  lm-tasker list > task_list_core_test_start.log
   log_success "Core test initial task list saved."
 
   log_step "Getting next task"
-  task-master next > next_task_core_test.log
+  lm-tasker next > next_task_core_test.log
   log_success "Core test next task saved."
 
   log_step "Showing Task 1 details"
-  task-master show 1 > task_1_details_core_test.log
+  lm-tasker show 1 > task_1_details_core_test.log
   log_success "Task 1 details saved."
 
   log_step "Adding dependency (Task 2 depends on Task 1)"
-  task-master add-dependency --id=2 --depends-on=1
+  lm-tasker add-dependency --id=2 --depends-on=1
   log_success "Added dependency 2->1."
 
   log_step "Validating dependencies (after add)"
-  task-master validate-dependencies > validate_dependencies_after_add_core.log
+  lm-tasker validate-dependencies > validate_dependencies_after_add_core.log
   log_success "Dependency validation after add saved."
 
   log_step "Removing dependency (Task 2 depends on Task 1)"
-  task-master remove-dependency --id=2 --depends-on=1
+  lm-tasker remove-dependency --id=2 --depends-on=1
   log_success "Removed dependency 2->1."
 
   log_step "Fixing dependencies (should be no-op now)"
-  task-master fix-dependencies > fix_dependencies_output_core.log
+  lm-tasker fix-dependencies > fix_dependencies_output_core.log
   log_success "Fix dependencies attempted."
 
   # === Start New Test Section: Validate/Fix Bad Dependencies ===
 
   log_step "Intentionally adding non-existent dependency (1 -> 999)"
-  task-master add-dependency --id=1 --depends-on=999 || log_error "Failed to add non-existent dependency (unexpected)"
+  lm-tasker add-dependency --id=1 --depends-on=999 || log_error "Failed to add non-existent dependency (unexpected)"
   # Don't exit even if the above fails, the goal is to test validation
   log_success "Attempted to add dependency 1 -> 999."
 
   log_step "Validating dependencies (expecting non-existent error)"
-  task-master validate-dependencies > validate_deps_non_existent.log 2>&1 || true # Allow command to fail without exiting script
+  lm-tasker validate-dependencies > validate_deps_non_existent.log 2>&1 || true # Allow command to fail without exiting script
   if grep -q "Non-existent dependency ID: 999" validate_deps_non_existent.log; then
       log_success "Validation correctly identified non-existent dependency 999."
   else
@@ -555,11 +555,11 @@ log_step() {
   fi
 
   log_step "Fixing dependencies (should remove 1 -> 999)"
-  task-master fix-dependencies > fix_deps_after_non_existent.log
+  lm-tasker fix-dependencies > fix_deps_after_non_existent.log
   log_success "Attempted to fix dependencies."
 
   log_step "Validating dependencies (after fix)"
-  task-master validate-dependencies > validate_deps_after_fix_non_existent.log 2>&1 || true # Allow potential failure
+  lm-tasker validate-dependencies > validate_deps_after_fix_non_existent.log 2>&1 || true # Allow potential failure
   if grep -q "Non-existent dependency ID: 999" validate_deps_after_fix_non_existent.log; then
       log_error "Validation STILL reports non-existent dependency 999 after fix. Check logs."
   else
@@ -568,13 +568,13 @@ log_step() {
 
 
   log_step "Intentionally adding circular dependency (4 -> 5 -> 4)"
-  task-master add-dependency --id=4 --depends-on=5 || log_error "Failed to add dependency 4->5"
-  task-master add-dependency --id=5 --depends-on=4 || log_error "Failed to add dependency 5->4"
+  lm-tasker add-dependency --id=4 --depends-on=5 || log_error "Failed to add dependency 4->5"
+  lm-tasker add-dependency --id=5 --depends-on=4 || log_error "Failed to add dependency 5->4"
   log_success "Attempted to add dependencies 4 -> 5 and 5 -> 4."
 
 
   log_step "Validating dependencies (expecting circular error)"
-  task-master validate-dependencies > validate_deps_circular.log 2>&1 || true # Allow command to fail
+  lm-tasker validate-dependencies > validate_deps_circular.log 2>&1 || true # Allow command to fail
   # Note: Adjust the grep pattern based on the EXACT error message from validate-dependencies
   if grep -q -E "Circular dependency detected involving task IDs: (4, 5|5, 4)" validate_deps_circular.log; then
       log_success "Validation correctly identified circular dependency between 4 and 5."
@@ -583,11 +583,11 @@ log_step() {
   fi
 
   log_step "Fixing dependencies (should remove one side of 4 <-> 5)"
-  task-master fix-dependencies > fix_deps_after_circular.log
+  lm-tasker fix-dependencies > fix_deps_after_circular.log
   log_success "Attempted to fix dependencies."
 
   log_step "Validating dependencies (after fix circular)"
-  task-master validate-dependencies > validate_deps_after_fix_circular.log 2>&1 || true # Allow potential failure
+  lm-tasker validate-dependencies > validate_deps_after_fix_circular.log 2>&1 || true # Allow potential failure
   if grep -q -E "Circular dependency detected involving task IDs: (4, 5|5, 4)" validate_deps_after_fix_circular.log; then
       log_error "Validation STILL reports circular dependency 4<->5 after fix. Check logs."
   else
@@ -603,11 +603,11 @@ log_step() {
   ai_task_id=$((manual_task_id + 1))
 
   log_step "Adding Task $manual_task_id (Manual)"
-  task-master add-task --title="Manual E2E Task" --description="Add basic health check endpoint" --priority=low --dependencies=3 # Depends on backend setup
+  lm-tasker add-task --title="Manual E2E Task" --description="Add basic health check endpoint" --priority=low --dependencies=3 # Depends on backend setup
   log_success "Added Task $manual_task_id manually."
 
   log_step "Adding Task $ai_task_id (AI)"
-  cmd_output_add_ai=$(task-master add-task --prompt="Implement basic UI styling using CSS variables for colors and spacing" --priority=medium --dependencies=1 2>&1)
+  cmd_output_add_ai=$(lm-tasker add-task --prompt="Implement basic UI styling using CSS variables for colors and spacing" --priority=medium --dependencies=1 2>&1)
   exit_status_add_ai=$?
   echo "$cmd_output_add_ai"
   extract_and_sum_cost "$cmd_output_add_ai"
@@ -619,7 +619,7 @@ log_step() {
 
 
   log_step "Updating Task 3 (update-task AI)"
-  cmd_output_update_task3=$(task-master update-task --id=3 --prompt="Update backend server setup: Ensure CORS is configured to allow requests from the frontend origin." 2>&1)
+  cmd_output_update_task3=$(lm-tasker update-task --id=3 --prompt="Update backend server setup: Ensure CORS is configured to allow requests from the frontend origin." 2>&1)
   exit_status_update_task3=$?
   echo "$cmd_output_update_task3"
   extract_and_sum_cost "$cmd_output_update_task3"
@@ -630,7 +630,7 @@ log_step() {
   fi
 
   log_step "Updating Tasks from Task 5 (update AI)"
-  cmd_output_update_from5=$(task-master update --from=5 --prompt="Refactor the backend storage module to use a simple JSON file (storage.json) instead of an in-memory object for persistence. Update relevant tasks." 2>&1)
+  cmd_output_update_from5=$(lm-tasker update --from=5 --prompt="Refactor the backend storage module to use a simple JSON file (storage.json) instead of an in-memory object for persistence. Update relevant tasks." 2>&1)
   exit_status_update_from5=$?
   echo "$cmd_output_update_from5"
   extract_and_sum_cost "$cmd_output_update_from5"
@@ -641,11 +641,11 @@ log_step() {
   fi
 
   log_step "Adding test subtask to Task 8 for update testing"
-  task-master add-subtask --parent=8 --title="Test subtask 8.1" --description="Test subtask for update testing"
+  lm-tasker add-subtask --parent=8 --title="Test subtask 8.1" --description="Test subtask for update testing"
   log_success "Added test subtask to Task 8."
 
   log_step "Updating Subtask 8.1 (update-subtask AI)"
-  cmd_output_update_subtask81=$(task-master update-subtask --id=8.1 --prompt="Implementation note: Remember to handle potential API errors and display a user-friendly message." 2>&1)
+  cmd_output_update_subtask81=$(lm-tasker update-subtask --id=8.1 --prompt="Implementation note: Remember to handle potential API errors and display a user-friendly message." 2>&1)
   exit_status_update_subtask81=$?
   echo "$cmd_output_update_subtask81"
   extract_and_sum_cost "$cmd_output_update_subtask81"
@@ -657,25 +657,25 @@ log_step() {
 
   # Add a couple more subtasks for multi-remove test
   log_step 'Adding subtasks to Task 2 (for multi-remove test)'
-  task-master add-subtask --parent=2 --title="Subtask 2.1 for removal"
-  task-master add-subtask --parent=2 --title="Subtask 2.2 for removal"
+  lm-tasker add-subtask --parent=2 --title="Subtask 2.1 for removal"
+  lm-tasker add-subtask --parent=2 --title="Subtask 2.2 for removal"
   log_success "Added subtasks 2.1 and 2.2."
 
   log_step "Removing Subtasks 2.1 and 2.2 (multi-ID)"
-  task-master remove-subtask --id=2.1,2.2
+  lm-tasker remove-subtask --id=2.1,2.2
   log_success "Removed subtasks 2.1 and 2.2."
 
   log_step "Setting status for Task 1 to done"
-  task-master set-status --id=1 --status=done
+  lm-tasker set-status --id=1 --status=done
   log_success "Set status for Task 1 to done."
 
   log_step "Getting next task (after status change)"
-  task-master next > next_task_after_change_core.log
+  lm-tasker next > next_task_after_change_core.log
   log_success "Next task after change saved."
 
   # === Start New Test Section: List Filtering ===
   log_step "Listing tasks filtered by status 'done'"
-  task-master list --status=done > task_list_status_done.log
+  lm-tasker list --status=done > task_list_status_done.log
   log_success "Filtered list saved to task_list_status_done.log (Manual/LLM check recommended)"
   # Optional assertion: Check if Task 1 ID exists and Task 2 ID does NOT
   # if grep -q "^1\." task_list_status_done.log && ! grep -q "^2\." task_list_status_done.log; then
@@ -686,35 +686,35 @@ log_step() {
   # === End New Test Section ===
 
   log_step "Clearing subtasks from Task 8"
-  task-master clear-subtasks --id=8
+  lm-tasker clear-subtasks --id=8
   log_success "Attempted to clear subtasks from Task 8."
 
   log_step "Removing Tasks $manual_task_id and $ai_task_id (multi-ID)"
   # Remove the tasks we added earlier
-  task-master remove-task --id="$manual_task_id,$ai_task_id" -y
+  lm-tasker remove-task --id="$manual_task_id,$ai_task_id" -y
   log_success "Removed tasks $manual_task_id and $ai_task_id."
 
   # === Start New Test Section: Subtasks & Dependencies ===
 
   log_step "Adding test subtasks to Task 2"
-  task-master add-subtask --parent=2 --title="Test subtask 2.1" --description="Test subtask for clear-all testing"
-  task-master add-subtask --parent=2 --title="Test subtask 2.2" --description="Test subtask for clear-all testing"
+  lm-tasker add-subtask --parent=2 --title="Test subtask 2.1" --description="Test subtask for clear-all testing"
+  lm-tasker add-subtask --parent=2 --title="Test subtask 2.2" --description="Test subtask for clear-all testing"
   log_success "Added test subtasks to Task 2."
 
   log_step "Listing tasks with subtasks (Before Clear All)"
-  task-master list --with-subtasks > task_list_before_clear_all.log
+  lm-tasker list --with-subtasks > task_list_before_clear_all.log
   log_success "Task list before clear-all saved."
 
   log_step "Clearing ALL subtasks"
-  task-master clear-subtasks --all
+  lm-tasker clear-subtasks --all
   log_success "Attempted to clear all subtasks."
 
   log_step "Listing tasks with subtasks (After Clear All)"
-  task-master list --with-subtasks > task_list_after_clear_all.log
+  lm-tasker list --with-subtasks > task_list_after_clear_all.log
   log_success "Task list after clear-all saved. (Manual/LLM check recommended to verify subtasks removed)"
 
   log_step "Adding test subtask to Task 1 again (for dependency testing)"
-  task-master add-subtask --parent=1 --title="Test subtask 1.1" --description="Test subtask for dependency testing"
+  lm-tasker add-subtask --parent=1 --title="Test subtask 1.1" --description="Test subtask for dependency testing"
   log_success "Added test subtask to Task 1 again."
   # Verify 1.1 exists
   if ! jq -e '.tasks[] | select(.id == 1) | .subtasks[] | select(.id == 1)' tasks/tasks.json > /dev/null; then
@@ -723,32 +723,32 @@ log_step() {
   fi
 
   log_step "Adding dependency: Task 3 depends on Subtask 1.1"
-  task-master add-dependency --id=3 --depends-on=1.1
+  lm-tasker add-dependency --id=3 --depends-on=1.1
   log_success "Added dependency 3 -> 1.1."
 
   log_step "Showing Task 3 details (after adding subtask dependency)"
-  task-master show 3 > task_3_details_after_dep_add.log
+  lm-tasker show 3 > task_3_details_after_dep_add.log
   log_success "Task 3 details saved. (Manual/LLM check recommended for dependency [1.1])"
 
   log_step "Removing dependency: Task 3 depends on Subtask 1.1"
-  task-master remove-dependency --id=3 --depends-on=1.1
+  lm-tasker remove-dependency --id=3 --depends-on=1.1
   log_success "Removed dependency 3 -> 1.1."
 
   log_step "Showing Task 3 details (after removing subtask dependency)"
-  task-master show 3 > task_3_details_after_dep_remove.log
+  lm-tasker show 3 > task_3_details_after_dep_remove.log
   log_success "Task 3 details saved. (Manual/LLM check recommended to verify dependency removed)"
 
   # === End New Test Section ===
 
   log_step "Generating task files (final)"
-  task-master generate
+  lm-tasker generate
   log_success "Generated task files."
   # === End Core Task Commands Test ===
 
 
 
   log_step "Listing tasks again (final)"
-  task-master list --with-subtasks > task_list_final.log
+  lm-tasker list --with-subtasks > task_list_final.log
   log_success "Final task list saved to task_list_final.log"
 
   # --- Test Completion (Output to tee) ---

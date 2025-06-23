@@ -1,6 +1,6 @@
 # Available Azure OpenAI Models
 
-This version of Task Master is configured to work exclusively with Azure OpenAI services for corporate deployment.
+This version of LM-Tasker is configured to work exclusively with Azure OpenAI services for corporate deployment.
 
 ## Main Models
 

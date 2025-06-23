@@ -1,6 +1,6 @@
 # Task ID: 106
 # Title: Switch TUI to Direct Task JSON Querying
-# Status: pending
+# Status: done
 # Dependencies: None
 # Priority: high
 # Description: Refactor the TUI so that it reads and parses tasks directly from tasks.json, instead of relying on CLI command output. This ensures all fields (such as 'details') are available to the UI and improves reliability. Update all relevant screens and data-fetching logic to use direct file access. Add robust error handling and update documentation/tests as needed.
@@ -23,7 +23,7 @@
 ### Details:
 
 
-## 3. Add error handling and fallback [deferred]
+## 3. Add error handling and fallback [done]
 ### Dependencies: 106.1
 ### Description: Implement robust error handling for file access and JSON parsing in the new loader. Provide user-friendly error messages and fallback states in the UI.
 ### Details:

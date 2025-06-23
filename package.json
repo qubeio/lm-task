@@ -1,13 +1,13 @@
 {
-  "name": "task-master-ai",
+  "name": "lm-tasker",
   "version": "0.15.0",
   "description": "A task management system for ambitious AI-driven development using Azure OpenAI that doesn't overwhelm and confuse AI Agents.",
   "main": "index.js",
   "type": "module",
   "bin": {
-    "task-master": "bin/task-master.js",
-    "task-master-mcp": "mcp-server/server.js",
-    "task-master-ai": "mcp-server/server.js"
+    "lm-tasker": "bin/lm-tasker.js",
+    "lm-tasker-mcp": "mcp-server/server.js",
+    "lm-tasker-ai": "mcp-server/server.js"
   },
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/.bin/jest",
@@ -16,7 +16,7 @@
     "test:coverage": "node --experimental-vm-modules node_modules/.bin/jest --coverage",
     "test:e2e": "./tests/e2e/run_e2e.sh",
     "test:e2e-report": "./tests/e2e/run_e2e.sh --analyze-log",
-    "prepare": "chmod +x bin/task-master.js mcp-server/server.js",
+    "prepare": "chmod +x bin/lm-tasker.js mcp-server/server.js",
     "changeset": "changeset",
     "release": "changeset publish",
     "inspector": "npx @modelcontextprotocol/inspector node mcp-server/server.js",
@@ -35,7 +35,8 @@
     "openai",
     "llm",
     "mcp",
-    "context"
+    "context",
+    "lm-tasker"
   ],
   "author": "Andreas Frangopoulos",
   "license": "MIT WITH Commons-Clause",
@@ -67,17 +68,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/finastra-platform/MCP-TaskMaster.git"
+    "url": "git+https://github.com/andreas/lm-tasker.git"
   },
-  "homepage": "https://github.com/finastra-platform/MCP-TaskMaster#readme",
+  "homepage": "https://github.com/andreas/lm-tasker#readme",
   "bugs": {
-    "url": "https://github.com/finastra-platform/MCP-TaskMaster/issues"
+    "url": "https://github.com/andreas/lm-tasker/issues"
   },
   "files": [
     "scripts/**",
     "assets/**",
     ".cursor/**",
-    "README-task-master.md",
     "index.js",
     "bin/**",
     "mcp-server/**",

@@ -1,6 +1,6 @@
 /**
  * task-manager.js
- * Task management functions for the Task Master CLI
+ * Task management functions for the LM-Tasker CLI
  */
 
 import { findTaskById } from './utils.js';

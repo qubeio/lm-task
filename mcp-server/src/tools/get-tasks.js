@@ -1,6 +1,6 @@
 /**
  * tools/get-tasks.js
- * Tool to get all tasks from Task Master
+ * Tool to get all tasks from LM-Tasker
  */
 
 import { z } from 'zod';
@@ -20,7 +20,7 @@ export function registerListTasksTool(server) {
 	server.addTool({
 		name: 'get_tasks',
 		description:
-			'Get all tasks from Task Master, optionally filtering by status and including subtasks.',
+			'Get all tasks from LM-Tasker, optionally filtering by status and including subtasks.',
 		parameters: z.object({
 			status: z
 				.string()

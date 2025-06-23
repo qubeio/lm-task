@@ -65,5 +65,5 @@ valuable.]
 
 ---
 
-**Note:** This is a template for creating your PRD.md file. Task Master will automatically detect PRD files in this
+**Note:** This is a template for creating your PRD.md file. LM-Tasker will automatically detect PRD files in this
 order: `PRD.md`, `prd.md`, `PRD.txt`, `prd.txt` in your project root directory.

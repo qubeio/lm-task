@@ -108,7 +108,7 @@ analyze_log_with_llm() {
   }
 
   read -r -d '' prompt_template <<'EOF'
-Analyze the following E2E test log for the task-master tool. The log contains output from various 'task-master' commands executed sequentially.
+Analyze the following E2E test log for the lm-tasker tool. The log contains output from various 'lm-tasker' commands executed sequentially.
 
 Your goal is to:
 1. Verify if the key E2E steps completed successfully based on the log messages (e.g., init, parse PRD, list tasks, set status, manage models, add/remove dependencies, add/update/remove tasks/subtasks, generate files).

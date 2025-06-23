@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
 /**
- * Task Master
+ * LM-Tasker
  * Author: Andreas Frangopoulos
  * 
  */
 
 /**
- * Task Master
+ * LM-Tasker
  * A task management system for AI-driven development with Agents
  */
 
@@ -59,8 +59,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 	const program = new Command();
 
 	program
-		.name('task-master')
-		.description('Claude Task Master CLI')
+		.name('lm-tasker')
+		.description('LM-Tasker CLI')
 		.version(version);
 
 	program

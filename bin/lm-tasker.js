@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
 /**
- * Task Master
+ * LM-Tasker
  * Author: Andreas Frangopoulos
  * 
  */
 
 /**
- * Task Master MCP
+ * LM-Tasker MCP
  * Main entry point for globally installed package
  */
 
@@ -88,7 +88,7 @@ function createDevScriptAction(commandName) {
 				console.error(`  Use:        --${flag.kebabCase}`);
 			});
 			console.error(
-				'\nExample: task-master parse-prd --num-tasks=5 instead of --numTasks=5\n'
+				'\nExample: lm-tasker parse-prd --num-tasks=5 instead of --numTasks=5\n'
 			);
 			process.exit(1);
 		}
@@ -262,8 +262,8 @@ function createDevScriptAction(commandName) {
 const program = new Command();
 
 program
-	.name('task-master')
-	.description('Claude Task Master CLI')
+	.name('lm-tasker')
+	.description('LM-Tasker CLI')
 	.version(version)
 	.addHelpText('afterAll', () => {
 		// Use the same help display function as dev.js for consistency
@@ -322,7 +322,7 @@ process.on('uncaughtException', (err) => {
 		const commandArg = process.argv.find(
 			(arg) =>
 				!arg.startsWith('-') &&
-				arg !== 'task-master' &&
+				arg !== 'lm-tasker' &&
 				!arg.includes('/') &&
 				arg !== 'node'
 		);
@@ -331,7 +331,7 @@ process.on('uncaughtException', (err) => {
 		console.error(chalk.red(`Error: Unknown option '${option}'`));
 		console.error(
 			chalk.yellow(
-				`Run 'task-master ${command} --help' to see available options for this command`
+				`Run 'lm-tasker ${command} --help' to see available options for this command`
 			)
 		);
 		process.exit(1);
@@ -343,7 +343,7 @@ process.on('uncaughtException', (err) => {
 
 		console.error(chalk.red(`Error: Unknown command '${command}'`));
 		console.error(
-			chalk.yellow(`Run 'task-master --help' to see available commands`)
+			chalk.yellow(`Run 'lm-tasker --help' to see available commands`)
 		);
 		process.exit(1);
 	}
@@ -356,7 +356,7 @@ process.on('uncaughtException', (err) => {
 	process.exit(1);
 });
 
-// Show help if no command was provided (just 'task-master' with no args)
+// Show help if no command was provided (just 'lm-tasker' with no args)
 if (process.argv.length <= 2) {
 	displayBanner();
 	displayHelp();

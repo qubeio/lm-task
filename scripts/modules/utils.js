@@ -63,12 +63,12 @@ function resolveEnvVariable(key, session = null, projectRoot = null) {
  * Finds the project root directory by searching upwards from a given starting point
  * for a marker file or directory (e.g., 'package.json', '.git').
  * @param {string} [startPath=process.cwd()] - The directory to start searching from.
- * @param {string[]} [markers=['package.json', '.git', '.taskmasterconfig']] - Marker files/dirs to look for.
+ * @param {string[]} [markers=['package.json', '.git', '.lmtaskerconfig']] - Marker files/dirs to look for.
  * @returns {string|null} The path to the project root directory, or null if not found.
  */
 function findProjectRoot(
   startPath = process.cwd(),
-  markers = ["package.json", ".git", ".taskmasterconfig"]
+  markers = ["package.json", ".git", ".lmtaskerconfig"]
 ) {
   // Special handling for MCP server execution context
   // Check if we're running from the MCP server and can derive the project root
@@ -79,13 +79,13 @@ function findProjectRoot(
       const mcpServerIndex = scriptPath.lastIndexOf('mcp-server');
       const potentialProjectRoot = path.dirname(scriptPath.substring(0, mcpServerIndex));
       
-      // Verify this is actually a TaskMaster project by checking for specific markers
-      const taskMasterMarkers = ['package.json', 'scripts', 'tasks', 'PRD.md'];
-      const hasTaskMasterMarkers = taskMasterMarkers.some(marker => 
+      // Verify this is actually an LM-Tasker project by checking for specific markers
+      const lmTaskerMarkers = ['package.json', 'scripts', 'tasks', 'PRD.md'];
+      const hasLmTaskerMarkers = lmTaskerMarkers.some(marker => 
         fs.existsSync(path.join(potentialProjectRoot, marker))
       );
       
-      if (hasTaskMasterMarkers) {
+      if (hasLmTaskerMarkers) {
         return potentialProjectRoot;
       }
     }
@@ -95,7 +95,7 @@ function findProjectRoot(
       const scriptsIndex = scriptPath.lastIndexOf('scripts');
       const potentialProjectRoot = path.dirname(scriptPath.substring(0, scriptsIndex));
       
-      // Verify this is a TaskMaster project
+      // Verify this is an LM-Tasker project
       if (fs.existsSync(path.join(potentialProjectRoot, 'package.json')) &&
           (fs.existsSync(path.join(potentialProjectRoot, 'scripts')) ||
            fs.existsSync(path.join(potentialProjectRoot, 'tasks')))) {

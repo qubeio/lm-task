@@ -1,6 +1,6 @@
 # Task Structure
 
-Tasks in Task Master follow a specific format designed to provide comprehensive information for both humans and AI assistants.
+Tasks in LM-Tasker follow a specific format designed to provide comprehensive information for both humans and AI assistants.
 
 ## Task Fields in tasks.json
 
@@ -40,7 +40,7 @@ Individual task files follow this format:
 
 ### Managing Task Complexity
 
-Task Master provides manual subtask management through the `add-subtask` command, allowing you to break down complex tasks into smaller, manageable pieces as needed.
+LM-Tasker provides manual subtask management through the `add-subtask` command, allowing you to break down complex tasks into smaller, manageable pieces as needed.
 
 ### Finding the Next Task
 

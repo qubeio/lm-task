@@ -8,7 +8,7 @@ import { log } from '../../scripts/modules/utils.js';
  * Returns 'unknown' if not found or on error.
  * @returns {string} The version string or 'unknown'.
  */
-export function getTaskMasterVersion() {
+export function getLmTaskerVersion() {
 	let version = 'unknown';
 	try {
 		// Get the directory of the current module (getPackageVersion.js)

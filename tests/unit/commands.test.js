@@ -189,7 +189,7 @@ describe("Commands Module", () => {
 
   describe("Kebab Case Validation", () => {
     test("should detect camelCase flags correctly", () => {
-      const args = ["node", "task-master", "--camelCase", "--kebab-case"];
+      const args = ["node", "lm-tasker", "--camelCase", "--kebab-case"];
       const camelCaseFlags = args.filter(
         (arg) =>
           arg.startsWith("--") && /[A-Z]/.test(arg) && !arg.includes("-[A-Z]")
@@ -199,7 +199,7 @@ describe("Commands Module", () => {
     });
 
     test("should accept kebab-case flags correctly", () => {
-      const args = ["node", "task-master", "--kebab-case"];
+      const args = ["node", "lm-tasker", "--kebab-case"];
       const camelCaseFlags = args.filter(
         (arg) =>
           arg.startsWith("--") && /[A-Z]/.test(arg) && !arg.includes("-[A-Z]")
@@ -514,7 +514,7 @@ describe("Commands Module", () => {
           console.error(chalk.red("Error: --id parameter is required"));
           console.log(
             chalk.yellow(
-              'Usage example: task-master update-task --id=23 --prompt="Update with new information"'
+              'Usage example: lm-tasker update-task --id=23 --prompt="Update with new information"'
             )
           );
           process.exit(1);
@@ -531,7 +531,7 @@ describe("Commands Module", () => {
           );
           console.log(
             chalk.yellow(
-              'Usage example: task-master update-task --id=23 --prompt="Update with new information"'
+              'Usage example: lm-tasker update-task --id=23 --prompt="Update with new information"'
             )
           );
           process.exit(1);
@@ -546,7 +546,7 @@ describe("Commands Module", () => {
           );
           console.log(
             chalk.yellow(
-              'Usage example: task-master update-task --id=23 --prompt="Update with new information"'
+              'Usage example: lm-tasker update-task --id=23 --prompt="Update with new information"'
             )
           );
           process.exit(1);
@@ -564,7 +564,7 @@ describe("Commands Module", () => {
           if (tasksPath === "tasks/tasks.json") {
             console.log(
               chalk.yellow(
-                "Hint: Run task-master init or task-master parse-prd to create tasks.json first"
+                "Hint: Run lm-tasker init or lm-tasker parse-prd to create tasks.json first"
               )
             );
           } else {
@@ -626,7 +626,7 @@ describe("Commands Module", () => {
         ) {
           console.log(chalk.yellow("\nTo fix this issue:"));
           console.log(
-            "  1. Run task-master list to see all available task IDs"
+            "  1. Run lm-tasker list to see all available task IDs"
           );
           console.log("  2. Use a valid task ID with the --id parameter");
         } else if (error.message.includes("API key")) {

@@ -1,6 +1,32 @@
-# Claude Task Master - Product Requirements Document
+# LM-Tasker - Product Requirements Document
 
 <PRD>
+
+## Package Identity & Rebranding
+
+### Package Information
+- **Package Name**: `lm-tasker` (formerly `task-master-ai`)
+- **Binary Commands**: 
+  - `lm-tasker` 
+  - `lm-tasker-mcp` 
+  - `lm-tasker-ai` (formerly `task-master-ai`)
+- **Configuration File**: `.lmtaskerconfig` (formerly `.taskmasterconfig`)
+- **Project Identity**: "LM-Tasker" (formerly "Task Master")
+
+### Migration Considerations
+- **Breaking Change**: Users will need to update MCP 
+- **Command Changes**: All CLI commands change from `task-master` to `lm-tasker`
+- **Config Migration**: `.taskmasterconfig` files need to be renamed to `.lmtaskerconfig`
+- **Documentation**: All examples and references need updating
+- **Simplified AI**: AI functionality limited to PRD parsing only (removes AI-powered task updates, additions, etc.)
+
+### Simplified Architecture
+The new architecture focuses on:
+1. **Manual Task Management**: All task operations (add, update, modify) are manual via CLI/MCP
+2. **AI-Powered PRD Parsing**: Only PRD-to-tasks conversion uses AI
+3. **Reduced Complexity**: Eliminates complex AI prompt engineering for task management
+4. **Lower Costs**: Minimal AI usage reduces operational costs
+5. **Predictable Behavior**: Manual operations provide consistent, predictable results
 # Technical Architecture  
 
 ## System Components
@@ -11,10 +37,10 @@
    - Task file generation subsystem
 
 2. **AI Integration Layer**
-   - Azure OpenAI API integration (exclusive provider)
-   - Prompt engineering components
-   - Response parsing and processing
-   - Unified AI service layer with telemetry
+   - Limited AI integration for PRD parsing only
+   - Multi-provider support for PRD parsing
+   - Prompt engineering for PRD-to-tasks conversion
+   - Response parsing for task generation
 
 3. **Command Line Interface**
    - Command parsing and execution
@@ -89,12 +115,13 @@
 ```
 
 ## APIs and Integrations
-1. **Azure OpenAI API (Exclusive Provider)**
-   - Authentication via API key and endpoint
-   - Support for GPT-4o, GPT-4o-mini, and o3-mini models
-   - Direct API calls with structured response handling
-   - Error handling and retries
-   - Cost tracking and telemetry
+1. **Limited AI Integration (PRD Parsing Only)**
+   - Support for Azure OpenAI, OpenAI, Anthropic Claude, Google Gemini, Mistral, Perplexity, XAI, and Ollama
+   - Authentication via API keys and endpoints
+   - Model selection for PRD parsing operations
+   - Direct API calls for PRD-to-tasks conversion
+   - Error handling and retries for parsing operations
+   - Cost tracking for PRD parsing usage
 
 2. **File System API**
    - Reading/writing tasks.json
@@ -116,9 +143,9 @@
    - Command execution capabilities
 
 2. **Configuration Management**
-   - .taskmasterconfig file for model settings
-   - Environment variable handling for API keys
-   - Azure OpenAI endpoint configuration
+   - .lmtaskerconfig file for basic settings and PRD parsing model selection
+   - Environment variable handling for API keys (PRD parsing only)
+   - Basic configuration management
    - Sensible defaults with overrides
 
 3. **Development Environment**
@@ -154,11 +181,11 @@
    - Added bi-directional synchronization
    - Implemented proper file naming and organization
 
-## Phase 2: AI Integration ✅
-1. **Azure OpenAI Integration** ✅
-   - Implemented API authentication
+## Phase 2: Limited AI Integration ✅
+1. **PRD Parsing AI Integration** ✅
+   - Implemented multi-provider API authentication for PRD parsing
    - Created prompt templates for PRD parsing
-   - Designed response handlers
+   - Designed response handlers for task generation
    - Added error management and retries
 
 2. **PRD Parsing System** ✅
@@ -167,17 +194,17 @@
    - Added intelligent dependency inference
    - Implemented priority assignment logic
 
-3. **Task Management With AI** ✅
-   - Create AI-powered task addition
-   - Implement task updating based on new context
-   - Add context-aware task modification capabilities
-   - Implement parent-child relationship management
+3. **Manual Task Management** ✅
+   - Implemented manual task addition with user input
+   - Created task updating through direct editing
+   - Added manual task modification capabilities
+   - Implemented parent-child relationship management
 
-4. **Implementation Drift Handling** ✅
-   - Added capability to update future tasks
-   - Implemented task rewriting based on new context
-   - Created dependency chain updates
-   - Preserve completed work while updating future tasks
+4. **Manual Task Updates** ✅
+   - Added capability to manually update tasks
+   - Implemented task editing through CLI commands
+   - Created dependency chain management
+   - Preserve completed work while allowing manual updates
 
 ## Phase 3: MCP Integration ✅
 1. **MCP Server Implementation** ✅
@@ -256,14 +283,6 @@
 
 ## Technical Challenges
 
-### API Reliability
-**Risk**: Azure OpenAI API could have downtime, rate limiting, or breaking changes.
-**Mitigation**: 
-- Implemented robust error handling with exponential backoff
-- Added fallback model configuration
-- Cache important responses to reduce API dependency
-- Support offline mode for critical functions
-
 ### Model Output Variability
 **Risk**: AI models may produce inconsistent or unexpected outputs.
 **Mitigation**:
@@ -272,13 +291,13 @@
 - Added self-correction mechanisms and retries with improved prompts
 - Allow manual editing of generated content
 
-### Azure OpenAI Dependency
-**Risk**: Single provider dependency could limit flexibility.
+### Limited AI Integration Scope
+**Risk**: AI integration limited to PRD parsing may require manual work for other operations.
 **Mitigation**:
-- Designed modular AI service layer for future provider additions
-- Implemented comprehensive error handling for Azure-specific issues
-- Created fallback mechanisms within Azure model selection
-- Documented migration path for future provider support
+- Designed clear manual workflows for all non-PRD operations
+- Implemented intuitive CLI commands for task management
+- Created comprehensive documentation for manual task operations
+- Focused AI integration on the most complex operation (PRD parsing)
 
 ## MVP Definition
 
@@ -317,12 +336,12 @@
 - Designed for extensibility to allow community contributions
 
 ### AI Cost Management
-**Risk**: Excessive API usage could lead to high costs.
+**Risk**: PRD parsing API usage could lead to unexpected costs.
 **Mitigation**:
-- Implemented token usage tracking and reporting
-- Added configurable limits to prevent unexpected costs
-- Optimized prompts for token efficiency
-- Created telemetry system for cost monitoring
+- Limited AI usage to PRD parsing operations only
+- Implemented token usage tracking for PRD parsing
+- Optimized PRD parsing prompts for token efficiency
+- Clear cost expectations for users (one-time PRD parsing cost)
 
 ### Documentation Overhead
 **Risk**: Complexity of the system requires extensive documentation that is time-consuming to maintain.
@@ -356,37 +375,13 @@ PRD:
 {prd_content}
 ```
 
-### Task Update Prompt Structure
-```
-You are helping to update development tasks based on new context or changes.
-
-Current task:
-Title: {task_title}
-Description: {task_description}
-Details: {task_details}
-
-New context or changes:
-{update_context}
-
-Please update the task to incorporate this new information while preserving existing relevant details.
-```
-
-### Task Addition Prompt Structure
-```
-You are helping to create a new development task based on a description.
-
-Task description: {task_description}
-
-Please create a structured task with:
-1. A clear, actionable title
-2. A concise description
-3. Detailed implementation notes
-4. A test strategy to verify completion
-5. Appropriate priority level
-
-Additional context:
-{additional_context}
-```
+### Manual Task Management
+Tasks are managed manually through CLI commands:
+- `lm-tasker add-task --title="Task Title" --description="Task description"`
+- `lm-tasker update-task --id=1 --title="Updated Title"`
+- `lm-tasker set-status --id=1 --status=done`
+- Task details are edited directly in task files or through CLI parameters
+- No AI assistance for task creation, updates, or management (except PRD parsing)
 
 ## Task File System Specification
 
@@ -406,7 +401,7 @@ Additional context:
 ├── .env
 ├── .env.example
 ├── .gitignore
-├── .taskmasterconfig
+├── .lmtaskerconfig
 ├── package.json
 └── README.md
 ```
@@ -428,7 +423,7 @@ Additional context:
 - `--json`: Output in JSON format (for programmatic use)
 
 ### Command Structure
-- `task-master <command> [options]`
+- `lm-tasker <command> [options]`
 - All commands operate on tasks.json by default
 - Commands follow consistent parameter naming
 - Common parameter styles: `--id=<id>`, `--status=<status>`, `--prompt="<text>"`
@@ -436,20 +431,20 @@ Additional context:
 
 ## API Integration Specifications
 
-### Azure OpenAI Configuration
-- Authentication: AZURE_OPENAI_API_KEY environment variable
-- Endpoint: AZURE_OPENAI_ENDPOINT environment variable
-- Model selection: Configured in .taskmasterconfig file
-- Available models: gpt-4o, gpt-4o-mini, o3-mini
-- Maximum tokens: Configurable per model role
-- Temperature: Configurable per model role
+### PRD Parsing AI Configuration
+- Authentication: Provider-specific API keys via environment variables (for PRD parsing only)
+- Endpoints: Provider-specific endpoint configuration
+- Model selection: Single model configured in .lmtaskerconfig file for PRD parsing
+- Available providers: Azure OpenAI, OpenAI, Anthropic, Google, Mistral, Perplexity, XAI, Ollama
+- Maximum tokens: Configurable for PRD parsing operations
+- Temperature: Configurable for PRD parsing operations
 
 ### Configuration Management
-- Primary config: .taskmasterconfig file in project root
-- API keys: Environment variables or .env file
-- Model settings: main, fallback roles with separate configurations
+- Primary config: .lmtaskerconfig file in project root
+- API keys: Environment variables or .env file (for PRD parsing only)
+- Model settings: Single model configuration for PRD parsing
 - Global settings: logging, debug, project metadata
-- Azure-specific: endpoint URL configuration
+- Provider-specific: endpoint URL configuration for PRD parsing provider
 
 ## MCP Tool Reference
 
@@ -463,11 +458,11 @@ Additional context:
 - **Configuration**: models
 
 ### Tool Categories
-1. **Core Operations**: Basic task CRUD operations
-2. **AI-Enhanced**: Operations that use Azure OpenAI for intelligent processing
+1. **Core Operations**: Basic task CRUD operations (manual)
+2. **PRD Parsing**: Operations that use AI for PRD-to-tasks conversion
 3. **Dependency Management**: Tools for managing task relationships
 4. **File Operations**: Tools for generating and managing task files
-5. **Configuration**: Tools for system configuration and model management
+5. **Configuration**: Tools for system configuration and PRD parsing model management
 
 ### Integration Points
 - Cursor editor integration via MCP protocol

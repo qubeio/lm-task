@@ -1,15 +1,13 @@
-# Task Master
-
-Author: Andreas Frangopoulos (from forked code)
+# LM-Tasker
 
 ## Introduction
 
-🚀 **Task Master** is your all-in-one, AI-powered task management sidekick for software development. Supercharge your
-workflow with the magic of Azure OpenAI and let Task Master turn your requirements into a crystal-clear, actionable
-plan—automatically. Whether you're a solo dev or a whole team, Task Master helps you plan, track, and deliver projects
+🚀 **LM-Tasker** is your all-in-one, task management sidekick for software development. Supercharge your
+workflow with the magic of Azure OpenAI and let LM-Tasker turn your requirements into a crystal-clear, actionable
+plan—automatically. Whether you're a solo dev or a whole team, LM-Tasker helps you plan, track, and deliver projects
 with less stress and more fun.
 
-### ✨ What can Task Master do?
+### ✨ What can LM-Tasker do?
 
 - 🤖 **AI-Driven Task Generation**: Instantly convert your Product Requirements Document (PRD) into a structured,
   prioritized task list with smart dependencies.
@@ -39,13 +37,13 @@ with less stress and more fun.
 - **Config Management**: Easy model and API key setup
 - **Editor Integration**: Use directly from Cursor, VS Code, or Windsurf
 
-🎯 **Task Master is here to help you ship faster, smarter, and with less hassle.**
+🎯 **LM-Tasker is here to help you ship faster, smarter, and with less hassle.**
 
 ---
 
 ## Requirements
 
-Taskmaster utilizes Azure OpenAI for AI-powered task management operations. You will need:
+LM-Tasker utilizes Azure OpenAI for AI-powered task management operations. You will need:
 
 - **Azure OpenAI API key** (Required)
 - **Azure OpenAI endpoint** (Required)
@@ -56,7 +54,7 @@ This version is specifically configured for corporate environments using Azure O
 
 ### Option 1: MCP (Recommended)
 
-MCP (Model Control Protocol) lets you run Task Master directly from your editor.
+MCP (Model Control Protocol) lets you run LM-Tasker directly from your editor.
 
 #### 1. Add your MCP config at the following path depending on your editor
 
@@ -72,9 +70,9 @@ MCP (Model Control Protocol) lets you run Task Master directly from your editor.
 ```jsonc
 {
   "mcpServers": {
-    "taskmaster-ai": {
+    "lm-tasker": {
       "command": "npx",
-      "args": ["-y", "--package=task-master-ai", "task-master-ai"],
+      "args": ["-y", "--package=lm-tasker", "lm-tasker-mcp"],
       "env": {
         "AZURE_OPENAI_API_KEY": "YOUR_AZURE_OPENAI_API_KEY_HERE",
         "AZURE_OPENAI_ENDPOINT": "YOUR_AZURE_OPENAI_ENDPOINT_HERE",
@@ -92,9 +90,9 @@ MCP (Model Control Protocol) lets you run Task Master directly from your editor.
 ```jsonc
 {
   "servers": {
-    "taskmaster-ai": {
+    "lm-tasker": {
       "command": "npx",
-      "args": ["-y", "--package=task-master-ai", "task-master-ai"],
+      "args": ["-y", "--package=lm-tasker", "lm-tasker-mcp"],
       "env": {
         "AZURE_OPENAI_API_KEY": "YOUR_AZURE_OPENAI_API_KEY_HERE",
         "AZURE_OPENAI_ENDPOINT": "YOUR_AZURE_OPENAI_ENDPOINT_HERE",
@@ -108,9 +106,9 @@ MCP (Model Control Protocol) lets you run Task Master directly from your editor.
 > 🔑 Replace `YOUR_AZURE_OPENAI_API_KEY_HERE` and `YOUR_AZURE_OPENAI_ENDPOINT_HERE` with your actual Azure OpenAI
 > credentials.
 
-#### 2. (Cursor-only) Enable Taskmaster MCP
+#### 2. (Cursor-only) Enable LM-Tasker MCP
 
-Open Cursor Settings (Ctrl+Shift+J) ➡ Click on MCP tab on the left ➡ Enable task-master-ai with the toggle
+Open Cursor Settings (Ctrl+Shift+J) ➡ Click on MCP tab on the left ➡ Enable lm-tasker with the toggle
 
 #### 3. (Optional) Configure the Azure OpenAI models you want to use
 
@@ -122,17 +120,17 @@ Configure the main and fallback models to use Azure OpenAI models like gpt-4o an
 
 Available Azure OpenAI models include: `gpt-4o`, `gpt-4o-mini`, `o3-mini`
 
-#### 4. Initialize Task Master
+#### 4. Initialize LM-Tasker
 
 In your editor's AI chat pane, say:
 
 ```txt
-Initialize taskmaster-ai in my project
+Initialize lm-tasker in my project
 ```
 
 #### 5. Make sure you have a PRD in your project root
 
-Task Master will automatically search for PRD files in this order: `PRD.md`, `prd.md`, `PRD.txt`, `prd.txt` in the
+LM-Tasker will automatically search for PRD files in this order: `PRD.md`, `prd.md`, `PRD.txt`, `prd.txt` in the
 project root, then in the `scripts/` directory for backward compatibility.
 
 An example of a PRD is located at `<project_folder>/scripts/example_prd.md` which you can use as a template to create
@@ -146,12 +144,12 @@ The more detailed your PRD, the better the generated tasks will be.
 
 Use your AI assistant to:
 
-- Parse requirements: `Can you parse my PRD?` (Task Master will automatically find your PRD file)
+- Parse requirements: `Can you parse my PRD?` (LM-Tasker will automatically find your PRD file)
 - Plan next step: `What's the next task I should work on?`
 - Implement a task: `Can you help me implement task 3?`
 - Add subtasks to a task: `Can you help me add subtasks to task 4?`
 
-[More examples on how to use Task Master in chat](docs/examples.md)
+[More examples on how to use LM-Tasker in chat](docs/examples.md)
 
 ### Option 2: Using Command Line
 
@@ -159,20 +157,20 @@ Use your AI assistant to:
 
 ```bash
 # Install globally
-npm install -g task-master-ai
+npm install -g lm-tasker
 
 # OR install locally within your project
-npm install task-master-ai
+npm install lm-tasker
 ```
 
 #### Initialize a new project
 
 ```bash
 # If installed globally
-task-master init
+lm-tasker init
 
 # If installed locally
-npx task-master init
+npx lm-tasker init
 ```
 
 This will prompt you for project details and set up a new project with the necessary files and structure.
@@ -181,44 +179,44 @@ This will prompt you for project details and set up a new project with the neces
 
 ```bash
 # Initialize a new project
-task-master init
+lm-tasker init
 
 # Parse a PRD and generate tasks
-task-master parse-prd
+lm-tasker parse-prd
 
 # List all tasks
-task-master list
+lm-tasker list
 
 # Show the next task to work on
-task-master next
+lm-tasker next
 
 # Generate task files
-task-master generate
+lm-tasker generate
 ```
 
 ## Documentation
 
 For more detailed information, check out the documentation in the `docs` directory:
 
-- [Configuration Guide](docs/configuration.md) - Set up environment variables and customize Task Master
-- [Tutorial](docs/tutorial.md) - Step-by-step guide to getting started with Task Master
+- [Configuration Guide](docs/configuration.md) - Set up environment variables and customize LM-Tasker
+- [Tutorial](docs/tutorial.md) - Step-by-step guide to getting started with LM-Tasker
 - [Command Reference](docs/command-reference.md) - Complete list of all available commands
 - [Task Structure](docs/task-structure.md) - Understanding the task format and features
 - [Example Interactions](docs/examples.md) - Common Cursor AI interaction examples
 
 ## Troubleshooting
 
-### If `task-master init` doesn't respond
+### If `lm-tasker init` doesn't respond
 
 Try running it with Node directly:
 
 ```bash
-node node_modules/claude-task-master/scripts/init.js
+node node_modules/lm-tasker/scripts/init.js
 ```
 
 Or clone the repository and run:
 
 ```bash
-cd claude-task-master
+cd lm-tasker
 node scripts/init.js
 ```

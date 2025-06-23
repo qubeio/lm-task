@@ -1,6 +1,6 @@
 /**
  * ui.js
- * User interface functions for the Task Master CLI
+ * User interface functions for the LM-Tasker CLI
  */
 
 import chalk from "chalk";
@@ -20,7 +20,7 @@ import fs from "fs";
 import { findNextTask } from "./task-manager.js";
 import { getProjectName, getDefaultSubtasks } from "./config-manager.js";
 import { TASK_STATUS_OPTIONS } from "../../src/constants/task-status.js";
-import { getTaskMasterVersion } from "../../src/utils/getVersion.js";
+import { getLmTaskerVersion } from "../../src/utils/getVersion.js";
 
 // Create a color gradient for the banner
 const coolGradient = gradient(["#00b4d8", "#0077b6", "#03045e"]);
@@ -33,7 +33,7 @@ function displayBanner() {
   if (isSilentMode()) return;
 
   console.clear();
-  const bannerText = figlet.textSync("Task Master", {
+  const bannerText = figlet.textSync("LM-Tasker", {
     font: "Standard",
     horizontalLayout: "default",
     verticalLayout: "default",
@@ -45,7 +45,7 @@ function displayBanner() {
   console.log(chalk.dim("by ") + chalk.cyan.underline("Andreas Frangopoulos"));
 
   // Read version directly from package.json
-  const version = getTaskMasterVersion();
+  	const version = getLmTaskerVersion();
 
   console.log(
     boxen(
@@ -373,7 +373,7 @@ function displayHelp() {
   const terminalWidth = process.stdout.columns || 100; // Default to 100 if can't detect
 
   console.log(
-    boxen(chalk.white.bold("Task Master CLI"), {
+    boxen(chalk.white.bold("LM-Tasker CLI"), {
       padding: 1,
       borderColor: "blue",
       borderStyle: "round",
@@ -390,7 +390,7 @@ function displayHelp() {
         {
           name: "init",
           args: "[--name=<name>] [--description=<desc>] [-y]",
-          desc: "Initialize a new project with Task Master structure",
+          desc: "Initialize a new project with LM-Tasker structure",
         },
         {
           name: "models",
@@ -654,7 +654,7 @@ function displayHelp() {
 
   configTable.push(
     [
-      `${chalk.yellow(".taskmasterconfig")}${chalk.reset("")}`,
+      		`${chalk.yellow(".lmtaskerconfig")}${chalk.reset("")}`,
       `${chalk.white("AI model configuration file (project root)")}${chalk.reset("")}`,
       `${chalk.dim("Managed by models cmd")}${chalk.reset("")}`,
     ],
@@ -679,19 +679,19 @@ function displayHelp() {
       chalk.white.bold("Quick Start:") +
         "\n\n" +
         chalk.cyan("1. Create Project: ") +
-        chalk.white("task-master init") +
+        chalk.white("lm-tasker init") +
         "\n" +
         chalk.cyan("2. Setup Models: ") +
-        chalk.white("task-master models --setup") +
+        chalk.white("lm-tasker models --setup") +
         "\n" +
         chalk.cyan("3. Parse PRD: ") +
-        chalk.white("task-master parse-prd --input=<prd-file>") +
+        chalk.white("lm-tasker parse-prd --input=<prd-file>") +
         "\n" +
         chalk.cyan("4. List Tasks: ") +
-        chalk.white("task-master list") +
+        chalk.white("lm-tasker list") +
         "\n" +
         chalk.cyan("5. Find Next Task: ") +
-        chalk.white("task-master next"),
+        chalk.white("lm-tasker next"),
       {
         padding: 1,
         borderColor: "yellow",
@@ -1512,7 +1512,7 @@ function displayApiKeyStatus(statusReport) {
   console.log(table.toString());
   console.log(
     chalk.gray(
-      "  Note: Some providers (e.g., Azure, Ollama) may require additional endpoint configuration in .taskmasterconfig."
+      "  Note: Some providers (e.g., Azure, Ollama) may require additional endpoint configuration in .lmtaskerconfig."
     )
   );
 }

@@ -1,6 +1,6 @@
 /**
  * path-utils.js
- * Utility functions for file path operations in Task Master
+ * Utility functions for file path operations in LM-Tasker
  *
  * This module provides robust path resolution for both:
  * 1. PACKAGE PATH: Where task-master code is installed
@@ -18,7 +18,7 @@ export let lastFoundProjectRoot = null;
 
 // Project marker files that indicate a potential project root
 export const PROJECT_MARKERS = [
-	// Task Master specific
+	// LM-Tasker specific
 	'tasks.json',
 	'tasks/tasks.json',
 

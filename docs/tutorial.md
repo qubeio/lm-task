@@ -1,19 +1,19 @@
-# Task Master Tutorial
+# LM-Tasker Tutorial
 
-This tutorial will guide you through setting up and using Task Master for AI-driven development with Azure OpenAI.
+This tutorial will guide you through setting up and using LM-Tasker for AI-driven development with Azure OpenAI.
 
 ## Initial Setup
 
-There are two ways to set up Task Master: using MCP (recommended) or via npm installation.
+There are two ways to set up LM-Tasker: using MCP (recommended) or via npm installation.
 
 ### Option 1: Using MCP (Recommended)
 
-MCP (Model Control Protocol) provides the easiest way to get started with Task Master directly in your editor.
+MCP (Model Control Protocol) provides the easiest way to get started with LM-Tasker directly in your editor.
 
 1. **Install the package**
 
 ```bash
-npm i -g task-master-ai
+npm i -g lm-tasker
 ```
 
 2. **Add the MCP config to your IDE/MCP Client** (Cursor is recommended, but it works with other clients):
@@ -21,9 +21,9 @@ npm i -g task-master-ai
 ```json
 {
   "mcpServers": {
-    "taskmaster-ai": {
+    "lm-tasker": {
       "command": "npx",
-      "args": ["-y", "--package=task-master-ai", "task-master-ai"],
+      "args": ["-y", "--package=lm-tasker", "lm-tasker-mcp"],
       "env": {
         "AZURE_OPENAI_API_KEY": "YOUR_AZURE_OPENAI_API_KEY_HERE",
         "AZURE_OPENAI_ENDPOINT": "YOUR_AZURE_OPENAI_ENDPOINT_HERE"
@@ -33,7 +33,7 @@ npm i -g task-master-ai
 }
 ```
 
-**IMPORTANT:** Azure OpenAI API key and endpoint are _required_ for this version of Task Master.
+**IMPORTANT:** Azure OpenAI API key and endpoint are _required_ for this version of LM-Tasker.
 
 **To use AI commands in CLI** you MUST have API keys in the .env file **To use AI commands in MCP** you MUST have API
 keys in the .mcp.json file (or MCP config equivalent)
@@ -42,10 +42,10 @@ We recommend having keys in both places and adding mcp.json to your gitignore so
 
 3. **Enable the MCP** in your editor settings
 
-4. **Prompt the AI** to initialize Task Master:
+4. **Prompt the AI** to initialize LM-Tasker:
 
 ```
-Can you please initialize taskmaster-ai into my project?
+Can you please initialize lm-tasker into my project?
 ```
 
 The AI will:
@@ -54,9 +54,9 @@ The AI will:
 - Set up initial configuration files
 - Guide you through the rest of the process
 
-5. Create your PRD document as `PRD.md` in the project root (Task Master will automatically find it)
+5. Create your PRD document as `PRD.md` in the project root (LM-Tasker will automatically find it)
 
-6. **Use natural language commands** to interact with Task Master:
+6. **Use natural language commands** to interact with LM-Tasker:
 
 ```
 Can you parse my PRD?
@@ -70,51 +70,51 @@ If you prefer to use the command line interface directly:
 
 ```bash
 # Install globally
-npm install -g task-master-ai
+npm install -g lm-tasker
 
 # OR install locally within your project
-npm install task-master-ai
+npm install lm-tasker
 ```
 
 Initialize a new project:
 
 ```bash
 # If installed globally
-task-master init
+lm-tasker init
 
 # If installed locally
-npx task-master init
+npx lm-tasker init
 ```
 
 This will prompt you for project details and set up a new project with the necessary files and structure.
 
 ## Common Commands
 
-After setting up Task Master, you can use these commands (either via AI prompts or CLI):
+After setting up LM-Tasker, you can use these commands (either via AI prompts or CLI):
 
 ```bash
 # Parse a PRD and generate tasks
-task-master parse-prd
+lm-tasker parse-prd
 
 # List all tasks
-task-master list
+lm-tasker list
 
 # Show the next task to work on
-task-master next
+lm-tasker next
 
 # Generate task files
-task-master generate
+lm-tasker generate
 ```
 
 ## Setting up Cursor AI Integration
 
-Task Master is designed to work seamlessly with [Cursor AI](https://www.cursor.so/), providing a structured workflow for
+LM-Tasker is designed to work seamlessly with [Cursor AI](https://www.cursor.so/), providing a structured workflow for
 AI-driven development.
 
 ### Using Cursor with MCP (Recommended)
 
-If you've already set up Task Master with MCP in Cursor, the integration is automatic. You can simply use natural
-language to interact with Task Master:
+If you've already set up LM-Tasker with MCP in Cursor, the integration is automatic. You can simply use natural
+language to interact with LM-Tasker:
 
 ```
 What tasks are available to work on next?
@@ -129,7 +129,7 @@ If you're not using MCP, you can still set up Cursor integration:
 1. After initializing your project, open it in Cursor
 2. The `.cursor/rules/dev_workflow.mdc` file is automatically loaded by Cursor, providing the AI with knowledge about
    the task management system
-3. Create your PRD document as `PRD.md` in the project root (Task Master will automatically find it)
+3. Create your PRD document as `PRD.md` in the project root (LM-Tasker will automatically find it)
 4. Open Cursor's AI chat and switch to Agent mode
 
 ### Alternative MCP Setup in Cursor
@@ -140,12 +140,12 @@ You can also set up the MCP server in Cursor settings:
 2. Navigate to the MCP section
 3. Click on "Add New MCP Server"
 4. Configure with the following details:
-   - Name: "Task Master"
+   - Name: "LM-Tasker"
    - Type: "Command"
-   - Command: "npx -y --package=task-master-ai task-master-ai"
+   - Command: "npx -y --package=lm-tasker lm-tasker-mcp"
 5. Save the settings
 
-Once configured, you can interact with Task Master's task management commands directly through Cursor's interface,
+Once configured, you can interact with LM-Tasker's task management commands directly through Cursor's interface,
 providing a more integrated experience.
 
 ## Initial Task Generation
@@ -153,13 +153,13 @@ providing a more integrated experience.
 In Cursor's AI chat, instruct the agent to generate tasks from your PRD:
 
 ```
-Please use the task-master parse-prd command to generate tasks from my PRD.
+Please use the lm-tasker parse-prd command to generate tasks from my PRD.
 ```
 
 The agent will execute:
 
 ```bash
-task-master parse-prd
+lm-tasker parse-prd
 ```
 
 This will:
@@ -179,7 +179,7 @@ Please generate individual task files from tasks.json
 The agent will execute:
 
 ```bash
-task-master generate
+lm-tasker generate
 ```
 
 This creates individual task files in the `tasks/` directory (e.g., `task_001.txt`, `task_002.txt`), making it easier to
@@ -199,8 +199,8 @@ What tasks are available to work on next?
 
 The agent will:
 
-- Run `task-master list` to see all tasks
-- Run `task-master next` to determine the next task to work on
+- Run `lm-tasker list` to see all tasks
+- Run `lm-tasker next` to determine the next task to work on
 - Analyze dependencies to determine which tasks are ready to be worked on
 - Prioritize tasks based on priority level and ID order
 - Suggest the next task(s) to implement
@@ -239,7 +239,7 @@ Task 3 is now complete. Please update its status.
 The agent will execute:
 
 ```bash
-task-master set-status --id=3 --status=done
+lm-tasker set-status --id=3 --status=done
 ```
 
 ### 5. Handling Implementation Drift
@@ -259,10 +259,10 @@ We've decided to use MongoDB instead of PostgreSQL. Can you update all future ta
 The agent will execute:
 
 ```bash
-task-master update --from=4 --prompt="Now we are using MongoDB instead of PostgreSQL."
+lm-tasker update --from=4 --prompt="Now we are using MongoDB instead of PostgreSQL."
 
 # OR, if research is needed to find best practices for MongoDB:
-task-master update --from=4 --prompt="Update to use MongoDB, researching best practices" --research
+lm-tasker update --from=4 --prompt="Update to use MongoDB, researching best practices" --research
 ```
 
 This will rewrite or re-scope subsequent tasks in tasks.json while preserving completed work.
@@ -278,7 +278,7 @@ I think subtask 5.2 would fit better as part of task 7 instead. Can you move it 
 The agent will execute:
 
 ```bash
-task-master move --from=5.2 --to=7.3
+lm-tasker move --from=5.2 --to=7.3
 ```
 
 You can reorganize tasks in various ways:
@@ -316,9 +316,9 @@ The agent will help you:
 
 ```bash
 # Move your tasks to new positions (e.g., 16-18)
-task-master move --from=10 --to=16
-task-master move --from=11 --to=17
-task-master move --from=12 --to=18
+lm-tasker move --from=10 --to=16
+lm-tasker move --from=11 --to=17
+lm-tasker move --from=12 --to=18
 ```
 
 This approach preserves everyone's work while maintaining a clean task structure, making it much easier to handle task
@@ -335,9 +335,9 @@ Task 5 seems complex. Can you add some subtasks to break it down?
 The agent will execute:
 
 ```bash
-task-master add-subtask --parent=5 --title="Setup authentication" --description="Implement user authentication system"
-task-master add-subtask --parent=5 --title="Create user interface" --description="Build login and registration forms"
-task-master add-subtask --parent=5 --title="Add security measures" --description="Implement security best practices"
+lm-tasker add-subtask --parent=5 --title="Setup authentication" --description="Implement user authentication system"
+lm-tasker add-subtask --parent=5 --title="Create user interface" --description="Build login and registration forms"
+lm-tasker add-subtask --parent=5 --title="Add security measures" --description="Implement security best practices"
 ```
 
 You can also add subtasks with dependencies:
@@ -349,7 +349,7 @@ Please add a subtask to task 5 that depends on task 3 being completed.
 The agent will execute:
 
 ```bash
-task-master add-subtask --parent=5 --title="Integration testing" --description="Test integration with completed components" --dependencies="3"
+lm-tasker add-subtask --parent=5 --title="Integration testing" --description="Test integration with completed components" --dependencies="3"
 ```
 
 ## Example Cursor AI Interactions
@@ -357,7 +357,7 @@ task-master add-subtask --parent=5 --title="Integration testing" --description="
 ### Starting a new project
 
 ```
-I've just initialized a new project with Claude Task Master. I have a PRD.md file in the project root.
+I've just initialized a new project with LM-Tasker. I have a PRD.md file in the project root.
 Can you help me parse it and set up the initial tasks?
 ```
 

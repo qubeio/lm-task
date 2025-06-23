@@ -55,7 +55,7 @@ import fsMocked from 'fs';
 
 // --- Test Data (Updated for Azure-only) ---
 const MOCK_PROJECT_ROOT = '/mock/project';
-const MOCK_CONFIG_PATH = path.join(MOCK_PROJECT_ROOT, '.taskmasterconfig');
+const MOCK_CONFIG_PATH = path.join(MOCK_PROJECT_ROOT, '.lmtaskerconfig');
 
 // Updated DEFAULT_CONFIG reflecting the Azure-only implementation
 const DEFAULT_CONFIG = {
@@ -78,7 +78,7 @@ const DEFAULT_CONFIG = {
 		debug: false,
 		defaultSubtasks: 5,
 		defaultPriority: 'medium',
-		projectName: 'Task Master',
+		projectName: 'LM-Tasker',
 		azureOpenaiBaseUrl: 'https://your-endpoint.openai.azure.com'
 	}
 };
@@ -166,7 +166,7 @@ beforeEach(() => {
 			// Return the REAL file content stringified
 			return REAL_SUPPORTED_MODELS_CONTENT;
 		} else if (filePath === MOCK_CONFIG_PATH) {
-			// Still mock the .taskmasterconfig reads
+			// Still mock the .lmtaskerconfig reads
 			return JSON.stringify(DEFAULT_CONFIG); // Default behavior
 		}
 		// Throw for unexpected reads - helps catch errors
@@ -238,7 +238,7 @@ describe('Validation Functions', () => {
 
 // --- getConfig Tests ---
 describe('getConfig Tests', () => {
-	test('should return default config if .taskmasterconfig does not exist', () => {
+	test('should return default config if .lmtaskerconfig does not exist', () => {
 		// Arrange
 		fsExistsSyncSpy.mockReturnValue(false);
 		// findProjectRoot mock is set in beforeEach

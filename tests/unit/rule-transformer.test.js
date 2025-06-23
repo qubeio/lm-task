@@ -93,7 +93,7 @@ alwaysApply: true
 ---
 
 This references [dev_workflow.mdc](mdc:.cursor/rules/dev_workflow.mdc) and 
-[taskmaster.mdc](mdc:.cursor/rules/taskmaster.mdc).`;
+[lmtasker.mdc](mdc:.cursor/rules/lmtasker.mdc).`;
 
 		fs.writeFileSync(testCursorRule, testContent);
 
@@ -106,7 +106,7 @@ This references [dev_workflow.mdc](mdc:.cursor/rules/dev_workflow.mdc) and
 
 		// Verify transformations
 		expect(convertedContent).toContain('(mdc:.roo/rules/dev_workflow.md)');
-		expect(convertedContent).toContain('(mdc:.roo/rules/taskmaster.md)');
+		expect(convertedContent).toContain('(mdc:.roo/rules/lmtasker.md)');
 		expect(convertedContent).not.toContain('(mdc:.cursor/rules/');
 	});
 });

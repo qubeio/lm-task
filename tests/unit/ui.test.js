@@ -32,7 +32,7 @@ jest.mock('chalk', () => {
 });
 
 jest.mock('figlet', () => ({
-	textSync: jest.fn(() => 'Task Master Banner')
+	textSync: jest.fn(() => 'LM-Tasker Banner')
 }));
 
 jest.mock('boxen', () => jest.fn((text) => `[boxed: ${text}]`));

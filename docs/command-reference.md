@@ -1,4 +1,4 @@
-# Task Master Command Reference
+# LM-Tasker Command Reference
 
 Here's a comprehensive reference of all available commands:
 
@@ -6,32 +6,32 @@ Here's a comprehensive reference of all available commands:
 
 ```bash
 # Parse a PRD file and generate tasks (auto-detects PRD.md, prd.md, PRD.txt, prd.txt in project root)
-task-master parse-prd
+lm-tasker parse-prd
 
 # Parse a specific PRD file
-task-master parse-prd <prd-file.md>
+lm-tasker parse-prd <prd-file.md>
 
 # Limit the number of tasks generated
-task-master parse-prd --num-tasks=10
+lm-tasker parse-prd --num-tasks=10
 
 # Parse a specific file with custom task count
-task-master parse-prd <prd-file.md> --num-tasks=10
+lm-tasker parse-prd <prd-file.md> --num-tasks=10
 ```
 
 ## List Tasks
 
 ```bash
 # List all tasks
-task-master list
+lm-tasker list
 
 # List tasks with a specific status
-task-master list --status=<status>
+lm-tasker list --status=<status>
 
 # List tasks with subtasks
-task-master list --with-subtasks
+lm-tasker list --with-subtasks
 
 # List tasks with a specific status and include subtasks
-task-master list --status=<status> --with-subtasks
+lm-tasker list --status=<status> --with-subtasks
 ```
 
 ## Show Next Task
@@ -174,8 +174,8 @@ task-master add-task --prompt="Description" --priority=high
 ## Initialize a Project
 
 ```bash
-# Initialize a new project with Task Master structure
-task-master init
+# Initialize a new project with LM-Tasker structure
+lm-tasker init
 ```
 
 ## Configure AI Models
@@ -194,5 +194,5 @@ task-master models --set-fallback=gpt-4o-mini
 task-master models --setup
 ```
 
-Configuration is stored in `.taskmasterconfig` in your project root. API keys are managed via `.env` or MCP
+Configuration is stored in `.lmtaskerconfig` in your project root. API keys are managed via `.env` or MCP
 configuration. This version only supports Azure OpenAI models: `gpt-4o`, `gpt-4o-mini`, and `o3-mini`.

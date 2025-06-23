@@ -1,6 +1,6 @@
 /**
  * commands.js
- * Command-line interface for the Task Master CLI
+ * Command-line interface for the LM-Tasker CLI
  */
 
 import { program } from "commander";
@@ -77,7 +77,7 @@ import {
   isValidTaskStatus,
   TASK_STATUS_OPTIONS,
 } from "../../src/constants/task-status.js";
-import { getTaskMasterVersion } from "../../src/utils/getVersion.js";
+import { getLmTaskerVersion } from "../../src/utils/getVersion.js";
 import { findPRDDocumentPath } from "../../mcp-server/src/core/utils/path-utils.js";
 import {
   migratePRDFile,
@@ -578,7 +578,7 @@ function registerCommands(programInstance) {
     console.error(chalk.red(`Error: Unknown option '${unknownOption}'`));
     console.error(
       chalk.yellow(
-        `Run 'task-master ${commandName} --help' to see available options`
+        `Run 'lm-tasker ${commandName} --help' to see available options`
       )
     );
     process.exit(1);
@@ -664,7 +664,7 @@ function registerCommands(programInstance) {
                 "\n\n" +
                 chalk.cyan("Usage:") +
                 "\n" +
-                `  task-master parse-prd [prd-file] [options]\n\n` +
+                `  lm-tasker parse-prd [prd-file] [options]\n\n` +
                 chalk.cyan("Options:") +
                 "\n" +
                 "  -i, --input <file>       Path to the PRD file (alternative to positional argument)\n" +
@@ -674,11 +674,11 @@ function registerCommands(programInstance) {
                 "  --append                 Append new tasks to existing tasks.json instead of overwriting\n" +
                 chalk.cyan("Examples:") +
                 "\n" +
-                "  task-master parse-prd                    # Auto-detect PRD file\n" +
-                "  task-master parse-prd PRD.md --num-tasks 15\n" +
-                "  task-master parse-prd --input=requirements.md\n" +
-                "  task-master parse-prd --force\n" +
-                "  task-master parse-prd requirements_v2.md --append\n" +
+                "  lm-tasker parse-prd                    # Auto-detect PRD file\n" +
+                "  lm-tasker parse-prd PRD.md --num-tasks 15\n" +
+                "  lm-tasker parse-prd --input=requirements.md\n" +
+                "  lm-tasker parse-prd --force\n" +
+                "  lm-tasker parse-prd requirements_v2.md --append\n" +
                 chalk.yellow("Note: This command will:") +
                 "\n" +
                 "  1. Look for PRD files in this order: PRD.md, prd.md, PRD.txt, prd.txt\n" +
@@ -814,7 +814,7 @@ function registerCommands(programInstance) {
               "\nPlease specify which file to migrate using the source argument:"
             )
           );
-          console.log(chalk.yellow("  task-master migrate-prd <source-file>"));
+                      console.log(chalk.yellow("  lm-tasker migrate-prd <source-file>"));
           return;
         }
       } else {
@@ -857,7 +857,7 @@ function registerCommands(programInstance) {
                 chalk.white.bold("Next steps:") +
                 "\n" +
                 `• Review the migrated ${chalk.green("PRD.md")} file\n` +
-                `• Run ${chalk.yellow("task-master parse-prd")} to generate tasks from the new format\n` +
+                `• Run ${chalk.yellow("lm-tasker parse-prd")} to generate tasks from the new format\n` +
                 (result.keptOriginal
                   ? `• Remove the original file when satisfied: ${chalk.cyan(path.basename(sourcePath))}`
                   : ""),
@@ -910,7 +910,7 @@ function registerCommands(programInstance) {
         );
         console.log(chalk.yellow("\nTo update multiple tasks:"));
         console.log(
-          `  task-master update --from=${fromId} --prompt="Your prompt here"`
+                      `  lm-tasker update --from=${fromId} --prompt="Your prompt here"`
         );
         console.log(
           chalk.yellow(
@@ -918,7 +918,7 @@ function registerCommands(programInstance) {
           )
         );
         console.log(
-          `  task-master update-task --id=<id> --prompt="Your prompt here"`
+                      `  lm-tasker update-task --id=<id> --prompt="Your prompt here"`
         );
         process.exit(1);
       }
@@ -970,7 +970,7 @@ function registerCommands(programInstance) {
           console.error(chalk.red("Error: --id parameter is required"));
           console.log(
             chalk.yellow(
-              'Usage example: task-master update-task --id=23 --prompt="Update with new information"'
+              'Usage example: lm-tasker update-task --id=23 --prompt="Update with new information"'
             )
           );
           process.exit(1);
@@ -986,7 +986,7 @@ function registerCommands(programInstance) {
           );
           console.log(
             chalk.yellow(
-              'Usage example: task-master update-task --id=23 --prompt="Update with new information"'
+              'Usage example: lm-tasker update-task --id=23 --prompt="Update with new information"'
             )
           );
           process.exit(1);
@@ -1000,7 +1000,7 @@ function registerCommands(programInstance) {
           );
           console.log(
             chalk.yellow(
-              'Usage example: task-master update-task --id=23 --prompt="Update with new information"'
+              'Usage example: lm-tasker update-task --id=23 --prompt="Update with new information"'
             )
           );
           process.exit(1);
@@ -1054,7 +1054,7 @@ function registerCommands(programInstance) {
         ) {
           console.log(chalk.yellow("\nTo fix this issue:"));
           console.log(
-            "  1. Run task-master list to see all available task IDs"
+            "  1. Run lm-tasker list to see all available task IDs"
           );
           console.log("  2. Use a valid task ID with the --id parameter");
         } else if (error.message.includes("API key")) {
@@ -1186,7 +1186,7 @@ function registerCommands(programInstance) {
         ) {
           console.log(chalk.yellow("\nTo fix this issue:"));
           console.log(
-            "  1. Run task-master list --with-subtasks to see all available subtask IDs"
+            "  1. Run lm-tasker list --with-subtasks to see all available subtask IDs"
           );
           console.log(
             '  2. Use a valid subtask ID with the --id parameter in format "parentId.subtaskId"'
@@ -1688,11 +1688,11 @@ function registerCommands(programInstance) {
                 chalk.white.bold("Next Steps:") +
                 "\n" +
                 chalk.cyan(
-                  `1. Run ${chalk.yellow(`task-master show ${parentId}`)} to see the parent task with all subtasks`
+                  `1. Run ${chalk.yellow(`lm-tasker show ${parentId}`)} to see the parent task with all subtasks`
                 ) +
                 "\n" +
                 chalk.cyan(
-                  `2. Run ${chalk.yellow(`task-master set-status --id=${parentId}.${subtask.id} --status=in-progress`)} to start working on it`
+                  `2. Run ${chalk.yellow(`lm-tasker set-status --id=${parentId}.${subtask.id} --status=in-progress`)} to start working on it`
                 ),
               {
                 padding: 1,
@@ -1713,13 +1713,13 @@ function registerCommands(programInstance) {
                 chalk.white("Convert existing task to subtask:") +
                 "\n" +
                 chalk.yellow(
-                  `  task-master add-subtask --parent=5 --task-id=8`
+                  `  lm-tasker add-subtask --parent=5 --task-id=8`
                 ) +
                 "\n\n" +
                 chalk.white("Create new subtask:") +
                 "\n" +
                 chalk.yellow(
-                  `  task-master add-subtask --parent=5 --title="Implement login UI" --description="Create the login form"`
+                  `  lm-tasker add-subtask --parent=5 --title="Implement login UI" --description="Create the login form"`
                 ) +
                 "\n\n",
               { padding: 1, borderColor: "blue", borderStyle: "round" }
@@ -2558,7 +2558,7 @@ function setupCLI() {
  */
 async function checkForUpdate() {
   // Get current version from package.json ONLY
-  const currentVersion = getTaskMasterVersion();
+  		const currentVersion = getLmTaskerVersion();
 
   return new Promise((resolve) => {
     // Get the latest version from npm registry
@@ -2656,7 +2656,7 @@ function compareVersions(v1, v2) {
 function displayUpgradeNotification(currentVersion, latestVersion) {
   const message = boxen(
     `${chalk.blue.bold("Update Available!")} ${chalk.dim(currentVersion)} → ${chalk.green(latestVersion)}\n\n` +
-      `Run ${chalk.cyan("npm i task-master-ai@latest -g")} to update to the latest version with new features and bug fixes.`,
+      					`Run ${chalk.cyan("npm i lm-tasker@latest -g")} to update to the latest version with new features and bug fixes.`,
     {
       padding: 1,
       margin: { top: 1, bottom: 1 },
@@ -2696,7 +2696,7 @@ async function runCLI(argv = process.argv) {
 
     // Setup and parse
     // NOTE: getConfig() might be called during setupCLI->registerCommands if commands need config
-    // This means the ConfigurationError might be thrown here if .taskmasterconfig is missing.
+    // This means the ConfigurationError might be thrown here if .lmtaskerconfig is missing.
     const programInstance = setupCLI();
     await programInstance.parseAsync(argv);
 
@@ -2717,8 +2717,8 @@ async function runCLI(argv = process.argv) {
         boxen(
           chalk.red.bold("Configuration Update Required!") +
             "\n\n" +
-            chalk.white("Taskmaster now uses the ") +
-            chalk.yellow.bold(".taskmasterconfig") +
+            chalk.white("LM-Tasker now uses the ") +
+            chalk.yellow.bold(".lmtaskerconfig") +
             chalk.white(
               " file in your project root for AI model choices and settings.\n\n" +
                 "This file appears to be "
@@ -2727,12 +2727,12 @@ async function runCLI(argv = process.argv) {
             chalk.white(". No worries though.\n\n") +
             chalk.cyan.bold("To create this file, run the interactive setup:") +
             "\n" +
-            chalk.green("   task-master models --setup") +
+            chalk.green("   lm-tasker models --setup") +
             "\n\n" +
             chalk.white.bold("Key Points:") +
             "\n" +
             chalk.white("*   ") +
-            chalk.yellow.bold(".taskmasterconfig") +
+            chalk.yellow.bold(".lmtaskerconfig") +
             chalk.white(
               ": Stores your AI model settings (do not manually edit)\n"
             ) +
@@ -2742,10 +2742,10 @@ async function runCLI(argv = process.argv) {
             chalk.red.bold("only") +
             chalk.white(" for your AI provider API keys.\n\n") +
             chalk.cyan(
-              "`task-master models` to check your config & available models\n"
+              "`lm-tasker models` to check your config & available models\n"
             ) +
             chalk.cyan(
-              "`task-master models --setup` to adjust the AI models used by Taskmaster"
+              "`lm-tasker models --setup` to adjust the AI models used by LM-Tasker"
             ),
           {
             padding: 1,

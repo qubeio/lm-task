@@ -20,13 +20,13 @@ have a **single source of truth** for tasks. This script allows you to:
 
 ## Configuration (Updated)
 
-Task Master configuration is now managed through two primary methods:
+LM-Tasker configuration is now managed through two primary methods:
 
-1.  **`.taskmasterconfig` File (Project Root - Primary)**
+1.  **`.lmtaskerconfig` File (Project Root - Primary)**
 
     - Stores AI model selections (`main`, `research`, `fallback`), model parameters (`maxTokens`, `temperature`),
       `logLevel`, `defaultSubtasks`, `defaultPriority`, `projectName`, etc.
-    - Managed using the `task-master models --setup` command or the `models` MCP tool.
+    - Managed using the `lm-tasker models --setup` command or the `models` MCP tool.
     - This is the main configuration file for most settings.
 
 2.  **Environment Variables (`.env` File - API Keys Only)**
@@ -34,8 +34,8 @@ Task Master configuration is now managed through two primary methods:
     - Create a `.env` file in your project root for CLI usage.
     - See `assets/env.example` for required key names.
 
-**Important:** Settings like `MODEL`, `MAX_TOKENS`, `TEMPERATURE`, `TASKMASTER_LOG_LEVEL`, etc., are **no longer set via
-`.env`**. Use `task-master models --setup` instead.
+**Important:** Settings like `MODEL`, `MAX_TOKENS`, `TEMPERATURE`, `LMTASKER_LOG_LEVEL`, etc., are **no longer set via
+`.env`**. Use `lm-tasker models --setup` instead.
 
 ## How It Works
 
@@ -51,7 +51,7 @@ Task Master configuration is now managed through two primary methods:
 
    ```bash
    # If installed globally
-   task-master [command] [options]
+   lm-tasker [command] [options]
 
    # If using locally within the project
    node scripts/dev.js [command] [options]
@@ -75,7 +75,7 @@ Task Master configuration is now managed through two primary methods:
    - `fix-dependencies`: Fix invalid dependencies automatically
    - `add-task`: Add a new task using AI
 
-   Run `task-master --help` or `node scripts/dev.js --help` to see detailed usage information.
+   Run `lm-tasker --help` or `node scripts/dev.js --help` to see detailed usage information.
 
 ## Listing Tasks
 
@@ -83,16 +83,16 @@ The `list` command allows you to view all tasks and their status:
 
 ```bash
 # List all tasks
-task-master list
+lm-tasker list
 
 # List tasks with a specific status
-task-master list --status=pending
+lm-tasker list --status=pending
 
 # List tasks and include their subtasks
-task-master list --with-subtasks
+lm-tasker list --with-subtasks
 
 # List tasks with a specific status and include their subtasks
-task-master list --status=pending --with-subtasks
+lm-tasker list --status=pending --with-subtasks
 ```
 
 ## Updating Tasks
@@ -101,13 +101,13 @@ The `update` command allows you to update tasks based on new information or impl
 
 ```bash
 # Update tasks starting from ID 4 with a new prompt
-task-master update --from=4 --prompt="Refactor tasks from ID 4 onward to use Express instead of Fastify"
+lm-tasker update --from=4 --prompt="Refactor tasks from ID 4 onward to use Express instead of Fastify"
 
 # Update all tasks (default from=1)
-task-master update --prompt="Add authentication to all relevant tasks"
+lm-tasker update --prompt="Add authentication to all relevant tasks"
 
 # Specify a different tasks file
-task-master update --file=custom-tasks.json --from=5 --prompt="Change database from MongoDB to PostgreSQL"
+lm-tasker update --file=custom-tasks.json --from=5 --prompt="Change database from MongoDB to PostgreSQL"
 ```
 
 Notes:
@@ -122,16 +122,16 @@ The `set-status` command allows you to change a task's status:
 
 ```bash
 # Mark a task as done
-task-master set-status --id=3 --status=done
+lm-tasker set-status --id=3 --status=done
 
 # Mark a task as pending
-task-master set-status --id=4 --status=pending
+lm-tasker set-status --id=4 --status=pending
 
 # Mark a specific subtask as done
-task-master set-status --id=3.1 --status=done
+lm-tasker set-status --id=3.1 --status=done
 
 # Mark multiple tasks at once
-task-master set-status --id=1,2,3 --status=done
+lm-tasker set-status --id=1,2,3 --status=done
 ```
 
 Notes:
@@ -148,16 +148,16 @@ The `add-subtask` command allows you to manually add subtasks to break down comp
 
 ```bash
 # Add a subtask to a specific task
-task-master add-subtask --parent=3 --title="Implement user validation"
+lm-tasker add-subtask --parent=3 --title="Implement user validation"
 
 # Add a subtask with description and details
-task-master add-subtask --parent=3 --title="Setup database" --description="Configure PostgreSQL" --details="Install and configure PostgreSQL with proper schemas"
+lm-tasker add-subtask --parent=3 --title="Setup database" --description="Configure PostgreSQL" --details="Install and configure PostgreSQL with proper schemas"
 
 # Convert an existing task to a subtask
-task-master add-subtask --parent=3 --task-id=5
+lm-tasker add-subtask --parent=3 --task-id=5
 
 # Add a subtask with dependencies
-task-master add-subtask --parent=3 --title="API integration" --dependencies="3.1,3.2"
+lm-tasker add-subtask --parent=3 --title="API integration" --dependencies="3.1,3.2"
 ```
 
 ## Clearing Subtasks
@@ -166,13 +166,13 @@ The `clear-subtasks` command allows you to remove subtasks from specified tasks:
 
 ```bash
 # Clear subtasks from a specific task
-task-master clear-subtasks --id=3
+lm-tasker clear-subtasks --id=3
 
 # Clear subtasks from multiple tasks
-task-master clear-subtasks --id=1,2,3
+lm-tasker clear-subtasks --id=1,2,3
 
 # Clear subtasks from all tasks
-task-master clear-subtasks --all
+lm-tasker clear-subtasks --all
 ```
 
 Notes:
@@ -186,15 +186,15 @@ Notes:
 
 - The script now uses a unified AI service layer (`ai-services-unified.js`).
 - Model selection (e.g., Claude vs. Perplexity for `--research`) is determined by the configuration in
-  `.taskmasterconfig` based on the requested `role` (`main` or `research`).
+  `.lmtaskerconfig` based on the requested `role` (`main` or `research`).
 - API keys are automatically resolved from your `.env` file (for CLI) or MCP session environment.
 - To use the research capabilities (e.g., `add-task --research`), ensure you have:
-  1.  Configured a model for the `research` role using `task-master models --setup` (Perplexity models are recommended).
+  1.  Configured a model for the `research` role using `lm-tasker models --setup` (Perplexity models are recommended).
   2.  Added the corresponding API key (e.g., `PERPLEXITY_API_KEY`) to your `.env` file.
 
 ## Logging
 
-The script supports different logging levels controlled by the `TASKMASTER_LOG_LEVEL` environment variable:
+The script supports different logging levels controlled by the `LMTASKER_LOG_LEVEL` environment variable:
 
 - `debug`: Detailed information, typically useful for troubleshooting
 - `info`: Confirmation that things are working as expected (default)
@@ -209,10 +209,10 @@ The `add-dependency` and `remove-dependency` commands allow you to manage task d
 
 ```bash
 # Add a dependency to a task
-task-master add-dependency --id=<id> --depends-on=<id>
+lm-tasker add-dependency --id=<id> --depends-on=<id>
 
 # Remove a dependency from a task
-task-master remove-dependency --id=<id> --depends-on=<id>
+lm-tasker remove-dependency --id=<id> --depends-on=<id>
 ```
 
 These commands:
@@ -249,10 +249,10 @@ The `validate-dependencies` command allows you to check for invalid dependencies
 
 ```bash
 # Check for invalid dependencies in tasks.json
-task-master validate-dependencies
+lm-tasker validate-dependencies
 
 # Specify a different tasks file
-task-master validate-dependencies --file=custom-tasks.json
+lm-tasker validate-dependencies --file=custom-tasks.json
 ```
 
 This command:
@@ -271,10 +271,10 @@ The `fix-dependencies` command proactively finds and fixes all invalid dependenc
 
 ```bash
 # Find and fix all invalid dependencies
-task-master fix-dependencies
+lm-tasker fix-dependencies
 
 # Specify a different tasks file
-task-master fix-dependencies --file=custom-tasks.json
+lm-tasker fix-dependencies --file=custom-tasks.json
 ```
 
 This command:
@@ -300,10 +300,10 @@ The `next` command helps you determine which task to work on next based on depen
 
 ```bash
 # Show the next task to work on
-task-master next
+lm-tasker next
 
 # Specify a different tasks file
-task-master next --file=custom-tasks.json
+lm-tasker next --file=custom-tasks.json
 ```
 
 This command:
@@ -332,16 +332,16 @@ The `show` command allows you to view detailed information about a specific task
 
 ```bash
 # Show details for a specific task
-task-master show 1
+lm-tasker show 1
 
 # Alternative syntax with --id option
-task-master show --id=1
+lm-tasker show --id=1
 
 # Show details for a subtask
-task-master show --id=1.2
+lm-tasker show --id=1.2
 
 # Specify a different tasks file
-task-master show 3 --file=custom-tasks.json
+lm-tasker show 3 --file=custom-tasks.json
 ```
 
 This command:

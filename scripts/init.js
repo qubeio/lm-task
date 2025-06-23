@@ -1,5 +1,5 @@
 /**
- * Task Master
+ * LM-Tasker
  * Author: Andreas Frangopoulos
  */
 
@@ -42,7 +42,7 @@ function displayBanner() {
   if (isSilentMode()) return;
 
   console.clear();
-  const bannerText = figlet.textSync("Task Master AI", {
+  const bannerText = figlet.textSync("LM-Tasker", {
     font: "Standard",
     horizontalLayout: "default",
     verticalLayout: "default",
@@ -134,20 +134,20 @@ function addShellAliases() {
 
     // Check if aliases already exist
     const configContent = fs.readFileSync(shellConfigFile, "utf8");
-    if (configContent.includes("alias tm='task-master'")) {
-      log("info", "Task Master aliases already exist in shell config.");
+    if (configContent.includes("alias tm='lm-tasker'")) {
+      log("info", "LM-Tasker aliases already exist in shell config.");
       return true;
     }
 
     // Add aliases to the shell config file
     const aliasBlock = `
-# Task Master aliases added on ${new Date().toLocaleDateString()}
-alias tm='task-master'
-alias taskmaster='task-master'
+# LM-Tasker aliases added on ${new Date().toLocaleDateString()}
+alias tm='lm-tasker'
+alias lmtasker='lm-tasker'
 `;
 
     fs.appendFileSync(shellConfigFile, aliasBlock);
-    log("success", `Added Task Master aliases to ${shellConfigFile}`);
+    log("success", `Added LM-Tasker aliases to ${shellConfigFile}`);
     log(
       "info",
       "To use the aliases in your current terminal, run: source " +
@@ -276,7 +276,7 @@ function copyTemplateFile(templateName, targetPath, replacements = {}) {
         // Add a comment to separate the original content from our additions
         const updatedContent =
           existingContent.trim() +
-          "\n\n# Added by Claude Task Master\n" +
+          "\n\n# Added by LM-Tasker\n" +
           newLines.join("\n");
         fs.writeFileSync(targetPath, updatedContent);
         log("success", `Updated ${targetPath} with additional entries`);
@@ -297,7 +297,7 @@ function copyTemplateFile(templateName, targetPath, replacements = {}) {
       // Add a separator comment before appending our content
       const updatedContent =
         existingContent.trim() +
-        "\n\n# Added by Task Master - Development Workflow Rules\n\n" +
+        "\n\n# Added by LM-Tasker - Development Workflow Rules\n\n" +
         content;
       fs.writeFileSync(targetPath, updatedContent);
       log("success", `Updated ${targetPath} with additional rules`);
@@ -358,9 +358,9 @@ async function initializeProject(options = {}) {
     }
 
     // Use provided options or defaults
-    const projectName = options.name || "task-master-project";
-    const projectDescription =
-      options.description || "A project managed with Task Master AI";
+      const projectName = options.name || "lm-tasker-project";
+  const projectDescription =
+    options.description || "A project managed with LM-Tasker";
     const projectVersion = options.version || "0.1.0";
     const authorName = options.author || "Vibe coder";
     const dryRun = options.dryRun || false;
@@ -368,10 +368,10 @@ async function initializeProject(options = {}) {
 
     if (dryRun) {
       log("info", "DRY RUN MODE: No files will be modified");
-      log("info", "Would initialize Task Master project");
+      log("info", "Would initialize LM-Tasker project");
       log("info", "Would create/update necessary project files");
       if (addAliases) {
-        log("info", "Would add shell aliases for task-master");
+        log("info", "Would add shell aliases for lm-tasker");
       }
       return {
         dryRun: true,
@@ -392,16 +392,16 @@ async function initializeProject(options = {}) {
       const addAliasesInput = await promptQuestion(
         rl,
         chalk.cyan(
-          'Add shell aliases for task-master? This lets you type "tm" instead of "task-master" (Y/n): '
+          'Add shell aliases for lm-tasker? This lets you type "tm" instead of "lm-tasker" (Y/n): '
         )
       );
       const addAliasesPrompted = addAliasesInput.trim().toLowerCase() !== "n";
 
       // Confirm settings...
-      console.log("\nTask Master Project settings:");
+      console.log("\nLM-Tasker Project settings:");
       console.log(
         chalk.blue(
-          'Add shell aliases (so you can use "tm" instead of "task-master"):'
+          'Add shell aliases (so you can use "tm" instead of "lm-tasker"):'
         ),
         chalk.white(addAliasesPrompted ? "Yes" : "No")
       );
@@ -423,10 +423,10 @@ async function initializeProject(options = {}) {
 
       if (dryRun) {
         log("info", "DRY RUN MODE: No files will be modified");
-        log("info", "Would initialize Task Master project");
+        log("info", "Would initialize LM-Tasker project");
         log("info", "Would create/update necessary project files");
         if (addAliasesPrompted) {
-          log("info", "Would add shell aliases for task-master");
+          log("info", "Would add shell aliases for lm-tasker");
         }
         return {
           dryRun: true,
@@ -492,10 +492,10 @@ function createProjectStructure(addAliases, dryRun) {
     replacements
   );
 
-  // Copy .taskmasterconfig with project name
-  copyTemplateFile(
-    ".taskmasterconfig",
-    path.join(targetDir, ".taskmasterconfig"),
+  	// Copy .lmtaskerconfig with project name
+	copyTemplateFile(
+		".lmtaskerconfig",
+		path.join(targetDir, ".lmtaskerconfig"),
     {
       ...replacements,
     }
@@ -609,20 +609,20 @@ function createProjectStructure(addAliases, dryRun) {
       "Running interactive model setup. Please select your preferred AI models."
     );
     try {
-      execSync("npx task-master models --setup", {
+      execSync("npx lm-tasker models --setup", {
         stdio: "inherit",
         cwd: targetDir,
       });
       log("success", "AI Models configured.");
     } catch (error) {
       log("error", "Failed to configure AI models:", error.message);
-      log("warn", 'You may need to run "task-master models --setup" manually.');
+      log("warn", 'You may need to run "lm-tasker models --setup" manually.');
     }
   } else if (isSilentMode() && !dryRun) {
     log("info", "Skipping interactive model setup in silent (MCP) mode.");
     log(
       "warn",
-      'Please configure AI models using "task-master models --set-..." or the "models" MCP tool.'
+      'Please configure AI models using "lm-tasker models --set-..." or the "models" MCP tool.'
     );
   } else if (dryRun) {
     log("info", "DRY RUN: Skipping interactive model setup.");
@@ -660,7 +660,7 @@ function createProjectStructure(addAliases, dryRun) {
           ) +
           "\n" +
           chalk.white("   ├─ ") +
-          chalk.dim("Models: Use `task-master models` commands") +
+          chalk.dim("Models: Use `lm-tasker models` commands") +
           "\n" +
           chalk.white("   └─ ") +
           chalk.dim(
@@ -681,7 +681,7 @@ function createProjectStructure(addAliases, dryRun) {
           chalk.dim("MCP Tool: ") +
           chalk.cyan("parse_prd") +
           chalk.dim(" | CLI: ") +
-          chalk.cyan("task-master parse-prd") +
+          chalk.cyan("lm-tasker parse-prd") +
           chalk.dim(" (auto-detects PRD.md)") +
           "\n" +
           chalk.white("4. ") +
@@ -710,7 +710,7 @@ function createProjectStructure(addAliases, dryRun) {
           ) +
           "\n" +
           chalk.dim(
-            "* Use the task-master command without arguments to see all available commands."
+            "* Use the lm-tasker command without arguments to see all available commands."
           ),
         {
           padding: 1,
@@ -737,9 +737,9 @@ function setupMCPConfiguration(targetDir) {
 
   // New MCP config to be added - references the installed package
   const newMCPServer = {
-    "task-master-ai": {
+    "lm-tasker": {
       command: "npx",
-      args: ["-y", "--package=task-master-ai", "task-master-ai"],
+      args: ["-y", "--package=lm-tasker", "lm-tasker"],
       env: {
         AZURE_OPENAI_ENDPOINT: "Your Azure OpenAI Endpoint",
         AZURE_OPENAI_API_KEY: "Your Azure OpenAI API Key",
@@ -751,7 +751,7 @@ function setupMCPConfiguration(targetDir) {
   if (fs.existsSync(mcpJsonPath)) {
     log(
       "info",
-      "MCP configuration file already exists, checking for existing task-master-mcp..."
+      "MCP configuration file already exists, checking for existing lm-tasker..."
     );
     try {
       // Read existing config
@@ -762,32 +762,32 @@ function setupMCPConfiguration(targetDir) {
         mcpConfig.mcpServers = {};
       }
 
-      // Check if any existing server configuration already has task-master-mcp in its args
+      // Check if any existing server configuration already has lm-tasker in its args
       const hasMCPString = Object.values(mcpConfig.mcpServers).some(
         (server) =>
           server.args &&
           server.args.some(
-            (arg) => typeof arg === "string" && arg.includes("task-master-ai")
+            (arg) => typeof arg === "string" && arg.includes("lm-tasker")
           )
       );
 
       if (hasMCPString) {
         log(
           "info",
-          "Found existing task-master-ai MCP configuration in mcp.json, leaving untouched"
+          "Found existing lm-tasker MCP configuration in mcp.json, leaving untouched"
         );
         return; // Exit early, don't modify the existing configuration
       }
 
-      // Add the task-master-ai server if it doesn't exist
-      if (!mcpConfig.mcpServers["task-master-ai"]) {
-        mcpConfig.mcpServers["task-master-ai"] = newMCPServer["task-master-ai"];
+      // Add the lm-tasker server if it doesn't exist
+      if (!mcpConfig.mcpServers["lm-tasker"]) {
+        mcpConfig.mcpServers["lm-tasker"] = newMCPServer["lm-tasker"];
         log(
           "info",
-          "Added task-master-ai server to existing MCP configuration"
+          "Added lm-tasker server to existing MCP configuration"
         );
       } else {
-        log("info", "task-master-ai server already configured in mcp.json");
+        log("info", "lm-tasker server already configured in mcp.json");
       }
 
       // Write the updated configuration
@@ -824,7 +824,7 @@ function setupMCPConfiguration(targetDir) {
   }
 
   // Add note to console about MCP integration
-  log("info", "MCP server will use the installed task-master-ai package");
+  log("info", "MCP server will use the installed lm-tasker package");
 }
 
 // Ensure necessary functions are exported

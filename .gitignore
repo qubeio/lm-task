@@ -68,4 +68,4 @@ dev-debug.log
 .cursor/
 .cursorignore
 /.windsurfrules
-/.taskmasterconfig
+/.lmtaskerconfig

@@ -36,7 +36,7 @@ jest.mock('../../../../mcp-server/src/tools/utils.js', () => ({
 		success: true,
 		data: content
 	})),
-	executeTaskMasterCommand: jest.fn()
+	executeLmTaskerCommand: jest.fn()
 }));
 
 // Mock the z object from zod
