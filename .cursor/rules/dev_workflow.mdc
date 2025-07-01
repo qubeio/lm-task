@@ -1,0 +1,234 @@
+---
+description: Guide for using Task Master to manage task-driven development workflows
+globs: **/*
+alwaysApply: true
+---
+# LM-Tasker Development Workflow
+
+This guide outlines the typical process for using LM-Tasker to manage software development projects.
+
+## Primary Interaction: MCP Server vs. CLI
+
+LM-Tasker offers two primary ways to interact:
+
+1.  **MCP Server (Recommended for Integrated Tools)**:
+    - For AI agents and integrated development environments (like Cursor), interacting via the **MCP server is the preferred method**.
+    - The MCP server exposes LM-Tasker functionality through a set of tools (e.g., `get_tasks`, `add_subtask`).
+    - This method offers better performance, structured data exchange, and richer error handling compared to CLI parsing.
+    - Refer to [`mcp.mdc`](mdc:.cursor/rules/mcp.mdc) for details on the MCP architecture and available tools.
+    - A comprehensive list and description of MCP tools and their corresponding CLI commands can be found in [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc).
+    - **Restart the MCP server** if core logic in `scripts/modules` or MCP tool/direct function definitions change.
+
+2.  **`lm-tasker` CLI (For Users & Fallback)**:
+    - The global `lm-tasker` command provides a user-friendly interface for direct terminal interaction.
+    - It can also serve as a fallback if the MCP server is inaccessible or a specific function isn't exposed via MCP.
+    - Install globally with `npm install -g lm-tasker` or use locally via `npx lm-tasker ...`.
+    - The CLI commands often mirror the MCP tools (e.g., `lm-tasker list` corresponds to `get_tasks`).
+    - Refer to [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc) for a detailed command reference.
+
+## Standard Development Workflow Process
+
+-   Start new projects by running `initialize_project` tool / `lm-tasker init` or `parse_prd` / `lm-tasker parse-prd --input='<prd-file.txt>'` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)) to generate initial tasks.json
+-   Begin coding sessions with `get_tasks` / `lm-tasker list` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)) to see current tasks, status, and IDs
+-   Determine the next task to work on using `next_task` / `lm-tasker next` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)).
+-   Select tasks based on dependencies (all marked 'done'), priority level, and ID order
+-   Clarify tasks by checking task files in tasks/ directory or asking for user input
+-   View specific task details using `get_task` / `lm-tasker show <id>` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)) to understand implementation requirements
+-   Clear existing subtasks if needed using `clear_subtasks` / `lm-tasker clear-subtasks --id=<id>` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)) before regenerating
+-   Implement code following task details, dependencies, and project standards
+-   Verify tasks according to test strategies before marking as complete (See [`tests.mdc`](mdc:.cursor/rules/tests.mdc))
+-   Mark completed tasks with `set_task_status` / `lm-tasker set-status --id=<id> --status=done` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc))
+-   **Manual Task Updates**: Update tasks manually when implementation differs from original plan using direct editing or `update_task` / `lm-tasker update-task --id=<id> --title="..." --description="..."` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc))
+-   **Manual Task Addition**: Add new tasks discovered during implementation using `add_task` / `lm-tasker add-task --title="..." --description="..."` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)).
+-   Add new subtasks as needed using `add_subtask` / `lm-tasker add-subtask --parent=<id> --title="..."` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)).
+-   **Manual Subtask Updates**: Append notes or details to subtasks using direct editing or `update_subtask` / `lm-tasker update-subtask --id=<subtaskId> --details='Add implementation notes here...'` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)).
+-   Generate task files with `generate` / `lm-tasker generate` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)) after updating tasks.json
+-   Maintain valid dependency structure with `add_dependency`/`remove_dependency` tools or `lm-tasker add-dependency`/`remove-dependency` commands, `validate_dependencies` / `lm-tasker validate-dependencies`, and `fix_dependencies` / `lm-tasker fix-dependencies` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)) when needed
+-   Respect dependency chains and task priorities when selecting work
+-   Report progress regularly using `get_tasks` / `lm-tasker list`
+-   Reorganize tasks as needed using `move_task` / `lm-tasker move --from=<id> --to=<id>` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)) to change task hierarchy or ordering
+
+## Manual Task Management (Simplified Architecture)
+
+LM-Tasker uses a simplified architecture where **AI is only used for PRD parsing**. All other task operations are manual:
+
+-   **Task Creation**: Manually create tasks with specific titles, descriptions, and details
+-   **Task Updates**: Directly edit task properties without AI interpretation
+-   **Subtask Management**: Manual creation and organization of subtasks
+-   **Status Updates**: Simple status changes without AI analysis
+-   **Dependency Management**: Manual dependency setup and validation
+-   **Task Organization**: Direct task movement and reorganization
+
+## Implementation Drift Handling
+
+When implementation differs significantly from planned approach:
+-   **Manual Task Updates**: Directly edit task details, descriptions, and implementation notes
+-   **Dependency Adjustments**: Manually update task dependencies as requirements change
+-   **Task Reorganization**: Use `move_task` to restructure task hierarchy
+-   **New Task Creation**: Manually add new tasks discovered during implementation
+-   **Status Management**: Update task statuses to reflect current reality
+
+## Task Status Management
+
+-   Use 'pending' for tasks ready to be worked on
+-   Use 'done' for completed and verified tasks
+-   Use 'deferred' for postponed tasks
+-   Use 'in-progress' for active work
+-   Use 'review' for tasks awaiting verification
+-   Use 'cancelled' for abandoned tasks
+-   Add custom status values as needed for project-specific workflows
+
+## Task Structure Fields
+
+- **id**: Unique identifier for the task (Example: `1`, `1.1`)
+- **title**: Brief, descriptive title (Example: `"Initialize Repo"`)
+- **description**: Concise summary of what the task involves (Example: `"Create a new repository, set up initial structure."`)
+- **status**: Current state of the task (Example: `"pending"`, `"done"`, `"deferred"`, `"in-progress"`, `"review"`, `"cancelled"`)
+- **dependencies**: IDs of prerequisite tasks (Example: `[1, 2.1]`)
+    - Dependencies are displayed with status indicators (✅ for completed, ⏱️ for pending)
+    - This helps quickly identify which prerequisite tasks are blocking work
+- **priority**: Importance level (Example: `"high"`, `"medium"`, `"low"`)
+- **details**: In-depth implementation instructions (Example: `"Use GitHub client ID/secret, handle callback, set session token."`) 
+- **testStrategy**: Verification approach (Example: `"Deploy and call endpoint to confirm 'Hello World' response."`) 
+- **subtasks**: List of smaller, more specific tasks (Example: `[{"id": 1, "title": "Configure OAuth", ...}]`) 
+- Refer to task structure details (previously linked to `tasks.mdc`).
+
+## Configuration Management (Updated)
+
+LM-Tasker configuration is managed through two main mechanisms:
+
+1.  **`.lmtaskerconfig` File (Primary):**
+    *   Located in the project root directory.
+    *   Stores most configuration settings: AI model selections for PRD parsing, parameters (max tokens, temperature), logging level, default priority, project name, etc.
+    *   **Managed via `lm-tasker models --setup` command.** Do not edit manually unless you know what you are doing.
+    *   **View/Set specific models via `lm-tasker models` command or `models` MCP tool.**
+    *   Created automatically when you run `lm-tasker models --setup` for the first time.
+
+2.  **Environment Variables (`.env` / `mcp.json`):**
+    *   Used **only** for sensitive API keys for PRD parsing.
+    *   Place API keys (one per provider) in a `.env` file in the project root for CLI usage.
+    *   For MCP/Cursor integration, configure these keys in the `env` section of `.cursor/mcp.json`.
+    *   Available keys/variables: See `assets/env.example` or the Configuration section in the command reference (previously linked to `lmtasker.mdc`).
+
+**Important:** Non-API key settings (like model selections for PRD parsing, `MAX_TOKENS`, `LMTASKER_LOG_LEVEL`) are **no longer configured via environment variables**. Use the `lm-tasker models` command (or `--setup` for interactive configuration) or the `models` MCP tool.
+**If PRD parsing FAILS in MCP** verify that the API key for the selected provider is present in the `env` section of `.cursor/mcp.json`.
+**If PRD parsing FAILS in CLI** verify that the API key for the selected provider is present in the `.env` file in the root of the project.
+
+## Determining the Next Task
+
+- Run `next_task` / `lm-tasker next` to show the next task to work on.
+- The command identifies tasks with all dependencies satisfied
+- Tasks are prioritized by priority level, dependency count, and ID
+- The command shows comprehensive task information including:
+    - Basic task details and description
+    - Implementation details
+    - Subtasks (if they exist)
+    - Contextual suggested actions
+- Recommended before starting any new development work
+- Respects your project's dependency structure
+- Ensures tasks are completed in the appropriate sequence
+- Provides ready-to-use commands for common task actions
+
+## Viewing Specific Task Details
+
+- Run `get_task` / `lm-tasker show <id>` to view a specific task.
+- Use dot notation for subtasks: `lm-tasker show 1.2` (shows subtask 2 of task 1)
+- Displays comprehensive information similar to the next command, but for a specific task
+- For parent tasks, shows all subtasks and their current status
+- For subtasks, shows parent task information and relationship
+- Provides contextual suggested actions appropriate for the specific task
+- Useful for examining task details before implementation or checking status
+
+## Managing Task Dependencies
+
+- Use `add_dependency` / `lm-tasker add-dependency --id=<id> --depends-on=<id>` to add a dependency.
+- Use `remove_dependency` / `lm-tasker remove-dependency --id=<id> --depends-on=<id>` to remove a dependency.
+- The system prevents circular dependencies and duplicate dependency entries
+- Dependencies are checked for existence before being added or removed
+- Task files are automatically regenerated after dependency changes
+- Dependencies are visualized with status indicators in task listings and files
+
+## Task Reorganization
+
+- Use `move_task` / `lm-tasker move --from=<id> --to=<id>` to move tasks or subtasks within the hierarchy
+- This command supports several use cases:
+  - Moving a standalone task to become a subtask (e.g., `--from=5 --to=7`)
+  - Moving a subtask to become a standalone task (e.g., `--from=5.2 --to=7`) 
+  - Moving a subtask to a different parent (e.g., `--from=5.2 --to=7.3`)
+  - Reordering subtasks within the same parent (e.g., `--from=5.2 --to=5.4`)
+  - Moving a task to a new, non-existent ID position (e.g., `--from=5 --to=25`)
+  - Moving multiple tasks at once using comma-separated IDs (e.g., `--from=10,11,12 --to=16,17,18`)
+- The system includes validation to prevent data loss:
+  - Allows moving to non-existent IDs by creating placeholder tasks
+  - Prevents moving to existing task IDs that have content (to avoid overwriting)
+  - Validates source tasks exist before attempting to move them
+- The system maintains proper parent-child relationships and dependency integrity
+- Task files are automatically regenerated after the move operation
+- This provides greater flexibility in organizing and refining your task structure as project understanding evolves
+- This is especially useful when dealing with potential merge conflicts arising from teams creating tasks on separate branches. Solve these conflicts very easily by moving your tasks and keeping theirs.
+
+## Manual Subtask Implementation
+
+Follow this manual process for implementing subtasks:
+
+1.  **Understand the Goal (Preparation):**
+    *   Use `get_task` / `lm-tasker show <subtaskId>` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)) to thoroughly understand the specific goals and requirements of the subtask.
+
+2.  **Initial Exploration & Planning (Iteration 1):**
+    *   This is the first attempt at creating a concrete implementation plan.
+    *   Explore the codebase to identify the precise files, functions, and even specific lines of code that will need modification.
+    *   Determine the intended code changes (diffs) and their locations.
+    *   Gather *all* relevant details from this exploration phase.
+    *   Search the internet for similar implementations and gauge complexity. Make notes on the task
+    *   If a subtask starts to appear too complex or large, feel free to break it into further subtasks.
+
+3.  **Log the Plan:**
+    *   Run `update_subtask` / `lm-tasker update-subtask --id=<subtaskId> --details='<detailed plan>'`.
+    *   Provide the *complete and detailed* findings from the exploration phase. Include file paths, line numbers, proposed diffs, reasoning, and any potential challenges identified. Do not omit details. The goal is to create a rich, timestamped log within the subtask's `details`.
+
+4.  **Verify the Plan:**
+    *   Run `get_task` / `lm-tasker show <subtaskId>` again to confirm that the detailed implementation plan has been successfully updated in the subtask's details.
+
+5.  **Begin Implementation:**
+    *   Set the subtask status using `set_task_status` / `lm-tasker set-status --id=<subtaskId> --status=in-progress`.
+    *   Start coding based on the logged plan.
+
+6.  **Refine and Log Progress (Iteration 2+):**
+    *   As implementation progresses, you will encounter challenges, discover nuances, or confirm successful approaches.
+    *   **Before adding new information**: Briefly review the *existing* details logged in the subtask (using `get_task` or recalling from context) to ensure the update adds fresh insights and avoids redundancy.
+    *   **Regularly** use `update_subtask` / `lm-tasker update-subtask --id=<subtaskId> --details='<update details>\n- What worked...\n- What didn't work...'` to update findings.
+    *   **Crucially, log:**
+        *   What worked ("fundamental truths" discovered).
+        *   What didn't work and why (to avoid repeating mistakes).
+        *   Specific code snippets or configurations that were successful.
+        *   Decisions made, especially if confirmed with user input.
+        *   Any deviations from the initial plan and the reasoning.
+    *   The objective is to continuously enrich the subtask's details, creating a log of the implementation journey that helps developers learn, adapt, and avoid repeating errors.
+
+7.  **Review & Update Rules (Post-Implementation):**
+    *   Once the implementation for the subtask is functionally complete, review all code changes and the relevant chat history.
+    *   Identify any new or modified code patterns, conventions, or best practices established during the implementation.
+    *   Create new or update existing rules following internal guidelines (previously linked to `cursor_rules.mdc` and `self_improve.mdc`).
+
+8.  **Mark Task Complete:**
+    *   After verifying the implementation and updating any necessary rules, mark the subtask as completed: `set_task_status` / `lm-tasker set-status --id=<subtaskId> --status=done`.
+
+9.  **Commit Changes (If using Git):**
+    *   Stage the relevant code changes and any updated/new rule files (`git add .`).
+    *   Craft a comprehensive Git commit message summarizing the work done for the subtask, including both code implementation and any rule adjustments.
+    *   Execute the commit command directly in the terminal (e.g., `git commit -m 'feat(module): Implement feature X for subtask <subtaskId>\n\n- Details about changes...\n- Updated rule Y for pattern Z'`).
+    *   Consider if a Changeset is needed according to internal versioning guidelines (previously linked to `changeset.mdc`). If so, run `npm run changeset`, stage the generated file, and amend the commit or create a new one.
+
+10. **Proceed to Next Subtask:**
+    *   Identify the next subtask (e.g., using `next_task` / `lm-tasker next`).
+
+## Code Analysis & Refactoring Techniques
+
+- **Top-Level Function Search**:
+    - Useful for understanding module structure or planning refactors.
+    - Use grep/ripgrep to find exported functions/constants:
+      `rg "export (async function|function|const) \w+"` or similar patterns.
+    - Can help compare functions between files during migrations or identify potential naming conflicts.
+
+---
+*This workflow provides a general guideline. Adapt it based on your specific project needs and team practices.*

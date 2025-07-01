@@ -1,0 +1,83 @@
+---
+description: 
+globs: .cursor/rules/*.mdc
+alwaysApply: false
+---
+# LM-Tasker Cursor Rules
+
+This document defines the structure and guidelines for creating Cursor rules in the LM-Tasker project.
+
+## Rule Structure Requirements
+
+- **Required Rule Structure:**
+  ```markdown
+  ---
+  description: Clear, one-line description of what the rule enforces
+  globs: path/to/files/*.ext, other/path/**/*
+  alwaysApply: boolean
+  ---
+
+  - **Main Points in Bold**
+    - Sub-points with details
+    - Examples and explanations
+  ```
+
+- **File References:**
+  - Use `[filename](mdc:path/to/file)` ([filename](mdc:filename)) to reference files
+  - Example: [prisma.mdc](mdc:.cursor/rules/prisma.mdc) for rule references
+  - Example: [schema.prisma](mdc:prisma/schema.prisma) for code references
+
+- **Code Examples:**
+  - Use language-specific code blocks
+  ```typescript
+  // ✅ DO: Show good examples
+  const goodExample = true;
+  
+  // ❌ DON'T: Show anti-patterns
+  const badExample = false;
+  ```
+
+- **Rule Content Guidelines:**
+  - Start with high-level overview
+  - Include specific, actionable requirements
+  - Show examples of correct implementation
+  - Reference existing code when possible
+  - Keep rules DRY by referencing other rules
+
+## LM-Tasker Specific Guidelines
+
+- **Branding**: Always use "LM-Tasker" (not "Task Master" or "task-master-ai")
+- **Package References**: Use `lm-tasker` for package name and commands
+- **Configuration**: Reference `.lmtaskerconfig` (not `.taskmasterconfig`)
+- **AI Usage**: AI integration is limited to PRD parsing only
+  - No AI-powered task creation, updates, or management
+  - Manual task operations through CLI/MCP tools
+  - AI models configured for PRD parsing operations only
+
+- **Command Structure**: All CLI commands use `lm-tasker` prefix:
+  ```bash
+  # ✅ DO: Use correct command structure
+  lm-tasker add-task --title="Task Title"
+  lm-tasker set-status --id=1 --status=done
+  
+  # ❌ DON'T: Use old command structure
+  task-master add-task --title="Task Title"
+  task-master-ai set-status --id=1 --status=done
+  ```
+
+## Rule Maintenance
+
+- **Rule Maintenance:**
+  - Update rules when new patterns emerge
+  - Add examples from actual codebase
+  - Remove outdated patterns
+  - Cross-reference related rules
+
+- **Best Practices:**
+  - Use bullet points for clarity
+  - Keep descriptions concise
+  - Include both DO and DON'T examples
+  - Reference actual code over theoretical examples
+  - Use consistent formatting across rules
+  - Focus on manual task management workflows
+  - Highlight PRD parsing as the only AI-powered operation 

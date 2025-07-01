@@ -65,7 +65,6 @@ dev-debug.log
 # NPMRC
 .npmrc
 
-.cursor/
-.cursorignore
+.ursorignore
 /.windsurfrules
 /.lmtaskerconfig
