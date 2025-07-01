@@ -987,19 +987,8 @@ export class TaskDetailScreen {
    * Show a temporary status message
    */
   showStatusMessage(message) {
-    const originalContent = this.statusBar.content;
-    this.statusBar.setContent(` ${message} `);
-    this.app.render();
-
-    // Restore original content after 2 seconds
-    setTimeout(() => {
-      if (this.focusedComponent === "parentTask") {
-        this.updateStatusBarForParentTask();
-      } else {
-        this.updateStatusBarForSubtasks();
-      }
-      this.app.render();
-    }, 2000);
+    // Use the StatusBar's setMessage method which handles temporary messages properly
+    this.statusBar.setMessage(message, 2000);
   }
 
   /**
