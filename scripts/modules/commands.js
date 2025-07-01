@@ -2159,7 +2159,7 @@ function registerCommands(programInstance) {
     .option("-a, --author <author>", "Author name")
     .option("--skip-install", "Skip installing dependencies")
     .option("--dry-run", "Show what would be done without making changes")
-    .option("--aliases", "Add shell aliases (tm, taskmaster)")
+    .option("--aliases", "Add shell aliases (tm, lmtasker)")
     .action(async (cmdOptions) => {
       // cmdOptions contains parsed arguments
       try {

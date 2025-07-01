@@ -1,46 +1,12 @@
 {
   "tasks": [
     {
-      "id": 103,
-      "title": "TUI Theme Tweaking and Visual Improvements",
-      "description": "Refine the visual aesthetics of the TaskMaster TUI interface by adjusting colors, borders, spacing, and other minor elements to improve the overall user experience.",
-      "details": "Review the current TUI implementation (from Task 102) and identify visual inconsistencies, such as non-uniform spacing, color clashes, or misaligned borders. Update the styling configuration to include a refreshed color palette and standardized spacing and border styles. Ensure that the layout is responsive and the improvements do not negatively impact usability or performance. Consider adding light/dark mode toggling options if time permits, and include code examples and documentation to assist in future TUI style updates.",
-      "testStrategy": "Perform manual testing in various terminal sizes and color schemes to verify that the updated visual elements render correctly. Run automated visual regression tests, checking that the new style configurations are applied consistently. Conduct user experience reviews to gather feedback on the visual improvements, and include test cases to ensure that both normal and edge cases (e.g., minimal terminal sizes) display appropriately.",
-      "status": "done",
-      "dependencies": [],
-      "priority": "medium",
-      "subtasks": [
-        {
-          "id": 1,
-          "title": "Implement Pale Pink Highlight Color for TUI",
-          "description": "Change the highlight color in the TUI from dark blue to a very pale pink. The new color should be soft and not overly bright to maintain a professional look. This involves updating the theme configuration file where the selected background color is defined.",
-          "details": "<info added on 2025-06-07T18:49:42.510Z>\nImplementation completed: The theme.js file was updated to change the selected background color from \"blue\" to \"#fdf2f8\" (a very pale pink), and both selectedText and selectedFg were changed from \"white\" to \"black\" for improved contrast. These changes ensure consistency across all UI components, including TaskTable row selection, SearchScreen focus border, and TaskDetailScreen subtask selection. All references to theme.selected, theme.selectedText, theme.selectedBg, and theme.selectedFg now use the new pale pink color scheme, providing a soft, professional highlight effect throughout the interface.\n</info added on 2025-06-07T18:49:42.510Z>",
-          "status": "done",
-          "dependencies": [],
-          "parentTaskId": 103
-        }
-      ]
-    },
-    {
-      "id": 104,
-      "title": "Implement Exit Confirmation Dialog for TUI",
-      "description": "Develop a reusable exit confirmation dialog component for the TaskMaster TUI that displays a confirmation prompt when the user presses escape.",
-      "details": "Design and implement a modal popup that is triggered when the user presses the escape key in the TUI. The popup should display the message 'Are you sure you want to exit? (y/N)' and allow the user to confirm exit with 'y' or 'Y', or cancel with 'n', 'N', or additional escape key press, with the enter key defaulting to cancel. The component must use the existing theme colors and styling as defined in Task 103, and be a reusable module callable from the main TUI app. Ensure proper handling of keyboard navigation, focus restoration to the previous interface when cancelled, and robust error handling for unexpected inputs.",
-      "testStrategy": "Manually test by triggering the modal via escape key in the TUI to ensure it appears as expected with proper styling. Verify that pressing 'y' or 'Y' exits the application, while pressing 'n', 'N', escape, or enter (without valid input) properly cancels the exit and returns focus to the previous screen. Perform cross-terminal testing to validate consistency in rendering and keyboard event handling.",
-      "status": "pending",
-      "dependencies": [
-        103
-      ],
-      "priority": "medium",
-      "subtasks": []
-    },
-    {
       "id": 105,
       "title": "Implement Insert Task Functionality with Order Field",
       "description": "Develop functionality to allow insertion of tasks at specific positions using an optional 'order' field without renumbering existing task IDs.",
       "details": "Enhance the task management system by extending the task schema with an optional 'order' field for display positioning. Develop the following functions:\n- insert-task: Shifts existing tasks' order values to insert a new task at a specific position.\n- insert-between: Determines a fractional position between tasks to facilitate insertion without disrupting order continuity.\n- reorder-task: Allows existing tasks to be moved to new positions by updating their order values.\n- migrate-order: Automatically migrate the system from relying on ID-based sorting to order-based sorting while maintaining backward compatibility.\n\nIntegrate these functionalities with CLI commands (insert-task, insert-between, reorder-task, migrate-order) and create corresponding MCP tools. Adhere to the 5-phase approach from the planning document, starting with core infrastructure, then inserting, reordering, integrating with MCP, and final polish. Incorporate comprehensive error handling to manage invalid inputs and ensure smooth operation alongside legacy functionality.",
       "testStrategy": "1. Unit Test each function: Verify that insert-task correctly shifts order values and places the new task at the specified position; test insert-between for correct fractional positioning; test reorder-task to ensure tasks can be moved successfully; and validate migrate-order for accurate conversion from ID-based to order-based sorting. \n2. CLI Integration Tests: Execute each new CLI command to ensure they trigger the expected functionality and handle errors gracefully. \n3. Regression Testing: Run existing task operations to confirm backward compatibility is maintained. \n4. Edge Cases: Test boundary conditions such as inserting at the beginning, middle, or end of the task list, and ensure error messages for invalid order inputs are descriptive and helpful.",
-      "status": "pending",
+      "status": "done",
       "dependencies": [],
       "priority": "high",
       "subtasks": [
@@ -138,7 +104,7 @@
           "id": 11,
           "title": "Phase 5: Update Documentation and Add Examples",
           "description": "Update user documentation to include the new insert task functionality with examples and workflows.",
-          "details": "Update documentation files: 1) Add insert task commands to README.md and command reference, 2) Update rules/taskmaster.mdc with new MCP tools and CLI commands, 3) Add examples showing insert-task, insert-between, and reorder-task usage, 4) Document the migration process and backward compatibility guarantees, 5) Add workflow examples showing when to use each type of insertion, 6) Update help text in CLI commands.",
+          "details": "Update documentation files: 1) Add insert task commands to README.md and command reference, 2) Update rules/lmtasker.mdc with new MCP tools and CLI commands, 3) Add examples showing insert-task, insert-between, and reorder-task usage, 4) Document the migration process and backward compatibility guarantees, 5) Add workflow examples showing when to use each type of insertion, 6) Update help text in CLI commands.",
           "status": "pending",
           "dependencies": [],
           "parentTaskId": 105
@@ -292,7 +258,7 @@
       "id": 113,
       "title": "Update Documentation to Reflect Reduced AI Features",
       "description": "Update all documentation files in the docs/ folder to accurately reflect the simplified architecture with AI limited to PRD parsing only, removing references to deprecated AI-powered features and updating examples accordingly.",
-      "details": "Based on the PRD.md changes, the documentation needs to be updated to reflect the new simplified architecture where:\n\n1. AI functionality is limited to PRD parsing only\n2. All task operations (add, update, modify) are manual via CLI/MCP\n3. Package has been rebranded from task-master-ai to lm-tasker\n4. Configuration uses .lmtaskerconfig instead of .taskmasterconfig\n5. Binary commands changed from task-master to lm-tasker\n\nKey files to update:\n- docs/command-reference.md: Remove AI-powered task creation/update references, update command names\n- docs/configuration.md: Update config file names and focus on PRD parsing model configuration\n- docs/examples.md: Update examples to reflect manual task management workflow\n- docs/tutorial.md: Update tutorial to emphasize manual task operations\n- docs/models.md: Clarify that models are only used for PRD parsing\n- docs/task-structure.md: Update to reflect manual task management approach\n\nThe documentation should clearly communicate that:\n- Task creation, updates, and modifications are manual operations\n- AI is only used for initial PRD-to-tasks conversion\n- This provides predictable behavior and lower costs\n- The system focuses on structured task management rather than AI automation",
+      "details": "Based on the PRD.md changes, the documentation needs to be updated to reflect the new simplified architecture where:\n\n1. AI functionality is limited to PRD parsing only\n2. All task operations (add, update, modify) are manual via CLI/MCP\n3. Package has been rebranded from task-master-ai to lm-tasker\n4. Configuration uses .lmtaskerconfig instead of .lmtaskerconfig\n5. Binary commands changed from task-master to lm-tasker\n\nKey files to update:\n- docs/command-reference.md: Remove AI-powered task creation/update references, update command names\n- docs/configuration.md: Update config file names and focus on PRD parsing model configuration\n- docs/examples.md: Update examples to reflect manual task management workflow\n- docs/tutorial.md: Update tutorial to emphasize manual task operations\n- docs/models.md: Clarify that models are only used for PRD parsing\n- docs/task-structure.md: Update to reflect manual task management approach\n\nThe documentation should clearly communicate that:\n- Task creation, updates, and modifications are manual operations\n- AI is only used for initial PRD-to-tasks conversion\n- This provides predictable behavior and lower costs\n- The system focuses on structured task management rather than AI automation",
       "testStrategy": "Review all updated documentation files to ensure:\n1. No references to deprecated AI-powered task operations remain\n2. All command examples use lm-tasker instead of task-master\n3. Configuration examples reference .lmtaskerconfig\n4. Examples and workflows reflect manual task management\n5. AI usage is clearly scoped to PRD parsing only\n6. Documentation is consistent with the PRD.md architecture",
       "status": "pending",
       "dependencies": [],

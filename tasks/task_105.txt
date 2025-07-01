@@ -1,6 +1,6 @@
 # Task ID: 105
 # Title: Implement Insert Task Functionality with Order Field
-# Status: pending
+# Status: done
 # Dependencies: None
 # Priority: high
 # Description: Develop functionality to allow insertion of tasks at specific positions using an optional 'order' field without renumbering existing task IDs.
@@ -84,5 +84,5 @@ Create test files in tests/ directory: 1) Unit tests for order field migration l
 ### Dependencies: None
 ### Description: Update user documentation to include the new insert task functionality with examples and workflows.
 ### Details:
-Update documentation files: 1) Add insert task commands to README.md and command reference, 2) Update rules/taskmaster.mdc with new MCP tools and CLI commands, 3) Add examples showing insert-task, insert-between, and reorder-task usage, 4) Document the migration process and backward compatibility guarantees, 5) Add workflow examples showing when to use each type of insertion, 6) Update help text in CLI commands.
+Update documentation files: 1) Add insert task commands to README.md and command reference, 2) Update rules/lmtasker.mdc with new MCP tools and CLI commands, 3) Add examples showing insert-task, insert-between, and reorder-task usage, 4) Document the migration process and backward compatibility guarantees, 5) Add workflow examples showing when to use each type of insertion, 6) Update help text in CLI commands.
 

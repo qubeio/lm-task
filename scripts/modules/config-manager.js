@@ -436,7 +436,7 @@ function isApiKeySet(providerName, session = null, projectRoot = null) {
 
 /**
  * Checks the API key status within .cursor/mcp.json for a given provider.
- * Reads the mcp.json file, finds the taskmaster-ai server config, and checks the relevant env var.
+ * Reads the mcp.json file, finds the lmtasker-ai server config, and checks the relevant env var.
  * @param {string} providerName The name of the provider.
  * @param {string|null} projectRoot - Optional explicit path to the project root.
  * @returns {boolean} True if the key exists and is not a placeholder, false otherwise.
@@ -469,7 +469,7 @@ function getMcpApiKeyStatus(providerName, projectRoot = null) {
 		const mcpConfigRaw = fs.readFileSync(mcpConfigPath, 'utf-8');
 		const mcpConfig = JSON.parse(mcpConfigRaw);
 
-		const mcpEnv = mcpConfig?.mcpServers?.['taskmaster-ai']?.env;
+		const mcpEnv = mcpConfig?.mcpServers?.['lmtasker-ai']?.env;
 		if (!mcpEnv) {
 			return false; // Structure missing
 		}

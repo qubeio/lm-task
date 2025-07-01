@@ -80,9 +80,9 @@ alwaysApply: false
 
 ## Configuration Management (via `config-manager.js`)
 
-Taskmaster configuration (excluding API keys) is primarily managed through the `.taskmasterconfig` file located in the project root and accessed via getters in [`scripts/modules/config-manager.js`](mdc:scripts/modules/config-manager.js).
+Taskmaster configuration (excluding API keys) is primarily managed through the `.lmtaskerconfig` file located in the project root and accessed via getters in [`scripts/modules/config-manager.js`](mdc:scripts/modules/config-manager.js).
 
-- **`.taskmasterconfig` File**:
+- **`.lmtaskerconfig` File**:
   - ✅ DO: Use this JSON file to store settings like AI model selections (main, research, fallback), parameters (temperature, maxTokens), logging level, default priority/subtasks, etc.
   - ✅ DO: Manage this file using the `task-master models --setup` CLI command or the `models` MCP tool.
   - ✅ DO: Rely on [`config-manager.js`](mdc:scripts/modules/config-manager.js) to load this file (using the correct project root passed from MCP or found via CLI utils), merge with defaults, and provide validated settings.
@@ -101,7 +101,7 @@ Taskmaster configuration (excluding API keys) is primarily managed through the `
   - ✅ DO: Understand that the unified service layer (`ai-services-unified.js`) internally resolves API keys using `resolveEnvVariable(key, session)` from `utils.js`.
 
 - **Error Handling**:
-  - ✅ DO: Handle potential `ConfigurationError` if the `.taskmasterconfig` file is missing or invalid when accessed via `getConfig` (e.g., in `commands.js` or direct functions).
+  - ✅ DO: Handle potential `ConfigurationError` if the `.lmtaskerconfig` file is missing or invalid when accessed via `getConfig` (e.g., in `commands.js` or direct functions).
 
 ## Logging Utilities (in `scripts/modules/utils.js`)
 

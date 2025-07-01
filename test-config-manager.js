@@ -23,16 +23,16 @@ try {
 
 // Test file access
 try {
-	console.log('Checking for .taskmasterconfig');
+	console.log('Checking for .lmtaskerconfig');
 	// Use dynamic import for ESM
 	const { readFileSync, existsSync } = await import('fs');
 	const { resolve } = await import('path');
 
-	const configExists = existsSync('./.taskmasterconfig');
-	console.log('.taskmasterconfig exists:', configExists);
+	const configExists = existsSync('./.lmtaskerconfig');
+	console.log('.lmtaskerconfig exists:', configExists);
 
 	if (configExists) {
-		const config = JSON.parse(readFileSync('./.taskmasterconfig', 'utf-8'));
+		const config = JSON.parse(readFileSync('./.lmtaskerconfig', 'utf-8'));
 		console.log('Config keys:', Object.keys(config));
 	}
 

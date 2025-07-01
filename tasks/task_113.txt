@@ -10,7 +10,7 @@ Based on the PRD.md changes, the documentation needs to be updated to reflect th
 1. AI functionality is limited to PRD parsing only
 2. All task operations (add, update, modify) are manual via CLI/MCP
 3. Package has been rebranded from task-master-ai to lm-tasker
-4. Configuration uses .lmtaskerconfig instead of .taskmasterconfig
+4. Configuration uses .lmtaskerconfig instead of .lmtaskerconfig
 5. Binary commands changed from task-master to lm-tasker
 
 Key files to update:

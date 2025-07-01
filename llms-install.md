@@ -1,10 +1,10 @@
-``# Taskmaster AI Installation Guide
+``# LM-Tasker AI Installation Guide
 
-This guide helps AI assistants install and configure Taskmaster for users in their development projects.
+This guide helps AI assistants install and configure LM-Tasker for users in their development projects.
 
-## What is Taskmaster?
+## What is LM-Tasker?
 
-Taskmaster is an AI-driven task management system designed for development workflows. It helps break down projects into
+LM-Tasker is an AI-driven task management system designed for development workflows. It helps break down projects into
 manageable tasks, track dependencies, and maintain development momentum through structured, AI-enhanced planning.
 
 ## Installation Steps
@@ -17,7 +17,7 @@ editors):
 ```json
 {
   "mcpServers": {
-    "taskmaster-ai": {
+    "LM-Tasker-ai": {
       "command": "npx",
       "args": ["-y", "--package=task-master-ai", "task-master-ai"],
       "env": {
@@ -40,7 +40,7 @@ operations, and a fallback model in case of errors.
 
 ### Step 3: Initialize Project
 
-Once the MCP server is configured and API keys are added, initialize Taskmaster in the user's project:
+Once the MCP server is configured and API keys are added, initialize LM-Tasker in the user's project:
 
 > Can you initialize Task Master in my project?
 
@@ -108,9 +108,9 @@ fallback should kick in and the API keys will be read from the `.env` file.
 
 ## CLI Fallback
 
-Taskmaster is also available via CLI commands, by installing with `npm install task-master-ai@latest` in a terminal.
+LM-Tasker is also available via CLI commands, by installing with `npm install task-master-ai@latest` in a terminal.
 Running `task-master help` will show all available commands, which offer a 1:1 experience with the MCP server. As the AI
-agent, you should refer to the system prompts and rules provided to you to identify Taskmaster-specific rules that help
+agent, you should refer to the system prompts and rules provided to you to identify LM-Tasker-specific rules that help
 you understand how and when to use it.
 
 ## Next Steps

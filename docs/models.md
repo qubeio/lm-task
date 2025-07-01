@@ -40,5 +40,6 @@ task-master models --setup
 
 - **Cost**: Costs are expressed in dollars per million tokens (e.g., 2.5 = $2.50 per million input tokens)
 - **SWE Score**: Software Engineering benchmark score (higher is better)
-- **Azure Endpoint**: You must configure your Azure OpenAI endpoint in the `.taskmasterconfig` file or via environment variables
+- **Azure Endpoint**: You must configure your Azure OpenAI endpoint in the `.lmtaskerconfig` file or via environment
+  variables
 - **API Keys**: Both `AZURE_OPENAI_API_KEY` and `AZURE_OPENAI_ENDPOINT` are required

@@ -42,7 +42,7 @@ export class TaskListScreen {
           fg: this.app.theme.border,
         },
       },
-      label: ` TaskMaster TUI \n${this.repositoryName}\n `, // Use repositoryName here
+      label: ` LM-Tasker TUI \n${this.repositoryName}\n `, // Use repositoryName here
       tags: true,
     });
 

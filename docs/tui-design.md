@@ -1,4 +1,4 @@
-# TaskMaster TUI Design Document
+# LM-Tasker Design Document
 
 ## Overview
 
@@ -94,7 +94,7 @@ ui/
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│ TaskMaster TUI v1.0.0                                    [96 tasks] │
+│ LM-Tasker v1.0.0                                    [96 tasks] │
 ├─────────────────────────────────────────────────────────────────────┤
 │ ID │ Status    │ Priority │ Title                                   │
 ├────┼───────────┼──────────┼─────────────────────────────────────────┤
@@ -325,7 +325,7 @@ Existing CLI commands need `--json` flag support to return structured data:
 
 ## Configuration
 
-### Config File: `.taskmasterconfig`
+### Config File: `.lmtaskerconfig`
 
 ```json
 {

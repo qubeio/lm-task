@@ -23,7 +23,7 @@ export function registerInitializeProjectTool(server) {
 				.boolean()
 				.optional()
 				.default(false)
-				.describe('Add shell aliases (tm, taskmaster) to shell config file.'),
+				.describe('Add shell aliases (tm, lmtasker) to shell config file.'),
 			yes: z
 				.boolean()
 				.optional()

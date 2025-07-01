@@ -9,7 +9,7 @@ alwaysApply: false
 
 While this document details the implementation of LM-Tasker's **CLI commands**, the **preferred method for interacting with LM-Tasker in integrated environments (like Cursor) is through the MCP server tools**. 
 
-- **Use MCP Tools First**: Always prefer using the MCP tools (e.g., `get_tasks`, `add_task`) when interacting programmatically or via an integrated tool. They offer better performance, structured data, and richer error handling. See [`taskmaster.mdc`](mdc:.cursor/rules/taskmaster.mdc) for a comprehensive list of MCP tools and their corresponding CLI commands.
+- **Use MCP Tools First**: Always prefer using the MCP tools (e.g., `get_tasks`, `add_task`) when interacting programmatically or via an integrated tool. They offer better performance, structured data, and richer error handling. See [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc) for a comprehensive list of MCP tools and their corresponding CLI commands.
 - **CLI as Fallback/User Interface**: The `lm-tasker` CLI commands described here are primarily intended for:
     - Direct user interaction in the terminal.
     - A fallback mechanism if the MCP server is unavailable or a specific functionality is not exposed via an MCP tool.

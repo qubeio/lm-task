@@ -48,7 +48,7 @@ This document defines the structure and guidelines for creating Cursor rules in 
 
 - **Branding**: Always use "LM-Tasker" (not "Task Master" or "task-master-ai")
 - **Package References**: Use `lm-tasker` for package name and commands
-- **Configuration**: Reference `.lmtaskerconfig` (not `.taskmasterconfig`)
+- **Configuration**: Reference `.lmtaskerconfig` (not `.lmtaskerconfig`)
 - **AI Usage**: AI integration is limited to PRD parsing only
   - No AI-powered task creation, updates, or management
   - Manual task operations through CLI/MCP tools

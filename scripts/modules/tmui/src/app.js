@@ -116,7 +116,7 @@ export class TUIApp {
     // Create the main screen
     this.screen = blessed.screen({
       smartCSR: true,
-      title: "TaskMaster TUI",
+      title: "LM-Tasker TUI",
       dockBorders: true,
       fullUnicode: true,
       autoPadding: true,

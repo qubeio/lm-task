@@ -52,7 +52,7 @@ analyze_log_with_llm() {
 
   local env_file="${project_root}/.env" # Path to .env in project root
   local supported_models_file="${project_root}/scripts/modules/supported-models.json"
-  local taskmasterconfig_file="${project_root}/.taskmasterconfig"
+  local lmtaskerconfig_file="${project_root}/.lmtaskerconfig"
 
   local provider_summary_log="provider_add_task_summary.log" # File summarizing provider test outcomes
   local api_key=""
@@ -81,9 +81,9 @@ analyze_log_with_llm() {
     azure_endpoint=$(grep "^AZURE_OPENAI_ENDPOINT=" "$env_file" | sed -e "s/^AZURE_OPENAI_ENDPOINT=//" -e 's/^[[:space:]"]*//' -e 's/[[:space:]"]*$//')
   fi
 
-  # Check for Azure endpoint in .taskmasterconfig if not in .env
-  if [ -z "$azure_endpoint" ] && [ -f "$taskmasterconfig_file" ]; then
-    azure_endpoint=$(jq -r '.global.azureOpenaiBaseUrl // empty' "$taskmasterconfig_file")
+  # Check for Azure endpoint in .lmtaskerconfig if not in .env
+  if [ -z "$azure_endpoint" ] && [ -f "$lmtaskerconfig_file" ]; then
+    azure_endpoint=$(jq -r '.global.azureOpenaiBaseUrl // empty' "$lmtaskerconfig_file")
   fi
 
   if [ -z "$api_key" ]; then
@@ -92,7 +92,7 @@ analyze_log_with_llm() {
   fi
 
   if [ -z "$azure_endpoint" ]; then
-    echo "[HELPER_ERROR] AZURE_OPENAI_ENDPOINT not found in .env or azureOpenaiBaseUrl not found in .taskmasterconfig. Skipping LLM analysis." >&2
+    echo "[HELPER_ERROR] AZURE_OPENAI_ENDPOINT not found in .env or azureOpenaiBaseUrl not found in .lmtaskerconfig. Skipping LLM analysis." >&2
     return 1
   fi
 

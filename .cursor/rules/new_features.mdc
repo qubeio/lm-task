@@ -33,8 +33,8 @@ The standard pattern for adding a feature follows this workflow:
 3. **UI Components**: Add any display functions to [`ui.js`](mdc:scripts/modules/ui.js) following [`ui.mdc`](mdc:.cursor/rules/ui.mdc).
 4. **Command Integration**: Add the CLI command to [`commands.js`](mdc:scripts/modules/commands.js) following [`commands.mdc`](mdc:.cursor/rules/commands.mdc).
 5. **Testing**: Write tests for all components of the feature (following [`tests.mdc`](mdc:.cursor/rules/tests.mdc))
-6. **Configuration**: Update configuration settings or add new ones in [`config-manager.js`](mdc:scripts/modules/config-manager.js) and ensure getters/setters are appropriate. Update documentation in [`utilities.mdc`](mdc:.cursor/rules/utilities.mdc) and [`taskmaster.mdc`](mdc:.cursor/rules/taskmaster.mdc). Update the `.taskmasterconfig` structure if needed.
-7. **Documentation**: Update help text and documentation in [`dev_workflow.mdc`](mdc:.cursor/rules/dev_workflow.mdc) and [`taskmaster.mdc`](mdc:.cursor/rules/taskmaster.mdc).
+6. **Configuration**: Update configuration settings or add new ones in [`config-manager.js`](mdc:scripts/modules/config-manager.js) and ensure getters/setters are appropriate. Update documentation in [`utilities.mdc`](mdc:.cursor/rules/utilities.mdc) and [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc). Update the `.lmtaskerconfig` structure if needed.
+7. **Documentation**: Update help text and documentation in [`dev_workflow.mdc`](mdc:.cursor/rules/dev_workflow.mdc) and [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc).
 
 ## Critical Checklist for New Features
 
