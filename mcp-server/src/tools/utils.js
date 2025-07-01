@@ -271,7 +271,7 @@ function executeTaskMasterCommand(
 		const cwd = getProjectRoot(projectRootRaw, log);
 
 		log.info(
-			`Executing task-master ${command} with args: ${JSON.stringify(
+			`Executing lm-tasker ${command} with args: ${JSON.stringify(
 				args
 			)} in directory: ${cwd}`
 		);
@@ -290,13 +290,13 @@ function executeTaskMasterCommand(
 		// Log the environment being passed (optional, for debugging)
 		// log.info(`Spawn options env: ${JSON.stringify(spawnOptions.env)}`);
 
-		// Execute the command using the global task-master CLI or local script
+		// Execute the command using the global lm-tasker CLI or local script
 		// Try the global CLI first
-		let result = spawnSync('task-master', fullArgs, spawnOptions);
+		let result = spawnSync('lm-tasker', fullArgs, spawnOptions);
 
 		// If global CLI is not available, try fallback to the local script
 		if (result.error && result.error.code === 'ENOENT') {
-			log.info('Global task-master not found, falling back to local script');
+			log.info('Global lm-tasker not found, falling back to local script');
 			// Pass the same spawnOptions (including env) to the fallback
 			result = spawnSync('node', ['scripts/dev.js', ...fullArgs], spawnOptions);
 		}
@@ -323,7 +323,7 @@ function executeTaskMasterCommand(
 			stderr: result.stderr
 		};
 	} catch (error) {
-		log.error(`Error executing task-master command: ${error.message}`);
+		log.error(`Error executing lm-tasker command: ${error.message}`);
 		return {
 			success: false,
 			error: error.message

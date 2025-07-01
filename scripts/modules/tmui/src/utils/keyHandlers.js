@@ -49,6 +49,46 @@ export class KeyHandlers {
       }
     });
 
+    // Vim-style navigation: 'l' key for right/forward navigation
+    this.app.screen.key(["l"], () => {
+      // Don't handle 'l' if the status modal is currently showing
+      if (this.app.statusModal && this.app.statusModal.isShowing()) {
+        return;
+      }
+
+      // Don't handle 'l' if we're in search mode
+      if (this.app.screen.focused === this.app.searchScreen.searchBox) {
+        return;
+      }
+
+      // Only handle 'l' when in task list screen (forward navigation)
+      if (this.app.currentScreen === this.app.taskListScreen) {
+        const currentTask = this.app.getCurrentTask();
+        if (currentTask) {
+          this.app.showTaskDetail(currentTask.id);
+        }
+      }
+    });
+
+    // Vim-style navigation: 'h' key for left/back navigation
+    this.app.screen.key(["h"], () => {
+      // Don't handle 'h' if the status modal is currently showing
+      if (this.app.statusModal && this.app.statusModal.isShowing()) {
+        return;
+      }
+
+      // Don't handle 'h' if we're in search mode
+      if (this.app.screen.focused === this.app.searchScreen.searchBox) {
+        return;
+      }
+
+      // Only handle 'h' when in task detail screen (back navigation)
+      if (this.app.currentScreen === this.app.taskDetailScreen) {
+        this.app.showTaskList();
+      }
+      // In task list screen, 'h' does nothing (already at top level)
+    });
+
     // Search
     this.app.screen.key(["/"], () => {
       this.app.showSearch();
@@ -166,13 +206,15 @@ export class KeyHandlers {
 {bold}Navigation:{/}
   j, ↓        Move down one task
   k, ↑        Move up one task
+  h           Go back/left (vim-style)
+  l           Go forward/right (vim-style)
   gg          Go to first task
   G           Go to last task
   Ctrl+f      Page down
   Ctrl+b      Page up
 
 {bold}Actions:{/}
-  Enter       View task details
+  Enter, l    View task details
   s           Update task status
   /           Start search
   c           Clear search (when search active)
@@ -187,7 +229,7 @@ export class KeyHandlers {
   N           Previous search result
   
 {bold}Task Detail View:{/}
-  ESC, q      Return to task list
+  ESC, q, h   Return to task list
 
 Press any key to close this help...`;
 

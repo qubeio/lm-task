@@ -179,7 +179,7 @@ export class JsonLoader {
       try {
         // Use the CLI command to generate task files
         const execAsync = promisify(exec);
-        await execAsync(`npx task-master generate --file="${this.tasksFile}"`);
+        await execAsync(`npx lm-tasker generate --file="${this.tasksFile}"`);
       } catch (genError) {
         console.warn(`Warning: Failed to regenerate task files: ${genError.message}`);
         // Continue even if file generation fails - the JSON is still updated

@@ -319,12 +319,12 @@ export class TaskDetailScreen {
     });
 
     // Return to task list
-    this.container.key(["escape", "q"], () => {
+    this.container.key(["escape", "q", "h"], () => {
       this.app.showTaskList();
     });
 
     // Enter key - could be used for future subtask actions
-    this.container.key(["enter"], () => {
+    this.container.key(["enter", "l"], () => {
       if (this.focusedComponent === "subtasks") {
         // For now, just update the detail view
         this.updateSubtaskDetail();
@@ -373,11 +373,11 @@ export class TaskDetailScreen {
       }
     });
 
-    this.subtaskList.key(["escape", "q"], () => {
+    this.subtaskList.key(["escape", "q", "h"], () => {
       this.app.showTaskList();
     });
 
-    this.subtaskList.key(["enter"], () => {
+    this.subtaskList.key(["enter", "l"], () => {
       if (this.focusedComponent === "subtasks") {
         this.updateSubtaskDetail();
       }
@@ -414,7 +414,7 @@ export class TaskDetailScreen {
       this.focusSubtaskDetails();
     });
 
-    this.parentTaskBox.key(["escape", "q"], () => {
+    this.parentTaskBox.key(["escape", "q", "h"], () => {
       this.app.showTaskList();
     });
 
@@ -463,7 +463,7 @@ export class TaskDetailScreen {
       this.focusSubtaskDetails();
     });
 
-    this.subtaskDetailBox.key(["escape", "q"], () => {
+    this.subtaskDetailBox.key(["escape", "q", "h"], () => {
       this.app.showTaskList();
     });
 

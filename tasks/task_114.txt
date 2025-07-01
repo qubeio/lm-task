@@ -1,0 +1,114 @@
+# Task ID: 114
+# Title: Implement Vim-Style Left and Right Navigation in TUI
+# Status: done
+# Dependencies: None
+# Priority: medium
+# Description: Add vim-style h/l key bindings for left and right navigation in the TaskMaster TUI interface, providing an intuitive navigation experience for vim users.
+# Details:
+Implement vim-style navigation keys in the TUI:
+- 'h' key for left navigation (go back/previous screen)
+- 'l' key for right navigation (go forward/enter details)
+- Update key handlers in the TUI components to support these bindings
+- Ensure the new bindings work alongside existing navigation methods
+- Test in both task list and task detail screens
+- Update any help text or documentation to reflect the new key bindings
+
+Technical implementation:
+- Update keyHandlers.js to include h/l key mappings
+- Modify TaskListScreen.js and TaskDetailScreen.js to handle the new keys
+- Ensure proper integration with existing navigation logic
+- Add appropriate visual feedback for the navigation actions
+
+# Test Strategy:
+Manual testing of vim-style navigation:
+1. Launch TUI and verify 'h' key navigates back/left
+2. Verify 'l' key navigates forward/right or enters details
+3. Test in both task list and detail screens
+4. Confirm existing navigation methods still work
+5. Verify help text shows new key bindings if applicable
+
+# Subtasks:
+## 1. Analyze current navigation architecture and plan vim-style implementation [done]
+### Dependencies: None
+### Description: Document the current navigation system and create a detailed implementation plan for adding h/l key bindings
+### Details:
+## Current Navigation Architecture Analysis
+
+### Key Components:
+1. **KeyHandlers.js**: Centralized keyboard event handling for global keys
+2. **TaskListScreen.js**: Main task list view 
+3. **TaskDetailScreen.js**: Task detail view with local key handlers
+4. **App.js**: Main application with screen management (showTaskList, showTaskDetail)
+
+### Current Navigation Flow:
+- **Task List → Task Detail**: Enter key (handled in KeyHandlers.js)
+- **Task Detail → Task List**: Escape/q keys (handled in TaskDetailScreen.js)
+
+### Implementation Plan for Vim-Style h/l Navigation:
+
+#### 1. In KeyHandlers.js (Global Navigation):
+- Add 'l' key binding: Navigate forward/enter details (same as Enter)
+- Add 'h' key binding: Navigate back (context-sensitive)
+  - In task list: Do nothing (already at top level)
+  - In task detail: Return to task list
+
+#### 2. In TaskDetailScreen.js (Local Navigation):
+- Add 'h' key binding to all component key handlers (container, subtaskList, parentTaskBox, subtaskDetailBox)
+- Map 'h' to return to task list (same as escape/q)
+- Add 'l' key binding for potential future navigation within detail view
+
+#### 3. Update Help Text:
+- Modify showHelp() method in KeyHandlers.js to include h/l bindings
+- Update both "Navigation" and "Task Detail View" sections
+
+#### 4. Testing Strategy:
+- Test 'l' key in task list (should enter task details)
+- Test 'h' key in task detail (should return to task list)  
+- Test 'h' key in task list (should do nothing)
+- Verify existing navigation still works
+- Test in different focus states within task detail view
+
+### Technical Implementation Details:
+- Use same event handling pattern as existing keys
+- Ensure proper context checking (current screen, focus state)
+- Maintain backward compatibility with existing navigation
+- Add visual feedback where appropriate
+
+## 2. Implement h/l key bindings in KeyHandlers.js [done]
+### Dependencies: None
+### Description: Add vim-style h (left/back) and l (right/forward) key bindings to the global key handlers
+### Details:
+Add h/l key bindings to the setup() method in KeyHandlers.js:
+- 'l' key: Navigate forward (same as Enter key behavior)
+- 'h' key: Navigate back (context-sensitive based on current screen)
+- Ensure proper context checking to avoid conflicts
+- Maintain existing functionality
+
+## 3. Add h/l key bindings to TaskDetailScreen.js [done]
+### Dependencies: None
+### Description: Add vim-style h/l key bindings to all key handler components in TaskDetailScreen for consistent navigation
+### Details:
+Add h/l key bindings to all component key handlers in TaskDetailScreen.js:
+- container key handlers
+- subtaskList key handlers  
+- parentTaskBox key handlers
+- subtaskDetailBox key handlers
+
+Map 'h' to return to task list (same as escape/q)
+Map 'l' for potential future navigation within detail view
+Ensure consistency across all focus states
+
+## 4. Test vim-style navigation implementation [done]
+### Dependencies: None
+### Description: Manually test the implemented vim-style h/l navigation keys to ensure they work correctly in all contexts
+### Details:
+Manual testing checklist:
+1. Launch TUI and verify 'l' key navigates from task list to task details
+2. Verify 'h' key navigates from task details back to task list  
+3. Test 'h' key in task list (should do nothing - no error)
+4. Test navigation in different focus states within task detail view
+5. Verify existing navigation methods (Enter, Escape, q) still work
+6. Check that help text shows new key bindings correctly
+7. Test that keys don't interfere with search mode or status modal
+8. Verify vim-style navigation works alongside existing j/k/gg/G keys
+
