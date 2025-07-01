@@ -1,0 +1,124 @@
+# LM-Tasker - New Features & Updates
+
+## Package Rebranding
+
+### New Identity
+- **Package Name**: `lm-tasker` (formerly `task-master-ai`)
+- **Binary Commands**: 
+  - `lm-tasker` - Main CLI command
+  - `lm-tasker-mcp` - MCP server command
+  - `lm-tasker-ai` - AI-powered operations (formerly `task-master-ai`)
+- **Configuration File**: `.lmtaskerconfig` (formerly `.taskmasterconfig`)
+- **Project Identity**: "LM-Tasker" (formerly "Task Master")
+
+### Migration Guide
+- **Breaking Changes**: Users need to update MCP configurations
+- **Command Updates**: All CLI commands change from `task-master` to `lm-tasker`
+- **Config Migration**: Rename `.taskmasterconfig` to `.lmtaskerconfig`
+- **Documentation**: All examples and references updated to new branding
+
+## Simplified AI Architecture
+
+### Focused AI Integration
+The new LM-Tasker architecture focuses on **simplified AI usage**:
+
+1. **Limited AI Scope**: AI functionality restricted to PRD parsing only
+2. **Manual Task Management**: All task operations (add, update, modify) are manual via CLI/MCP
+3. **Reduced Complexity**: Eliminates complex AI prompt engineering for task management
+4. **Lower Costs**: Minimal AI usage reduces operational costs
+5. **Predictable Behavior**: Manual operations provide consistent, predictable results
+
+### AI Features
+
+#### PRD Parsing (AI-Powered)
+- **Multi-Provider Support**: Azure OpenAI, OpenAI, Anthropic Claude, Google Gemini, Mistral, Perplexity, XAI, and Ollama
+- **Intelligent Task Generation**: Converts PRD documents into structured development tasks
+- **Dependency Inference**: Automatically identifies task dependencies from PRD content
+- **Priority Assignment**: Assigns task priorities based on PRD requirements
+- **Comprehensive Task Details**: Generates detailed implementation notes and test strategies
+
+#### Manual Task Operations
+- **Manual Task Addition**: Add tasks through CLI commands with user input
+- **Direct Task Editing**: Update tasks through CLI parameters or direct file editing
+- **Manual Status Updates**: Change task status through explicit commands
+- **Dependency Management**: Manually define and manage task relationships
+- **Priority Setting**: Manually assign and update task priorities
+
+## Enhanced Features
+
+### Advanced Task Management
+- **Hierarchical Tasks**: Support for tasks with subtasks and nested dependencies
+- **Batch Operations**: Multi-task status updates and bulk operations
+- **Task Filtering**: Advanced querying and filtering capabilities
+- **Task Reorganization**: Move tasks and restructure task hierarchies
+- **Dependency Validation**: Automatic circular dependency detection and fixing
+
+### MCP Integration
+- **Model Context Protocol**: Full MCP server implementation for Cursor integration
+- **Tool Registration**: Comprehensive set of registered tools for task management
+- **Structured Data Exchange**: Seamless integration with AI development environments
+- **Session Management**: Stateful operations for complex workflows
+
+### Configuration System
+- **Unified Configuration**: Single `.lmtaskerconfig` file for all settings
+- **Model Selection**: Configure AI models for PRD parsing operations
+- **API Key Management**: Secure handling of AI provider credentials
+- **Environment Variables**: Support for `.env` file configuration
+
+### File System Integration
+- **Task File Generation**: Individual task files with structured format
+- **Bi-directional Sync**: Synchronization between tasks.json and individual task files
+- **Template System**: Customizable task file templates
+- **Backup and Recovery**: Automatic backup of task data
+
+## Developer Experience
+
+### Command Line Interface
+- **Intuitive Commands**: Clear, consistent command structure
+- **Interactive Input**: Guided task creation and management
+- **Colorized Output**: Enhanced visual feedback and status reporting
+- **Comprehensive Help**: Built-in documentation and examples
+
+### Documentation
+- **Complete User Guide**: Detailed README with examples
+- **Command Reference**: Comprehensive CLI command documentation
+- **Troubleshooting**: Common issues and solutions
+- **Migration Guide**: Step-by-step upgrade instructions
+
+### Integration Points
+- **Cursor Editor**: Native integration via MCP protocol
+- **Git Workflow**: Seamless integration with version control
+- **CI/CD Support**: Programmatic access for automation
+- **Project Templates**: Quick project initialization
+
+## Performance & Reliability
+
+### Optimizations
+- **Token Efficiency**: Optimized prompts for cost-effective AI operations
+- **Error Handling**: Robust error detection and recovery
+- **Retry Logic**: Automatic retry mechanisms for AI operations
+- **Validation**: Comprehensive input and output validation
+
+### Monitoring
+- **Usage Tracking**: Monitor AI API usage and costs
+- **Debug Logging**: Detailed logging for troubleshooting
+- **Performance Metrics**: Track operation performance
+- **Health Checks**: System health monitoring
+
+## Future Roadmap
+
+### Planned Enhancements
+- **Additional AI Providers**: Expand AI provider support
+- **Enhanced Templates**: More sophisticated task templates
+- **Workflow Automation**: Automated task workflow triggers
+- **Team Collaboration**: Multi-user task management features
+
+### Community Features
+- **Plugin System**: Extensible plugin architecture
+- **Custom Templates**: User-defined task templates
+- **Integration Ecosystem**: Third-party tool integrations
+- **Community Contributions**: Open-source contribution framework
+
+---
+
+*LM-Tasker represents a focused, efficient approach to AI-assisted task management, prioritizing simplicity, reliability, and cost-effectiveness while maintaining powerful task management capabilities.*
