@@ -18,19 +18,19 @@
 
 
 ## 2. Update all TUI screens to use new loader [done]
-### Dependencies: 106.1
+### Dependencies: None
 ### Description: Update all relevant TUI screens/components to consume task data from the new direct JSON loader, removing any reliance on CLI output.
 ### Details:
 
 
 ## 3. Add error handling and fallback [done]
-### Dependencies: 106.1
+### Dependencies: None
 ### Description: Implement robust error handling for file access and JSON parsing in the new loader. Provide user-friendly error messages and fallback states in the UI.
 ### Details:
 
 
 ## 4. Update documentation and tests [done]
-### Dependencies: 106.2, 106.3
+### Dependencies: None
 ### Description: Update project documentation to describe the new data loading approach. Add or update unit tests for the loader and regression tests for TUI functionality.
 ### Details:
 

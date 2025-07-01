@@ -3,8 +3,18 @@ description: Guidelines for implementing task management operations
 globs: scripts/modules/task-manager.js
 alwaysApply: false
 ---
+# LM-Tasker Task Management Guidelines
 
-# Task Management Guidelines
+## AI-Powered Task Operations
+
+LM-Tasker uses AI selectively for specific task operations:
+
+- **PRD Parsing**: AI extracts and structures tasks from Product Requirements Documents
+- **Task Creation**: AI generates structured tasks from natural language descriptions
+- **Task Updates**: AI incorporates changes and new context into existing tasks
+- **Complexity Analysis**: AI evaluates task complexity and provides expansion recommendations
+
+All other task operations (status updates, dependency management, file generation, etc.) are handled through direct data manipulation without AI processing.
 
 ## Task Structure Standards
 
@@ -328,4 +338,4 @@ alwaysApply: false
   }
   ```
 
-Refer to [`task-manager.js`](mdc:scripts/modules/task-manager.js) for implementation examples and [`new_features.mdc`](mdc:.cursor/rules/new_features.mdc) for integration guidelines. 
+Refer to [`task-manager.js`](mdc:scripts/modules/task-manager.js) for implementation examples and [`new_features.mdc`](mdc:.cursor/rules/new_features.mdc) for LM-Tasker integration guidelines. 

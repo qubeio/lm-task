@@ -18,7 +18,7 @@ by tools like K9s. The TUI will provide an interactive, keyboard-driven interfac
 
 ### MVP Requirements
 
-1. Launch with `tmui` command
+1. Launch with `ui` command
 2. Display task list in same format as `tm list`
 3. Vim navigation keys (j/k for up/down, gg/G for top/bottom)
 4. Forward slash search with highlighting
@@ -49,7 +49,7 @@ by tools like K9s. The TUI will provide an interactive, keyboard-driven interfac
 ### Component Structure
 
 ```
-tmui/
+ui/
 ├── src/
 │   ├── index.js           # Entry point, command registration
 │   ├── app.js             # Main TUI application
@@ -248,7 +248,7 @@ Existing CLI commands need `--json` flag support to return structured data:
 
 **Timeline**: 1-2 weeks **Deliverables**:
 
-- Basic Blessed.js setup with `tmui` command
+- Basic Blessed.js setup with `ui` command
 - Task list display matching `tm list` format
 - Basic keyboard navigation (j/k, Enter, q)
 - CLI adapter for `tm list` and `tm show`
@@ -343,9 +343,9 @@ Existing CLI commands need `--json` flag support to return structured data:
 
 ### Environment Variables
 
-- `TMUI_THEME`: Override theme (dark, light, custom)
-- `TMUI_REFRESH_INTERVAL`: Auto-refresh interval in seconds
-- `TMUI_PAGE_SIZE`: Number of tasks per page
+- `UI_THEME`: Override theme (dark, light, custom)
+- `UI_REFRESH_INTERVAL`: Auto-refresh interval in seconds
+- `UI_PAGE_SIZE`: Number of tasks per page
 
 ## Conclusion
 

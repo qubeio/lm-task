@@ -1,0 +1,37 @@
+# Task ID: 113
+# Title: Update Documentation to Reflect Reduced AI Features
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Update all documentation files in the docs/ folder to accurately reflect the simplified architecture with AI limited to PRD parsing only, removing references to deprecated AI-powered features and updating examples accordingly.
+# Details:
+Based on the PRD.md changes, the documentation needs to be updated to reflect the new simplified architecture where:
+
+1. AI functionality is limited to PRD parsing only
+2. All task operations (add, update, modify) are manual via CLI/MCP
+3. Package has been rebranded from task-master-ai to lm-tasker
+4. Configuration uses .lmtaskerconfig instead of .taskmasterconfig
+5. Binary commands changed from task-master to lm-tasker
+
+Key files to update:
+- docs/command-reference.md: Remove AI-powered task creation/update references, update command names
+- docs/configuration.md: Update config file names and focus on PRD parsing model configuration
+- docs/examples.md: Update examples to reflect manual task management workflow
+- docs/tutorial.md: Update tutorial to emphasize manual task operations
+- docs/models.md: Clarify that models are only used for PRD parsing
+- docs/task-structure.md: Update to reflect manual task management approach
+
+The documentation should clearly communicate that:
+- Task creation, updates, and modifications are manual operations
+- AI is only used for initial PRD-to-tasks conversion
+- This provides predictable behavior and lower costs
+- The system focuses on structured task management rather than AI automation
+
+# Test Strategy:
+Review all updated documentation files to ensure:
+1. No references to deprecated AI-powered task operations remain
+2. All command examples use lm-tasker instead of task-master
+3. Configuration examples reference .lmtaskerconfig
+4. Examples and workflows reflect manual task management
+5. AI usage is clearly scoped to PRD parsing only
+6. Documentation is consistent with the PRD.md architecture

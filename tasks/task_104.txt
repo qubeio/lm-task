@@ -1,7 +1,7 @@
 # Task ID: 104
 # Title: Implement Exit Confirmation Dialog for TUI
 # Status: pending
-# Dependencies: 102, 103
+# Dependencies: 103
 # Priority: medium
 # Description: Develop a reusable exit confirmation dialog component for the TaskMaster TUI that displays a confirmation prompt when the user presses escape.
 # Details:

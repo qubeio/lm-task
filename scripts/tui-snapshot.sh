@@ -7,7 +7,7 @@
 set -e
 
 # Parse arguments
-TUI_COMMAND="${1:-task-master tmui}"
+TUI_COMMAND="${1:-task-master ui}"
 OUTPUT_FILE="${2:-tui-snapshot.png}"
 WAIT_SECONDS="${3:-10}"
 SESSION_NAME="tui_snap_$$"  # Use PID to avoid conflicts

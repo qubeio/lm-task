@@ -1,15 +1,13 @@
 ---
-description: Comprehensive reference for Taskmaster MCP tools and CLI commands.
-globs: **/*
+description: 
+globs: 
 alwaysApply: true
 ---
 # LM-Tasker Tool & Command Reference
 
 This document provides a detailed reference for interacting with LM-Tasker, covering both the recommended MCP tools, suitable for integrations like Cursor, and the corresponding `lm-tasker` CLI commands, designed for direct user interaction or fallback.
 
-**Note:** For interacting with LM-Tasker programmatically or via integrated tools, using the **MCP tools is strongly recommended** due to better performance, structured data, and error handling. The CLI commands serve as a user-friendly alternative and fallback. 
-
-**Important:** Several MCP tools involve AI processing and can take up to a minute to complete. The AI-powered tools include `parse_prd`, `add_task`, `update`, `update_task`, and `update_subtask`.
+**Note:** For interacting with LM-Tasker programmatically or via integrated tools, using the **MCP tools is strongly recommended** due to better performance, structured data, and error handling. The CLI commands serve as a user-friendly alternative and fallback.
 
 ---
 
@@ -35,58 +33,13 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
     *   `skipInstall`: `Skip installing dependencies. Default is false.` (CLI: `--skip-install`)
     *   `addAliases`: `Add shell aliases tm and lm-tasker. Default is false.` (CLI: `--aliases`)
     *   `yes`: `Skip prompts and use defaults/provided arguments. Default is false.` (CLI: `-y, --yes`)
-*   **Usage:** Run this once at the beginning of a new project, typically via an integrated tool like Cursor. Operates on the current working directory of the MCP server. 
-*   **Important:** Once complete, you *MUST* parse a prd in order to generate tasks. There will be no tasks files until then. The next step after initializing should be to create a PRD using the example PRD in scripts/example_prd.txt. 
-
-### 2. Parse PRD (`parse_prd`)
-
-*   **MCP Tool:** `parse_prd`
-*   **CLI Command:** `lm-tasker parse-prd [file] [options]`
-*   **Description:** `Parse a Product Requirements Document, PRD, or text file with LM-Tasker to automatically generate an initial set of tasks in tasks.json.`
-*   **Key Parameters/Options:**
-    *   `input`: `Path to your PRD or requirements text file that LM-Tasker should parse for tasks.` (CLI: `[file]` positional or `-i, --input <file>`)
-    *   `output`: `Specify where LM-Tasker should save the generated 'tasks.json' file. Defaults to 'tasks/tasks.json'.` (CLI: `-o, --output <file>`)
-    *   `numTasks`: `Approximate number of top-level tasks LM-Tasker should aim to generate from the document.` (CLI: `-n, --num-tasks <number>`)
-    *   `force`: `Use this to allow LM-Tasker to overwrite an existing 'tasks.json' without asking for confirmation.` (CLI: `-f, --force`)
-*   **Usage:** Useful for bootstrapping a project from an existing requirements document.
-*   **Notes:** LM-Tasker will strictly adhere to any specific requirements mentioned in the PRD, such as libraries, database schemas, frameworks, tech stacks, etc., while filling in any gaps where the PRD isn't fully specified. Tasks are designed to provide the most direct implementation path while avoiding over-engineering.
-*   **Important:** This MCP tool makes AI calls and can take up to a minute to complete. Please inform users to hang tight while the operation is in progress. If the user does not have a PRD, suggest discussing their idea and then use the example PRD in `scripts/example_prd.txt` as a template for creating the PRD based on their idea, for use with `parse-prd`.
-
----
-
-## AI Model Configuration
-
-### 2. Manage Models (`models`)
-*   **MCP Tool:** `models`
-*   **CLI Command:** `lm-tasker models [options]`
-*   **Description:** `View the current AI model configuration or set specific models for different roles (main, research, fallback). Allows setting custom model IDs for Ollama and OpenRouter.`
-*   **Key MCP Parameters/Options:**
-    *   `setMain <model_id>`: `Set the primary model ID for task generation/updates.` (CLI: `--set-main <model_id>`)
-    *   `setResearch <model_id>`: `Set the model ID for research-backed operations.` (CLI: `--set-research <model_id>`)
-    *   `setFallback <model_id>`: `Set the model ID to use if the primary fails.` (CLI: `--set-fallback <model_id>`)
-    *   `ollama <boolean>`: `Indicates the set model ID is a custom Ollama model.` (CLI: `--ollama`)
-    *   `openrouter <boolean>`: `Indicates the set model ID is a custom OpenRouter model.` (CLI: `--openrouter`)
-    *   `listAvailableModels <boolean>`: `If true, lists available models not currently assigned to a role.` (CLI: No direct equivalent; CLI lists available automatically)
-    *   `projectRoot <string>`: `Optional. Absolute path to the project root directory.` (CLI: Determined automatically)
-*   **Key CLI Options:**
-    *   `--set-main <model_id>`: `Set the primary model.`
-    *   `--set-research <model_id>`: `Set the research model.`
-    *   `--set-fallback <model_id>`: `Set the fallback model.`
-    *   `--ollama`: `Specify that the provided model ID is for Ollama (use with --set-*).`
-    *   `--openrouter`: `Specify that the provided model ID is for OpenRouter (use with --set-*). Validates against OpenRouter API.`
-    *   `--setup`: `Run interactive setup to configure models, including custom Ollama/OpenRouter IDs.`
-*   **Usage (MCP):** Call without set flags to get current config. Use `setMain`, `setResearch`, or `setFallback` with a valid model ID to update the configuration. Use `listAvailableModels: true` to get a list of unassigned models. To set a custom model, provide the model ID and set `ollama: true` or `openrouter: true`.
-*   **Usage (CLI):** Run without flags to view current configuration and available models. Use set flags to update specific roles. Use `--setup` for guided configuration, including custom models. To set a custom model via flags, use `--set-<role>=<model_id>` along with either `--ollama` or `--openrouter`.
-*   **Notes:** Configuration is stored in `.lmtaskerconfig` in the project root. This command/tool modifies that file. Use `listAvailableModels` or `lm-tasker models` to see internally supported models. OpenRouter custom models are validated against their live API. Ollama custom models are not validated live.
-*   **API note:** API keys for selected AI providers (based on their model) need to exist in the mcp.json file to be accessible in MCP context. The API keys must be present in the local .env file for the CLI to be able to read them.
-*   **Model costs:** The costs in supported models are expressed in dollars. An input/output value of 3 is $3.00. A value of 0.8 is $0.80. 
-*   **Warning:** DO NOT MANUALLY EDIT THE .lmtaskerconfig FILE. Use the included commands either in the MCP or CLI format as needed. Always prioritize MCP tools when available and use the CLI as a fallback.
+*   **Usage:** Run this once at the beginning of a new project, typically via an integrated tool like Cursor. Operates on the current working directory of the MCP server.
 
 ---
 
 ## Task Listing & Viewing
 
-### 3. Get Tasks (`get_tasks`)
+### 2. Get Tasks (`get_tasks`)
 
 *   **MCP Tool:** `get_tasks`
 *   **CLI Command:** `lm-tasker list [options]`
@@ -97,16 +50,16 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
     *   `file`: `Path to your LM-Tasker 'tasks.json' file. Default relies on auto-detection.` (CLI: `-f, --file <file>`)
 *   **Usage:** Get an overview of the project status, often used at the start of a work session.
 
-### 4. Get Next Task (`next_task`)
+### 3. Get Next Task (`next_task`)
 
 *   **MCP Tool:** `next_task`
 *   **CLI Command:** `lm-tasker next [options]`
-*   **Description:** `Ask LM-Tasker to show the next available task you can work on, based on status and completed dependencies.`
+*   **Description:** `Show the next available task you can work on, based on status and completed dependencies.`
 *   **Key Parameters/Options:**
     *   `file`: `Path to your LM-Tasker 'tasks.json' file. Default relies on auto-detection.` (CLI: `-f, --file <file>`)
 *   **Usage:** Identify what to work on next according to the plan.
 
-### 5. Get Task Details (`get_task`)
+### 4. Get Task Details (`get_task`)
 
 *   **MCP Tool:** `get_task`
 *   **CLI Command:** `lm-tasker show [id] [options]`
@@ -120,20 +73,22 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
 
 ## Task Creation & Modification
 
-### 6. Add Task (`add_task`)
+### 5. Add Task (`add_task`)
 
 *   **MCP Tool:** `add_task`
 *   **CLI Command:** `lm-tasker add-task [options]`
-*   **Description:** `Add a new task to LM-Tasker by describing it; AI will structure it.`
+*   **Description:** `Add a new task to LM-Tasker with manually specified details.`
 *   **Key Parameters/Options:**
-    *   `prompt`: `Required. Describe the new task you want LM-Tasker to create, e.g., "Implement user authentication using JWT".` (CLI: `-p, --prompt <text>`)
-    *   `dependencies`: `Specify the IDs of any LM-Tasker tasks that must be completed before this new one can start, e.g., '12,14'.` (CLI: `-d, --dependencies <ids>`)
+    *   `title`: `Required. The title for the new task.` (CLI: `-t, --title <title>`)
+    *   `description`: `A brief description for the new task.` (CLI: `-d, --description <text>`)
+    *   `details`: `Provide implementation notes or details for the new task.` (CLI: `--details <text>`)
+    *   `testStrategy`: `Specify the test strategy for the new task.` (CLI: `--test-strategy <text>`)
+    *   `dependencies`: `Specify the IDs of any LM-Tasker tasks that must be completed before this new one can start, e.g., '12,14'.` (CLI: `--dependencies <ids>`)
     *   `priority`: `Set the priority for the new task: 'high', 'medium', or 'low'. Default is 'medium'.` (CLI: `--priority <priority>`)
     *   `file`: `Path to your LM-Tasker 'tasks.json' file. Default relies on auto-detection.` (CLI: `-f, --file <file>`)
-*   **Usage:** Quickly add newly identified tasks during development.
-*   **Important:** This MCP tool makes AI calls and can take up to a minute to complete. Please inform users to hang tight while the operation is in progress.
+*   **Usage:** Manually create new tasks with specific titles, descriptions, and implementation details.
 
-### 7. Add Subtask (`add_subtask`)
+### 6. Add Subtask (`add_subtask`)
 
 *   **MCP Tool:** `add_subtask`
 *   **CLI Command:** `lm-tasker add-subtask [options]`
@@ -141,7 +96,7 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
 *   **Key Parameters/Options:**
     *   `id` / `parent`: `Required. The ID of the LM-Tasker task that will be the parent.` (MCP: `id`, CLI: `-p, --parent <id>`)
     *   `taskId`: `Use this if you want to convert an existing top-level LM-Tasker task into a subtask of the specified parent.` (CLI: `-i, --task-id <id>`)
-    *   `title`: `Required if not using taskId. The title for the new subtask LM-Tasker should create.` (CLI: `-t, --title <title>`)
+    *   `title`: `Required if not using taskId. The title for the new subtask.` (CLI: `-t, --title <title>`)
     *   `description`: `A brief description for the new subtask.` (CLI: `-d, --description <text>`)
     *   `details`: `Provide implementation notes or details for the new subtask.` (CLI: `--details <text>`)
     *   `dependencies`: `Specify IDs of other tasks or subtasks, e.g., '15' or '16.1', that must be done before this new subtask.` (CLI: `--dependencies <ids>`)
@@ -150,43 +105,7 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
     *   `file`: `Path to your LM-Tasker 'tasks.json' file. Default relies on auto-detection.` (CLI: `-f, --file <file>`)
 *   **Usage:** Break down tasks manually or reorganize existing tasks.
 
-### 8. Update Tasks (`update`)
-
-*   **MCP Tool:** `update`
-*   **CLI Command:** `lm-tasker update [options]`
-*   **Description:** `Update multiple upcoming tasks in LM-Tasker based on new context or changes, starting from a specific task ID.`
-*   **Key Parameters/Options:**
-    *   `from`: `Required. The ID of the first task LM-Tasker should update. All tasks with this ID or higher that are not 'done' will be considered.` (CLI: `--from <id>`)
-    *   `prompt`: `Required. Explain the change or new context for LM-Tasker to apply to the tasks, e.g., "We are now using React Query instead of Redux Toolkit for data fetching".` (CLI: `-p, --prompt <text>`)
-    *   `file`: `Path to your LM-Tasker 'tasks.json' file. Default relies on auto-detection.` (CLI: `-f, --file <file>`)
-*   **Usage:** Handle significant implementation changes or pivots that affect multiple future tasks. Example CLI: `lm-tasker update --from='18' --prompt='Switching to React Query.\nNeed to refactor data fetching...'`
-*   **Important:** This MCP tool makes AI calls and can take up to a minute to complete. Please inform users to hang tight while the operation is in progress.
-
-### 9. Update Task (`update_task`)
-
-*   **MCP Tool:** `update_task`
-*   **CLI Command:** `lm-tasker update-task [options]`
-*   **Description:** `Modify a specific LM-Tasker task or subtask by its ID, incorporating new information or changes.`
-*   **Key Parameters/Options:**
-    *   `id`: `Required. The specific ID of the LM-Tasker task, e.g., '15', or subtask, e.g., '15.2', you want to update.` (CLI: `-i, --id <id>`)
-    *   `prompt`: `Required. Explain the specific changes or provide the new information LM-Tasker should incorporate into this task.` (CLI: `-p, --prompt <text>`)
-    *   `file`: `Path to your LM-Tasker 'tasks.json' file. Default relies on auto-detection.` (CLI: `-f, --file <file>`)
-*   **Usage:** Refine a specific task based on new understanding or feedback. Example CLI: `lm-tasker update-task --id='15' --prompt='Clarification: Use PostgreSQL instead of MySQL.\nUpdate schema details...'`
-*   **Important:** This MCP tool makes AI calls and can take up to a minute to complete. Please inform users to hang tight while the operation is in progress.
-
-### 10. Update Subtask (`update_subtask`)
-
-*   **MCP Tool:** `update_subtask`
-*   **CLI Command:** `lm-tasker update-subtask [options]`
-*   **Description:** `Append timestamped notes or details to a specific LM-Tasker subtask without overwriting existing content. Intended for iterative implementation logging.`
-*   **Key Parameters/Options:**
-    *   `id`: `Required. The specific ID of the LM-Tasker subtask, e.g., '15.2', you want to add information to.` (CLI: `-i, --id <id>`)
-    *   `prompt`: `Required. Provide the information or notes LM-Tasker should append to the subtask's details. Ensure this adds *new* information not already present.` (CLI: `-p, --prompt <text>`)
-    *   `file`: `Path to your LM-Tasker 'tasks.json' file. Default relies on auto-detection.` (CLI: `-f, --file <file>`)
-*   **Usage:** Add implementation notes, code snippets, or clarifications to a subtask during development. Before calling, review the subtask's current details to append only fresh insights, helping to build a detailed log of the implementation journey and avoid redundancy. Example CLI: `lm-tasker update-subtask --id='15.2' --prompt='Discovered that the API requires header X.\nImplementation needs adjustment...'`
-*   **Important:** This MCP tool makes AI calls and can take up to a minute to complete. Please inform users to hang tight while the operation is in progress.
-
-### 11. Set Task Status (`set_task_status`)
+### 7. Set Task Status (`set_task_status`)
 
 *   **MCP Tool:** `set_task_status`
 *   **CLI Command:** `lm-tasker set-status [options]`
@@ -197,7 +116,7 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
     *   `file`: `Path to your LM-Tasker 'tasks.json' file. Default relies on auto-detection.` (CLI: `-f, --file <file>`)
 *   **Usage:** Mark progress as tasks move through the development cycle.
 
-### 12. Remove Task (`remove_task`)
+### 8. Remove Task (`remove_task`)
 
 *   **MCP Tool:** `remove_task`
 *   **CLI Command:** `lm-tasker remove-task [options]`
@@ -213,18 +132,18 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
 
 ## Task Structure & Breakdown
 
-### 13. Clear Subtasks (`clear_subtasks`)
+### 9. Clear Subtasks (`clear_subtasks`)
 
 *   **MCP Tool:** `clear_subtasks`
 *   **CLI Command:** `lm-tasker clear-subtasks [options]`
 *   **Description:** `Remove all subtasks from one or more specified LM-Tasker parent tasks.`
 *   **Key Parameters/Options:**
-    *   `id`: `The ID(s) of the LM-Tasker parent task(s) whose subtasks you want to remove, e.g., '15' or '16,18'. Required unless using `all`.) (CLI: `-i, --id <ids>`)
+    *   `id`: `The ID(s) of the LM-Tasker parent task(s) whose subtasks you want to remove, e.g., '15' or '16,18'. Required unless using 'all'.` (CLI: `-i, --id <ids>`)
     *   `all`: `Tell LM-Tasker to remove subtasks from all parent tasks.` (CLI: `--all`)
     *   `file`: `Path to your LM-Tasker 'tasks.json' file. Default relies on auto-detection.` (CLI: `-f, --file <file>`)
 *   **Usage:** Used before regenerating subtasks if the previous breakdown needs replacement.
 
-### 14. Remove Subtask (`remove_subtask`)
+### 10. Remove Subtask (`remove_subtask`)
 
 *   **MCP Tool:** `remove_subtask`
 *   **CLI Command:** `lm-tasker remove-subtask [options]`
@@ -236,7 +155,7 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
     *   `file`: `Path to your LM-Tasker 'tasks.json' file. Default relies on auto-detection.` (CLI: `-f, --file <file>`)
 *   **Usage:** Delete unnecessary subtasks or promote a subtask to a top-level task.
 
-### 15. Move Task (`move_task`)
+### 11. Move Task (`move_task`)
 
 *   **MCP Tool:** `move_task`
 *   **CLI Command:** `lm-tasker move [options]`
@@ -265,7 +184,7 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
 
 ## Dependency Management
 
-### 16. Add Dependency (`add_dependency`)
+### 12. Add Dependency (`add_dependency`)
 
 *   **MCP Tool:** `add_dependency`
 *   **CLI Command:** `lm-tasker add-dependency [options]`
@@ -276,7 +195,7 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
     *   `file`: `Path to your LM-Tasker 'tasks.json' file. Default relies on auto-detection.` (CLI: `-f, --file <path>`)
 *   **Usage:** Establish the correct order of execution between tasks.
 
-### 17. Remove Dependency (`remove_dependency`)
+### 13. Remove Dependency (`remove_dependency`)
 
 *   **MCP Tool:** `remove_dependency`
 *   **CLI Command:** `lm-tasker remove-dependency [options]`
@@ -287,7 +206,7 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
     *   `file`: `Path to your LM-Tasker 'tasks.json' file. Default relies on auto-detection.` (CLI: `-f, --file <file>`)
 *   **Usage:** Update task relationships when the order of execution changes.
 
-### 18. Validate Dependencies (`validate_dependencies`)
+### 14. Validate Dependencies (`validate_dependencies`)
 
 *   **MCP Tool:** `validate_dependencies`
 *   **CLI Command:** `lm-tasker validate-dependencies [options]`
@@ -296,7 +215,7 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
     *   `file`: `Path to your LM-Tasker 'tasks.json' file. Default relies on auto-detection.` (CLI: `-f, --file <file>`)
 *   **Usage:** Audit the integrity of your task dependencies.
 
-### 19. Fix Dependencies (`fix_dependencies`)
+### 15. Fix Dependencies (`fix_dependencies`)
 
 *   **MCP Tool:** `fix_dependencies`
 *   **CLI Command:** `lm-tasker fix-dependencies [options]`
@@ -309,7 +228,7 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
 
 ## File Management
 
-### 20. Generate Task Files (`generate`)
+### 16. Generate Task Files (`generate`)
 
 *   **MCP Tool:** `generate`
 *   **CLI Command:** `lm-tasker generate [options]`
@@ -318,30 +237,6 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
     *   `output`: `The directory where LM-Tasker should save the task files (default: in a 'tasks' directory).` (CLI: `-o, --output <directory>`)
     *   `file`: `Path to your LM-Tasker 'tasks.json' file. Default relies on auto-detection.` (CLI: `-f, --file <file>`)
 *   **Usage:** Run this after making changes to tasks.json to keep individual task files up to date.
-
----
-
-## Environment Variables Configuration (Updated)
-
-LM-Tasker primarily uses the **`.lmtaskerconfig`** file (in project root) for configuration (models, parameters, logging level, etc.), managed via `lm-tasker models --setup`.
-
-Environment variables are used **only** for sensitive API keys related to AI providers and specific overrides like the Ollama base URL:
-
-*   **API Keys (Required for corresponding provider):**
-    *   `ANTHROPIC_API_KEY`
-    *   `PERPLEXITY_API_KEY`
-    *   `OPENAI_API_KEY`
-    *   `GOOGLE_API_KEY`
-    *   `MISTRAL_API_KEY`
-    *   `AZURE_OPENAI_API_KEY` (Requires `AZURE_OPENAI_ENDPOINT` too)
-    *   `OPENROUTER_API_KEY`
-    *   `XAI_API_KEY`
-    *   `OLLANA_API_KEY` (Requires `OLLAMA_BASE_URL` too)
-*   **Endpoints (Optional/Provider Specific inside .lmtaskerconfig):**
-    *   `AZURE_OPENAI_ENDPOINT`
-    *   `OLLAMA_BASE_URL` (Default: `http://localhost:11434/api`)
-
-**Set API keys** in your **`.env`** file in the project root (for CLI use) or within the `env` section of your **`.cursor/mcp.json`** file (for MCP/Cursor integration). All other settings (model choice, max tokens, temperature, log level, custom endpoints) are managed in `.lmtaskerconfig` via `lm-tasker models` command or `models` MCP tool.
 
 ---
 

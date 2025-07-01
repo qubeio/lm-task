@@ -15,8 +15,8 @@ import chalk from "chalk";
  */
 export function registerTUICommand(programInstance) {
   programInstance
-    .command("tmui")
-    .alias("tui")
+    .command("ui")
+    .alias("tmui")
     .description("Launch the TaskMaster Terminal User Interface")
     .option("-f, --file <file>", "Path to tasks.json file")
     .option("--theme <theme>", "Color theme (default, dark, light)", "default")
@@ -72,7 +72,7 @@ export async function runTUI() {
   	const version = await getLmTaskerVersion();
 
   program
-    .name("tmui")
+    .name("ui")
     .description("TaskMaster Terminal User Interface")
     .version(version);
 

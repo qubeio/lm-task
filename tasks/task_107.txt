@@ -1,7 +1,7 @@
 # Task ID: 107
 # Title: Add Repository Title to TUI Window Titles
 # Status: done
-# Dependencies: 102
+# Dependencies: None
 # Priority: medium
 # Description: Add the repository title to the window titles in both task details and task list views in the TUI
 # Details:

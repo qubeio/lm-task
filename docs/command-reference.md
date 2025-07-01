@@ -38,43 +38,43 @@ lm-tasker list --status=<status> --with-subtasks
 
 ```bash
 # Show the next task to work on based on dependencies and status
-task-master next
+lm-tasker next
 ```
 
 ## Show Specific Task
 
 ```bash
 # Show details of a specific task
-task-master show <id>
+lm-tasker show <id>
 # or
-task-master show --id=<id>
+lm-tasker show --id=<id>
 
 # View a specific subtask (e.g., subtask 2 of task 1)
-task-master show 1.2
+lm-tasker show 1.2
 ```
 
 ## Update Tasks
 
 ```bash
 # Update tasks from a specific ID and provide context
-task-master update --from=<id> --prompt="<prompt>"
+lm-tasker update --from=<id> --prompt="<prompt>"
 ```
 
 ## Update a Specific Task
 
 ```bash
 # Update a single task by ID with new information
-task-master update-task --id=<id> --prompt="<prompt>"
+lm-tasker update-task --id=<id> --prompt="<prompt>"
 ```
 
 ## Update a Subtask
 
 ```bash
 # Append additional information to a specific subtask
-task-master update-subtask --id=<parentId.subtaskId> --prompt="<prompt>"
+lm-tasker update-subtask --id=<parentId.subtaskId> --prompt="<prompt>"
 
 # Example: Add details about API rate limiting to subtask 2 of task 5
-task-master update-subtask --id=5.2 --prompt="Add rate limiting of 100 requests per minute"
+lm-tasker update-subtask --id=5.2 --prompt="Add rate limiting of 100 requests per minute"
 ```
 
 Unlike the `update-task` command which replaces task information, the `update-subtask` command _appends_ new information
@@ -85,20 +85,20 @@ preserving the original content.
 
 ```bash
 # Generate individual task files from tasks.json
-task-master generate
+lm-tasker generate
 ```
 
 ## Set Task Status
 
 ```bash
 # Set status of a single task
-task-master set-status --id=<id> --status=<status>
+lm-tasker set-status --id=<id> --status=<status>
 
 # Set status for multiple tasks
-task-master set-status --id=1,2,3 --status=<status>
+lm-tasker set-status --id=1,2,3 --status=<status>
 
 # Set status for subtasks
-task-master set-status --id=1.1,1.2 --status=<status>
+lm-tasker set-status --id=1.1,1.2 --status=<status>
 ```
 
 When marking a task as "done", all of its subtasks will automatically be marked as "done" as well.
@@ -107,68 +107,115 @@ When marking a task as "done", all of its subtasks will automatically be marked 
 
 ```bash
 # Clear subtasks from a specific task
-task-master clear-subtasks --id=<id>
+lm-tasker clear-subtasks --id=<id>
 
 # Clear subtasks from multiple tasks
-task-master clear-subtasks --id=1,2,3
+lm-tasker clear-subtasks --id=1,2,3
 
 # Clear subtasks from all tasks
-task-master clear-subtasks --all
+lm-tasker clear-subtasks --all
 ```
 
 ## Managing Task Dependencies
 
 ```bash
 # Add a dependency to a task
-task-master add-dependency --id=<id> --depends-on=<id>
+lm-tasker add-dependency --id=<id> --depends-on=<id>
 
 # Remove a dependency from a task
-task-master remove-dependency --id=<id> --depends-on=<id>
+lm-tasker remove-dependency --id=<id> --depends-on=<id>
 
 # Validate dependencies without fixing them
-task-master validate-dependencies
+lm-tasker validate-dependencies
 
 # Find and fix invalid dependencies automatically
-task-master fix-dependencies
+lm-tasker fix-dependencies
 ```
 
 ## Move Tasks
 
 ```bash
 # Move a task or subtask to a new position
-task-master move --from=<id> --to=<id>
+lm-tasker move --from=<id> --to=<id>
 
 # Examples:
 # Move task to become a subtask
-task-master move --from=5 --to=7
+lm-tasker move --from=5 --to=7
 
 # Move subtask to become a standalone task
-task-master move --from=5.2 --to=7
+lm-tasker move --from=5.2 --to=7
 
 # Move subtask to a different parent
-task-master move --from=5.2 --to=7.3
+lm-tasker move --from=5.2 --to=7.3
 
 # Reorder subtasks within the same parent
-task-master move --from=5.2 --to=5.4
+lm-tasker move --from=5.2 --to=5.4
 
 # Move a task to a new ID position (creates placeholder if doesn't exist)
-task-master move --from=5 --to=25
+lm-tasker move --from=5 --to=25
 
 # Move multiple tasks at once (must have the same number of IDs)
-task-master move --from=10,11,12 --to=16,17,18
+lm-tasker move --from=10,11,12 --to=16,17,18
 ```
 
 ## Add a New Task
 
 ```bash
-# Add a new task using AI
-task-master add-task --prompt="Description of the new task"
+# Add a new task manually with required details
+lm-tasker add-task --title="Task title" --description="Task description"
+
+# Add a task with additional details
+lm-tasker add-task --title="Task title" --description="Task description" --details="Implementation details"
 
 # Add a task with dependencies
-task-master add-task --prompt="Description" --dependencies=1,2,3
+lm-tasker add-task --title="Task title" --description="Task description" --dependencies=1,2,3
 
 # Add a task with priority
-task-master add-task --prompt="Description" --priority=high
+lm-tasker add-task --title="Task title" --description="Task description" --priority=high
+
+# Add a task with test strategy
+lm-tasker add-task --title="Task title" --description="Task description" --test-strategy="Testing approach"
+
+# Legacy AI-assisted task creation (limited functionality)
+lm-tasker add-task --prompt="Description of the new task"
+```
+
+**Note:** Manual task creation is the recommended approach. The AI-assisted option (`--prompt`) provides limited
+functionality and may be deprecated in future versions.
+
+## Add a New Subtask
+
+```bash
+# Add a new subtask manually
+lm-tasker add-subtask --parent=<id> --title="Subtask title" --description="Subtask description"
+
+# Add a subtask with additional details
+lm-tasker add-subtask --parent=<id> --title="Subtask title" --description="Subtask description" --details="Implementation details"
+
+# Add a subtask with dependencies
+lm-tasker add-subtask --parent=<id> --title="Subtask title" --description="Subtask description" --dependencies=1,2.1
+
+# Add a subtask with specific status
+lm-tasker add-subtask --parent=<id> --title="Subtask title" --description="Subtask description" --status=in-progress
+
+# Convert an existing task to a subtask
+lm-tasker add-subtask --parent=<id> --task-id=<existing-task-id>
+```
+
+## Remove Tasks and Subtasks
+
+```bash
+# Remove a task permanently
+lm-tasker remove-task --id=<id>
+
+# Remove multiple tasks
+lm-tasker remove-task --id=1,2,3
+
+# Remove a subtask
+lm-tasker remove-subtask --id=<parentId.subtaskId>
+
+# Convert a subtask to a standalone task instead of removing it
+lm-tasker remove-subtask --id=<parentId.subtaskId> --convert
 ```
 
 ## Initialize a Project
@@ -176,23 +223,33 @@ task-master add-task --prompt="Description" --priority=high
 ```bash
 # Initialize a new project with LM-Tasker structure
 lm-tasker init
+
+# Initialize with project details
+lm-tasker init --name="Project Name" --description="Project description" --version="1.0.0"
+
+# Initialize without prompts using defaults
+lm-tasker init --yes
 ```
 
 ## Configure AI Models
 
 ```bash
 # View current AI model configuration and API key status
-task-master models
+lm-tasker models
 
-# Set the primary model for generation/updates
-task-master models --set-main=gpt-4o
+# Set the primary model for PRD parsing
+lm-tasker models --set-main=gpt-4o
 
-# Set the fallback model
-task-master models --set-fallback=gpt-4o-mini
+# Set the fallback model for PRD parsing
+lm-tasker models --set-fallback=gpt-4o-mini
 
-# Run interactive setup to configure Azure OpenAI models
-task-master models --setup
+# Run interactive setup to configure models
+lm-tasker models --setup
 ```
 
-Configuration is stored in `.lmtaskerconfig` in your project root. API keys are managed via `.env` or MCP
-configuration. This version only supports Azure OpenAI models: `gpt-4o`, `gpt-4o-mini`, and `o3-mini`.
+**AI Usage:** LM-Tasker uses AI primarily for PRD parsing operations. Task management operations (create, update,
+modify) are designed to be manual for predictable and cost-effective project management.
+
+Configuration is stored in `.lmtaskerconfig` in your project root. API keys are managed via `.env` or MCP configuration.
+This version supports multiple AI providers including Azure OpenAI, OpenAI, Anthropic Claude, Google Gemini, Mistral,
+Perplexity, XAI, and Ollama.
