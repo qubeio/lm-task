@@ -180,13 +180,13 @@ function copyTemplateFile(templateName, targetPath, replacements = {}) {
         "dev_workflow.mdc"
       );
       break;
-    case "taskmaster.mdc":
+    case "lmtasker.mdc":
       sourcePath = path.join(
         __dirname,
         "..",
         ".cursor",
         "rules",
-        "taskmaster.mdc"
+        "lmtasker.mdc"
       );
       break;
     case "cursor_rules.mdc":
@@ -205,6 +205,22 @@ function copyTemplateFile(templateName, targetPath, replacements = {}) {
         ".cursor",
         "rules",
         "self_improve.mdc"
+      );
+      break;
+    case "user_workflow.mdc":
+      sourcePath = path.join(
+        __dirname,
+        "..",
+        "assets",
+        "user_workflow.mdc"
+      );
+      break;
+    case "user_cursor_rules.mdc":
+      sourcePath = path.join(
+        __dirname,
+        "..",
+        "assets",
+        "user_cursor_rules.mdc"
       );
       break;
       // case 'README-task-master.md':
@@ -504,28 +520,16 @@ function createProjectStructure(addAliases, dryRun) {
   // Copy .gitignore
   copyTemplateFile("gitignore", path.join(targetDir, ".gitignore"));
 
-  // Copy dev_workflow.mdc
+  // Copy user_workflow.mdc (user-facing template, not internal dev_workflow.mdc)
   copyTemplateFile(
-    "dev_workflow.mdc",
+    "user_workflow.mdc",
     path.join(targetDir, ".cursor", "rules", "dev_workflow.mdc")
   );
 
-  // Copy taskmaster.mdc
+  // Copy user-focused cursor rules (simplified for end users)
   copyTemplateFile(
-    "taskmaster.mdc",
-    path.join(targetDir, ".cursor", "rules", "taskmaster.mdc")
-  );
-
-  // Copy cursor_rules.mdc
-  copyTemplateFile(
-    "cursor_rules.mdc",
+    "user_cursor_rules.mdc",
     path.join(targetDir, ".cursor", "rules", "cursor_rules.mdc")
-  );
-
-  // Copy self_improve.mdc
-  copyTemplateFile(
-    "self_improve.mdc",
-    path.join(targetDir, ".cursor", "rules", "self_improve.mdc")
   );
 
   // Generate Roo rules from Cursor rules

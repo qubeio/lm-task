@@ -1,0 +1,37 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Project Development with LM-Tasker
+
+## 🔄 Project Awareness & Context
+- **Always check LM-Tasker tasks** before starting work. Use `lm-tasker list` to see current tasks and `lm-tasker next` to find what to work on.
+- **Update task status** as you progress. Mark tasks as `in-progress` when starting and `done` when complete.
+- **Log implementation details** in subtasks using `lm-tasker update-subtask --id=<id> --details="..."` to capture what you learn.
+
+## 🧱 Code Structure & Best Practices
+- **Follow task requirements** as defined in your LM-Tasker tasks. Check task details with `lm-tasker show <id>`.
+- **Break down complex work** into subtasks when a task becomes too large or complex.
+- **Respect task dependencies** - complete prerequisite tasks before starting dependent ones.
+
+## ✅ Task Completion Workflow
+- **Start each session** with `lm-tasker next` to identify the next priority task
+- **Mark progress** using `lm-tasker set-status --id=<id> --status=in-progress`
+- **Document as you go** with `lm-tasker update-subtask` to capture implementation notes
+- **Mark complete** with `lm-tasker set-status --id=<id> --status=done` when finished
+- **Add new tasks** discovered during work with `lm-tasker add-task`
+
+## 📚 Documentation & Communication
+- **Keep task details current** by updating them as requirements or implementation approaches change
+- **Use clear, specific task titles** when adding new tasks
+- **Document decisions** in task details, especially when deviating from original plans
+
+## 🧠 AI Assistant Guidelines
+- **Use LM-Tasker commands** to manage your project workflow and task organization
+- **Focus on implementation** rather than task management when the tasks are already well-defined
+- **Ask for task clarification** if requirements are unclear before starting implementation
+- **Suggest task breakdown** when encountering complex features that need subtasks
+
+---
+*This workflow integrates LM-Tasker task management with your development process.*

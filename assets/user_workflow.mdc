@@ -1,0 +1,147 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# LM-Tasker User Workflow
+
+This guide outlines how to use LM-Tasker to manage your software development projects.
+
+## Getting Started
+
+### 1. Initialize Your Project
+```bash
+lm-tasker init
+```
+
+### 2. Create Your PRD
+Create a `PRD.md` file in your project root describing what you want to build.
+
+### 3. Generate Tasks
+```bash
+lm-tasker parse-prd
+```
+
+## Daily Development Workflow
+
+### Start Your Development Session
+```bash
+# See all tasks and their status
+lm-tasker list
+
+# Find the next task to work on
+lm-tasker next
+
+# View detailed information about a specific task
+lm-tasker show <id>
+```
+
+### While Working on Tasks
+```bash
+# Mark a task as in-progress
+lm-tasker set-status --id=<id> --status=in-progress
+
+# Add notes to a subtask as you work
+lm-tasker update-subtask --id=<subtask-id> --details="Implementation notes..."
+
+# Mark a task as complete
+lm-tasker set-status --id=<id> --status=done
+```
+
+### Managing Your Task Structure
+```bash
+# Add a new task
+lm-tasker add-task --title="Task title" --description="What needs to be done"
+
+# Add subtasks to break down complex work
+lm-tasker add-subtask --parent=<id> --title="Subtask title"
+
+# Set up dependencies between tasks
+lm-tasker add-dependency --id=<task-id> --depends-on=<prerequisite-id>
+
+# Move tasks around if needed
+lm-tasker move --from=<id> --to=<new-id>
+```
+
+## Task Status Values
+- `pending` - Ready to work on
+- `in-progress` - Currently being worked on
+- `done` - Completed and verified
+- `review` - Awaiting review/verification
+- `deferred` - Postponed for later
+- `cancelled` - No longer needed
+
+## Best Practices
+
+### Task Management
+- Keep task descriptions clear and actionable
+- Break large tasks into smaller subtasks
+- Use dependencies to ensure proper order of work
+- Update task status as you progress
+
+### Implementation Notes
+- Use `update-subtask` to log what you learn during implementation
+- Note what works and what doesn't work
+- Record decisions and reasoning for future reference
+- Keep implementation details in the task details
+
+### Project Organization
+- Review your task list regularly with `lm-tasker list`
+- Use `lm-tasker next` to stay focused on the right priorities
+- Generate updated task files with `lm-tasker generate` when needed
+- Validate your dependencies with `lm-tasker validate-dependencies`
+
+## Configuration
+
+### AI Models (for PRD parsing)
+```bash
+# View current model configuration
+lm-tasker models
+
+# Set up models interactively
+lm-tasker models --setup
+
+# Set specific models
+lm-tasker models --set-main=gpt-4o
+```
+
+### Environment Setup
+- Copy `.env.example` to `.env` and add your API keys
+- Configure your preferred AI models for PRD parsing
+- All other operations are manual and don't require AI
+
+## Tips for Success
+
+1. **Start with a detailed PRD** - The better your requirements document, the better your generated tasks
+2. **Use the hierarchy** - Break complex features into subtasks
+3. **Track dependencies** - Make sure prerequisite work is completed first
+4. **Stay organized** - Regular use of `lm-tasker list` and `lm-tasker next` keeps you focused
+5. **Document as you go** - Use subtask details to capture implementation insights
+
+## Common Commands Quick Reference
+
+```bash
+# Project setup
+lm-tasker init                                    # Initialize project
+lm-tasker parse-prd                               # Generate tasks from PRD
+
+# Daily workflow
+lm-tasker list                                    # Show all tasks
+lm-tasker next                                    # Get next task
+lm-tasker show <id>                               # View task details
+lm-tasker set-status --id=<id> --status=done     # Mark complete
+
+# Task management
+lm-tasker add-task --title="..." --description="..."
+lm-tasker add-subtask --parent=<id> --title="..."
+lm-tasker update-subtask --id=<id> --details="..."
+lm-tasker add-dependency --id=<id> --depends-on=<id>
+
+# Organization
+lm-tasker move --from=<id> --to=<id>              # Reorganize tasks
+lm-tasker generate                                # Update task files
+lm-tasker validate-dependencies                   # Check dependencies
+```
+
+---
+*Adapt this workflow to fit your team's specific needs and practices.*
