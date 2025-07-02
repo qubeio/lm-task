@@ -101,18 +101,18 @@ The `update` command allows you to update tasks based on new information or impl
 
 ```bash
 # Update tasks starting from ID 4 with a new prompt
-lm-tasker update --from=4 --prompt="Refactor tasks from ID 4 onward to use Express instead of Fastify"
+lm-tasker update-task --id=4 --title="Use Express Framework" --description="Refactor to use Express instead of Fastify"
 
 # Update all tasks (default from=1)
-lm-tasker update --prompt="Add authentication to all relevant tasks"
+lm-tasker add-task --title="Add Authentication" --description="Add authentication to all relevant tasks"
 
 # Specify a different tasks file
-lm-tasker update --file=custom-tasks.json --from=5 --prompt="Change database from MongoDB to PostgreSQL"
+lm-tasker update-task --file=custom-tasks.json --id=5 --title="Use PostgreSQL Database" --description="Change database from MongoDB to PostgreSQL"
 ```
 
 Notes:
 
-- The `--prompt` parameter is required and should explain the changes or new context
+- Manual updates only - use --title and --description parameters to specify changes
 - Only tasks that aren't marked as 'done' will be updated
 - Tasks with ID >= the specified --from value will be updated
 
@@ -185,8 +185,8 @@ Notes:
 ## AI Integration (Updated)
 
 - The script now uses a unified AI service layer (`ai-services-unified.js`).
-- Model selection (e.g., Claude vs. Perplexity for `--research`) is determined by the configuration in
-  `.lmtaskerconfig` based on the requested `role` (`main` or `research`).
+- Model selection (e.g., Claude vs. Perplexity for `--research`) is determined by the configuration in `.lmtaskerconfig`
+  based on the requested `role` (`main` or `research`).
 - API keys are automatically resolved from your `.env` file (for CLI) or MCP session environment.
 - To use the research capabilities (e.g., `add-task --research`), ensure you have:
   1.  Configured a model for the `research` role using `lm-tasker models --setup` (Perplexity models are recommended).

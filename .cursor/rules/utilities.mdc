@@ -110,7 +110,7 @@ Taskmaster configuration (excluding API keys) is primarily managed through the `
   - ✅ DO: Use appropriate icons for different log levels
   - ✅ DO: Respect the configured log level
   - ❌ DON'T: Add direct console.log calls outside the logging utility
-  - **Note on Passed Loggers**: When a logger object (like the FastMCP `log` object) is passed *as a parameter* (e.g., as `mcpLog`) into core Task Master functions, the receiving function often expects specific methods (`.info`, `.warn`, `.error`, etc.) to be directly callable on that object (e.g., `mcpLog[level](...)`). If the passed logger doesn't have this exact structure, a wrapper object may be needed. See the **Handling Logging Context (`mcpLog`)** section in [`mcp.mdc`](mdc:.cursor/rules/mcp.mdc) for the standard pattern used in direct functions.
+  - **Note on Passed Loggers**: When a logger object (like the FastMCP `log` object) is passed *as a parameter* (e.g., as `mcpLog`) into core LM-Tasker functions, the receiving function often expects specific methods (`.info`, `.warn`, `.error`, etc.) to be directly callable on that object (e.g., `mcpLog[level](...)`). If the passed logger doesn't have this exact structure, a wrapper object may be needed. See the **Handling Logging Context (`mcpLog`)** section in [`mcp.mdc`](mdc:.cursor/rules/mcp.mdc) for the standard pattern used in direct functions.
 
 - **Logger Wrapper Pattern**: 
   - ✅ DO: Use the logger wrapper pattern when passing loggers to prevent `mcpLog[level] is not a function` errors:
@@ -488,7 +488,7 @@ These utilities specifically support the implementation and execution of MCP too
     - **Purpose**: Legacy function to extract *and normalize* the project root from the session. Replaced by the HOF pattern but potentially still used.
     - **Recommendation**: Prefer using the `withNormalizedProjectRoot` HOF in tools instead of calling this directly.
 
-- **`executeTaskMasterCommand(...)`**: 
+- **`executeLM-TaskerCommand(...)`**: 
     - **Purpose**: Executes `task-master` CLI command as a fallback. 
     - **Recommendation**: Deprecated for most uses; prefer direct function calls.
 
@@ -540,7 +540,7 @@ export {
   getProjectRoot,
   getProjectRootFromSession,
   handleApiResult,
-  executeTaskMasterCommand,
+  executeLM-TaskerCommand,
   processMCPResponseData,
   createContentResponse,
   createErrorResponse,

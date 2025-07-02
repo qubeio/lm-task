@@ -1,6 +1,6 @@
 /**
  * utils.js
- * Utility functions for the Task Master CLI
+ * Utility functions for the LM-Tasker CLI
  */
 
 import fs from "fs";
@@ -68,37 +68,43 @@ function resolveEnvVariable(key, session = null, projectRoot = null) {
  */
 function findProjectRoot(
   startPath = process.cwd(),
-  markers = ["package.json", ".git", ".lmtaskerconfig"]
+  markers = ["package.json", ".git", ".lmtaskerconfig"],
 ) {
   // Special handling for MCP server execution context
   // Check if we're running from the MCP server and can derive the project root
   if (process.argv[1]) {
     const scriptPath = process.argv[1];
     // If running from mcp-server directory, find the parent directory containing package.json
-    if (scriptPath.includes('mcp-server')) {
-      const mcpServerIndex = scriptPath.lastIndexOf('mcp-server');
-      const potentialProjectRoot = path.dirname(scriptPath.substring(0, mcpServerIndex));
-      
-      // Verify this is actually an LM-Tasker project by checking for specific markers
-      const lmTaskerMarkers = ['package.json', 'scripts', 'tasks', 'PRD.md'];
-      const hasLmTaskerMarkers = lmTaskerMarkers.some(marker => 
-        fs.existsSync(path.join(potentialProjectRoot, marker))
+    if (scriptPath.includes("mcp-server")) {
+      const mcpServerIndex = scriptPath.lastIndexOf("mcp-server");
+      const potentialProjectRoot = path.dirname(
+        scriptPath.substring(0, mcpServerIndex),
       );
-      
+
+      // Verify this is actually an LM-Tasker project by checking for specific markers
+      const lmTaskerMarkers = ["package.json", "scripts", "tasks", "PRD.md"];
+      const hasLmTaskerMarkers = lmTaskerMarkers.some((marker) =>
+        fs.existsSync(path.join(potentialProjectRoot, marker)),
+      );
+
       if (hasLmTaskerMarkers) {
         return potentialProjectRoot;
       }
     }
-    
+
     // If running from scripts directory, try the parent
-    if (scriptPath.includes('scripts')) {
-      const scriptsIndex = scriptPath.lastIndexOf('scripts');
-      const potentialProjectRoot = path.dirname(scriptPath.substring(0, scriptsIndex));
-      
+    if (scriptPath.includes("scripts")) {
+      const scriptsIndex = scriptPath.lastIndexOf("scripts");
+      const potentialProjectRoot = path.dirname(
+        scriptPath.substring(0, scriptsIndex),
+      );
+
       // Verify this is an LM-Tasker project
-      if (fs.existsSync(path.join(potentialProjectRoot, 'package.json')) &&
-          (fs.existsSync(path.join(potentialProjectRoot, 'scripts')) ||
-           fs.existsSync(path.join(potentialProjectRoot, 'tasks')))) {
+      if (
+        fs.existsSync(path.join(potentialProjectRoot, "package.json")) &&
+        (fs.existsSync(path.join(potentialProjectRoot, "scripts")) ||
+          fs.existsSync(path.join(potentialProjectRoot, "tasks")))
+      ) {
         return potentialProjectRoot;
       }
     }
@@ -275,7 +281,7 @@ function sanitizePrompt(prompt) {
   // Remove dangerous HTML/script tags and their content
   let sanitized = prompt.replace(
     /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-    ""
+    "",
   );
 
   // Remove other potentially dangerous HTML tags
@@ -401,7 +407,7 @@ function findTaskById(tasks, taskId, statusFilter = null) {
     filteredTask.subtasks = task.subtasks.filter(
       (subtask) =>
         subtask.status &&
-        subtask.status.toLowerCase() === statusFilter.toLowerCase()
+        subtask.status.toLowerCase() === statusFilter.toLowerCase(),
     );
 
     taskResult = filteredTask;
@@ -438,7 +444,7 @@ function findCycles(
   dependencyMap,
   visited = new Set(),
   recursionStack = new Set(),
-  path = []
+  path = [],
 ) {
   // Mark the current node as visited and part of recursion stack
   visited.add(subtaskId);

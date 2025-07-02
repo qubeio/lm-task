@@ -113,8 +113,8 @@ AI-driven development.
 
 ### Using Cursor with MCP (Recommended)
 
-If you've already set up LM-Tasker with MCP in Cursor, the integration is automatic. You can simply use natural
-language to interact with LM-Tasker:
+If you've already set up LM-Tasker with MCP in Cursor, the integration is automatic. You can simply use natural language
+to interact with LM-Tasker:
 
 ```
 What tasks are available to work on next?
@@ -259,10 +259,10 @@ We've decided to use MongoDB instead of PostgreSQL. Can you update all future ta
 The agent will execute:
 
 ```bash
-lm-tasker update --from=4 --prompt="Now we are using MongoDB instead of PostgreSQL."
+lm-tasker update-task --id=4 --title="Use MongoDB Database" --description="Switch from PostgreSQL to MongoDB"
 
 # OR, if research is needed to find best practices for MongoDB:
-lm-tasker update --from=4 --prompt="Update to use MongoDB, researching best practices" --research
+lm-tasker update-task --id=4 --title="MongoDB Implementation" --description="Update to use MongoDB with researched best practices"
 ```
 
 This will rewrite or re-scope subsequent tasks in tasks.json while preserving completed work.

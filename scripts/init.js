@@ -59,7 +59,7 @@ function displayBanner() {
       margin: { top: 0, bottom: 1 },
       borderStyle: "round",
       borderColor: "cyan",
-    })
+    }),
   );
 }
 
@@ -127,7 +127,7 @@ function addShellAliases() {
     if (!fs.existsSync(shellConfigFile)) {
       log(
         "warn",
-        `Shell config file ${shellConfigFile} not found. Aliases not added.`
+        `Shell config file ${shellConfigFile} not found. Aliases not added.`,
       );
       return false;
     }
@@ -151,7 +151,7 @@ alias lmtasker='lm-tasker'
     log(
       "info",
       "To use the aliases in your current terminal, run: source " +
-        shellConfigFile
+        shellConfigFile,
     );
 
     return true;
@@ -177,7 +177,7 @@ function copyTemplateFile(templateName, targetPath, replacements = {}) {
         "..",
         ".cursor",
         "rules",
-        "dev_workflow.mdc"
+        "dev_workflow.mdc",
       );
       break;
     case "lmtasker.mdc":
@@ -186,7 +186,7 @@ function copyTemplateFile(templateName, targetPath, replacements = {}) {
         "..",
         ".cursor",
         "rules",
-        "lmtasker.mdc"
+        "lmtasker.mdc",
       );
       break;
     case "cursor_rules.mdc":
@@ -195,7 +195,7 @@ function copyTemplateFile(templateName, targetPath, replacements = {}) {
         "..",
         ".cursor",
         "rules",
-        "cursor_rules.mdc"
+        "cursor_rules.mdc",
       );
       break;
     case "self_improve.mdc":
@@ -204,23 +204,18 @@ function copyTemplateFile(templateName, targetPath, replacements = {}) {
         "..",
         ".cursor",
         "rules",
-        "self_improve.mdc"
+        "self_improve.mdc",
       );
       break;
     case "user_workflow.mdc":
-      sourcePath = path.join(
-        __dirname,
-        "..",
-        "assets",
-        "user_workflow.mdc"
-      );
+      sourcePath = path.join(__dirname, "..", "assets", "user_workflow.mdc");
       break;
     case "user_cursor_rules.mdc":
       sourcePath = path.join(
         __dirname,
         "..",
         "assets",
-        "user_cursor_rules.mdc"
+        "user_cursor_rules.mdc",
       );
       break;
       // case 'README-task-master.md':
@@ -247,7 +242,7 @@ function copyTemplateFile(templateName, targetPath, replacements = {}) {
         "roocode",
         ".roo",
         `rules-${mode}`,
-        templateName
+        templateName,
       );
       break;
     default:
@@ -282,7 +277,7 @@ function copyTemplateFile(templateName, targetPath, replacements = {}) {
       log("info", `${targetPath} already exists, merging content...`);
       const existingContent = fs.readFileSync(targetPath, "utf8");
       const existingLines = new Set(
-        existingContent.split("\n").map((line) => line.trim())
+        existingContent.split("\n").map((line) => line.trim()),
       );
       const newLines = content
         .split("\n")
@@ -306,7 +301,7 @@ function copyTemplateFile(templateName, targetPath, replacements = {}) {
     if (filename === ".windsurfrules") {
       log(
         "info",
-        `${targetPath} already exists, appending content instead of overwriting...`
+        `${targetPath} already exists, appending content instead of overwriting...`,
       );
       const existingContent = fs.readFileSync(targetPath, "utf8");
 
@@ -326,12 +321,12 @@ function copyTemplateFile(templateName, targetPath, replacements = {}) {
       // Create a separate README file specifically for this project
       const taskMasterReadmePath = path.join(
         path.dirname(targetPath),
-        "README-task-master.md"
+        "README-task-master.md",
       );
       fs.writeFileSync(taskMasterReadmePath, content);
       log(
         "success",
-        `Created ${taskMasterReadmePath} (preserved original README-task-master.md)`
+        `Created ${taskMasterReadmePath} (preserved original README-task-master.md)`,
       );
       return;
     }
@@ -374,9 +369,9 @@ async function initializeProject(options = {}) {
     }
 
     // Use provided options or defaults
-      const projectName = options.name || "lm-tasker-project";
-  const projectDescription =
-    options.description || "A project managed with LM-Tasker";
+    const projectName = options.name || "lm-tasker-project";
+    const projectDescription =
+      options.description || "A project managed with LM-Tasker";
     const projectVersion = options.version || "0.1.0";
     const authorName = options.author || "Vibe coder";
     const dryRun = options.dryRun || false;
@@ -408,8 +403,8 @@ async function initializeProject(options = {}) {
       const addAliasesInput = await promptQuestion(
         rl,
         chalk.cyan(
-          'Add shell aliases for lm-tasker? This lets you type "tm" instead of "lm-tasker" (Y/n): '
-        )
+          'Add shell aliases for lm-tasker? This lets you type "tm" instead of "lm-tasker" (Y/n): ',
+        ),
       );
       const addAliasesPrompted = addAliasesInput.trim().toLowerCase() !== "n";
 
@@ -417,14 +412,14 @@ async function initializeProject(options = {}) {
       console.log("\nLM-Tasker Project settings:");
       console.log(
         chalk.blue(
-          'Add shell aliases (so you can use "tm" instead of "lm-tasker"):'
+          'Add shell aliases (so you can use "tm" instead of "lm-tasker"):',
         ),
-        chalk.white(addAliasesPrompted ? "Yes" : "No")
+        chalk.white(addAliasesPrompted ? "Yes" : "No"),
       );
 
       const confirmInput = await promptQuestion(
         rl,
-        chalk.yellow("\nDo you want to continue with these settings? (Y/n): ")
+        chalk.yellow("\nDo you want to continue with these settings? (Y/n): "),
       );
       const shouldContinue = confirmInput.trim().toLowerCase() !== "n";
       rl.close();
@@ -505,17 +500,13 @@ function createProjectStructure(addAliases, dryRun) {
   copyTemplateFile(
     "env.example",
     path.join(targetDir, ".env.example"),
-    replacements
+    replacements,
   );
 
-  	// Copy .lmtaskerconfig with project name
-	copyTemplateFile(
-		".lmtaskerconfig",
-		path.join(targetDir, ".lmtaskerconfig"),
-    {
-      ...replacements,
-    }
-  );
+  // Copy .lmtaskerconfig with project name
+  copyTemplateFile(".lmtaskerconfig", path.join(targetDir, ".lmtaskerconfig"), {
+    ...replacements,
+  });
 
   // Copy .gitignore
   copyTemplateFile("gitignore", path.join(targetDir, ".gitignore"));
@@ -523,13 +514,13 @@ function createProjectStructure(addAliases, dryRun) {
   // Copy user_workflow.mdc (user-facing template, not internal dev_workflow.mdc)
   copyTemplateFile(
     "user_workflow.mdc",
-    path.join(targetDir, ".cursor", "rules", "dev_workflow.mdc")
+    path.join(targetDir, ".cursor", "rules", "dev_workflow.mdc"),
   );
 
   // Copy user-focused cursor rules (simplified for end users)
   copyTemplateFile(
     "user_cursor_rules.mdc",
-    path.join(targetDir, ".cursor", "rules", "cursor_rules.mdc")
+    path.join(targetDir, ".cursor", "rules", "cursor_rules.mdc"),
   );
 
   // Generate Roo rules from Cursor rules
@@ -547,14 +538,14 @@ function createProjectStructure(addAliases, dryRun) {
   for (const mode of rooModes) {
     copyTemplateFile(
       `${mode}-rules`,
-      path.join(targetDir, ".roo", `rules-${mode}`, `${mode}-rules`)
+      path.join(targetDir, ".roo", `rules-${mode}`, `${mode}-rules`),
     );
   }
 
   // Copy example_prd.txt
   copyTemplateFile(
     "example_prd.txt",
-    path.join(targetDir, "scripts", "example_prd.txt")
+    path.join(targetDir, "scripts", "example_prd.txt"),
   );
 
   // // Create main README.md
@@ -594,7 +585,7 @@ function createProjectStructure(addAliases, dryRun) {
         margin: 0.5,
         borderStyle: "round",
         borderColor: "blue",
-      })
+      }),
     );
   }
 
@@ -606,11 +597,11 @@ function createProjectStructure(addAliases, dryRun) {
         margin: { top: 1, bottom: 0.5 },
         borderStyle: "round",
         borderColor: "blue",
-      })
+      }),
     );
     log(
       "info",
-      "Running interactive model setup. Please select your preferred AI models."
+      "Running interactive model setup. Please select your preferred AI models.",
     );
     try {
       execSync("npx lm-tasker models --setup", {
@@ -626,7 +617,7 @@ function createProjectStructure(addAliases, dryRun) {
     log("info", "Skipping interactive model setup in silent (MCP) mode.");
     log(
       "warn",
-      'Please configure AI models using "lm-tasker models --set-..." or the "models" MCP tool.'
+      'Please configure AI models using "lm-tasker models --set-..." or the "models" MCP tool.',
     );
   } else if (dryRun) {
     log("info", "DRY RUN: Skipping interactive model setup.");
@@ -638,7 +629,7 @@ function createProjectStructure(addAliases, dryRun) {
     console.log(
       boxen(
         warmGradient.multiline(
-          figlet.textSync("Success!", { font: "Standard" })
+          figlet.textSync("Success!", { font: "Standard" }),
         ) +
           "\n" +
           chalk.green("Project initialized successfully!"),
@@ -647,8 +638,8 @@ function createProjectStructure(addAliases, dryRun) {
           margin: 1,
           borderStyle: "double",
           borderColor: "green",
-        }
-      )
+        },
+      ),
     );
   }
 
@@ -660,7 +651,7 @@ function createProjectStructure(addAliases, dryRun) {
           "\n\n" +
           chalk.white("1. ") +
           chalk.yellow(
-            "Configure AI models (if needed) and add API keys to `.env`"
+            "Configure AI models (if needed) and add API keys to `.env`",
           ) +
           "\n" +
           chalk.white("   ├─ ") +
@@ -668,17 +659,17 @@ function createProjectStructure(addAliases, dryRun) {
           "\n" +
           chalk.white("   └─ ") +
           chalk.dim(
-            "Keys: Add provider API keys to .env (or inside the MCP config file i.e. .cursor/mcp.json)"
+            "Keys: Add provider API keys to .env (or inside the MCP config file i.e. .cursor/mcp.json)",
           ) +
           "\n" +
           chalk.white("2. ") +
           chalk.yellow(
-            "Discuss your idea with AI and ask for a PRD using scripts/example_prd.txt as a template, and save it as PRD.md in the project root"
+            "Discuss your idea with AI and ask for a PRD using scripts/example_prd.txt as a template, and save it as PRD.md in the project root",
           ) +
           "\n" +
           chalk.white("3. ") +
           chalk.yellow(
-            "Ask Cursor Agent (or run CLI) to parse your PRD and generate initial tasks:"
+            "Ask Cursor Agent (or run CLI) to parse your PRD and generate initial tasks:",
           ) +
           "\n" +
           chalk.white("   └─ ") +
@@ -690,7 +681,7 @@ function createProjectStructure(addAliases, dryRun) {
           "\n" +
           chalk.white("4. ") +
           chalk.yellow(
-            "Ask Cursor to break down complex tasks into subtasks manually"
+            "Ask Cursor to break down complex tasks into subtasks manually",
           ) +
           "\n" +
           chalk.white("5. ") +
@@ -698,23 +689,23 @@ function createProjectStructure(addAliases, dryRun) {
           "\n" +
           chalk.white("6. ") +
           chalk.yellow(
-            "Ask Cursor to set the status of one or many tasks/subtasks at a time. Use the task id from the task lists."
+            "Ask Cursor to set the status of one or many tasks/subtasks at a time. Use the task id from the task lists.",
           ) +
           "\n" +
           chalk.white("7. ") +
           chalk.yellow(
-            "Ask Cursor to update all tasks from a specific task id based on new learnings or pivots in your project."
+            "Ask Cursor to update all tasks from a specific task id based on new learnings or pivots in your project.",
           ) +
           "\n" +
           chalk.white("8. ") +
           chalk.green.bold("Ship it!") +
           "\n\n" +
           chalk.dim(
-            "* Review the README.md file to learn how to use other commands via Cursor Agent."
+            "* Review the README.md file to learn how to use other commands via Cursor Agent.",
           ) +
           "\n" +
           chalk.dim(
-            "* Use the lm-tasker command without arguments to see all available commands."
+            "* Use the lm-tasker command without arguments to see all available commands.",
           ),
         {
           padding: 1,
@@ -723,8 +714,8 @@ function createProjectStructure(addAliases, dryRun) {
           borderColor: "yellow",
           title: "Getting Started",
           titleAlignment: "center",
-        }
-      )
+        },
+      ),
     );
   }
 }
@@ -755,7 +746,7 @@ function setupMCPConfiguration(targetDir) {
   if (fs.existsSync(mcpJsonPath)) {
     log(
       "info",
-      "MCP configuration file already exists, checking for existing lm-tasker..."
+      "MCP configuration file already exists, checking for existing lm-tasker...",
     );
     try {
       // Read existing config
@@ -771,14 +762,14 @@ function setupMCPConfiguration(targetDir) {
         (server) =>
           server.args &&
           server.args.some(
-            (arg) => typeof arg === "string" && arg.includes("lm-tasker")
-          )
+            (arg) => typeof arg === "string" && arg.includes("lm-tasker"),
+          ),
       );
 
       if (hasMCPString) {
         log(
           "info",
-          "Found existing lm-tasker MCP configuration in mcp.json, leaving untouched"
+          "Found existing lm-tasker MCP configuration in mcp.json, leaving untouched",
         );
         return; // Exit early, don't modify the existing configuration
       }
@@ -786,10 +777,7 @@ function setupMCPConfiguration(targetDir) {
       // Add the lm-tasker server if it doesn't exist
       if (!mcpConfig.mcpServers["lm-tasker"]) {
         mcpConfig.mcpServers["lm-tasker"] = newMCPServer["lm-tasker"];
-        log(
-          "info",
-          "Added lm-tasker server to existing MCP configuration"
-        );
+        log("info", "Added lm-tasker server to existing MCP configuration");
       } else {
         log("info", "lm-tasker server already configured in mcp.json");
       }
@@ -814,7 +802,7 @@ function setupMCPConfiguration(targetDir) {
       fs.writeFileSync(mcpJsonPath, JSON.stringify(newMCPConfig, null, 4));
       log(
         "warn",
-        "Created new MCP configuration file (backup of original file was created if it existed)"
+        "Created new MCP configuration file (backup of original file was created if it existed)",
       );
     }
   } else {

@@ -1,9 +1,9 @@
 ---
 name: Feedback
 about: Give us specific feedback on the product/approach/tech
-title: 'feedback: '
+title: "feedback: "
 labels: feedback
-assignees: ''
+assignees: ""
 ---
 
 ### Feedback Summary

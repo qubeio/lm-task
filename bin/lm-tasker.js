@@ -3,7 +3,7 @@
 /**
  * LM-Tasker
  * Author: Andreas Frangopoulos
- * 
+ *
  */
 
 /**
@@ -11,64 +11,64 @@
  * Main entry point for globally installed package
  */
 
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
-import { createRequire } from 'module';
-import { spawn } from 'child_process';
-import { Command } from 'commander';
-import { displayHelp, displayBanner } from '../scripts/modules/ui.js';
-import { registerCommands } from '../scripts/modules/commands.js';
-import { detectCamelCaseFlags } from '../scripts/modules/utils.js';
-import chalk from 'chalk';
+import { fileURLToPath } from "url";
+import { dirname, resolve } from "path";
+import { createRequire } from "module";
+import { spawn } from "child_process";
+import { Command } from "commander";
+import { displayHelp, displayBanner } from "../scripts/modules/ui.js";
+import { registerCommands } from "../scripts/modules/commands.js";
+import { detectCamelCaseFlags } from "../scripts/modules/utils.js";
+import chalk from "chalk";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const require = createRequire(import.meta.url);
 
 // Get package information
-const packageJson = require('../package.json');
+const packageJson = require("../package.json");
 const version = packageJson.version;
 
 // Get paths to script files
-const devScriptPath = resolve(__dirname, '../scripts/dev.js');
-const initScriptPath = resolve(__dirname, '../scripts/init.js');
+const devScriptPath = resolve(__dirname, "../scripts/dev.js");
+const initScriptPath = resolve(__dirname, "../scripts/init.js");
 
 // Helper function to run dev.js with arguments
 function runDevScript(args) {
-	// Debug: Show the transformed arguments when DEBUG=1 is set
-	if (process.env.DEBUG === '1') {
-		console.error('\nDEBUG - CLI Wrapper Analysis:');
-		console.error('- Original command: ' + process.argv.join(' '));
-		console.error('- Transformed args: ' + args.join(' '));
-		console.error(
-			'- dev.js will receive: node ' +
-				devScriptPath +
-				' ' +
-				args.join(' ') +
-				'\n'
-		);
-	}
+  // Debug: Show the transformed arguments when DEBUG=1 is set
+  if (process.env.DEBUG === "1") {
+    console.error("\nDEBUG - CLI Wrapper Analysis:");
+    console.error("- Original command: " + process.argv.join(" "));
+    console.error("- Transformed args: " + args.join(" "));
+    console.error(
+      "- dev.js will receive: node " +
+        devScriptPath +
+        " " +
+        args.join(" ") +
+        "\n",
+    );
+  }
 
-	// For testing: If TEST_MODE is set, just print args and exit
-	if (process.env.TEST_MODE === '1') {
-		console.log('Would execute:');
-		console.log(`node ${devScriptPath} ${args.join(' ')}`);
-		process.exit(0);
-		return;
-	}
+  // For testing: If TEST_MODE is set, just print args and exit
+  if (process.env.TEST_MODE === "1") {
+    console.log("Would execute:");
+    console.log(`node ${devScriptPath} ${args.join(" ")}`);
+    process.exit(0);
+    return;
+  }
 
-	const child = spawn('node', [devScriptPath, ...args], {
-		stdio: 'inherit',
-		cwd: process.cwd()
-	});
+  const child = spawn("node", [devScriptPath, ...args], {
+    stdio: "inherit",
+    cwd: process.cwd(),
+  });
 
-	child.on('close', (code) => {
-		process.exit(code);
-	});
+  child.on("close", (code) => {
+    process.exit(code);
+  });
 }
 
 // Helper function to detect camelCase and convert to kebab-case
-const toKebabCase = (str) => str.replace(/([A-Z])/g, '-$1').toLowerCase();
+const toKebabCase = (str) => str.replace(/([A-Z])/g, "-$1").toLowerCase();
 
 /**
  * Create a wrapper action that passes the command to dev.js
@@ -76,144 +76,144 @@ const toKebabCase = (str) => str.replace(/([A-Z])/g, '-$1').toLowerCase();
  * @returns {Function} Wrapper action function
  */
 function createDevScriptAction(commandName) {
-	return (options, cmd) => {
-		// Check for camelCase flags and error out with helpful message
-		const camelCaseFlags = detectCamelCaseFlags(process.argv);
+  return (options, cmd) => {
+    // Check for camelCase flags and error out with helpful message
+    const camelCaseFlags = detectCamelCaseFlags(process.argv);
 
-		// If camelCase flags were found, show error and exit
-		if (camelCaseFlags.length > 0) {
-			console.error('\nError: Please use kebab-case for CLI flags:');
-			camelCaseFlags.forEach((flag) => {
-				console.error(`  Instead of: --${flag.original}`);
-				console.error(`  Use:        --${flag.kebabCase}`);
-			});
-			console.error(
-				'\nExample: lm-tasker parse-prd --num-tasks=5 instead of --numTasks=5\n'
-			);
-			process.exit(1);
-		}
+    // If camelCase flags were found, show error and exit
+    if (camelCaseFlags.length > 0) {
+      console.error("\nError: Please use kebab-case for CLI flags:");
+      camelCaseFlags.forEach((flag) => {
+        console.error(`  Instead of: --${flag.original}`);
+        console.error(`  Use:        --${flag.kebabCase}`);
+      });
+      console.error(
+        "\nExample: lm-tasker parse-prd --num-tasks=5 instead of --numTasks=5\n",
+      );
+      process.exit(1);
+    }
 
-		// Since we've ensured no camelCase flags, we can now just:
-		// 1. Start with the command name
-		const args = [commandName];
+    // Since we've ensured no camelCase flags, we can now just:
+    // 1. Start with the command name
+    const args = [commandName];
 
-		// 3. Get positional arguments and explicit flags from the command line
-		const commandArgs = [];
-		const positionals = new Set(); // Track positional args we've seen
+    // 3. Get positional arguments and explicit flags from the command line
+    const commandArgs = [];
+    const positionals = new Set(); // Track positional args we've seen
 
-		// Find the command in raw process.argv to extract args
-		const commandIndex = process.argv.indexOf(commandName);
-		if (commandIndex !== -1) {
-			// Process all args after the command name
-			for (let i = commandIndex + 1; i < process.argv.length; i++) {
-				const arg = process.argv[i];
+    // Find the command in raw process.argv to extract args
+    const commandIndex = process.argv.indexOf(commandName);
+    if (commandIndex !== -1) {
+      // Process all args after the command name
+      for (let i = commandIndex + 1; i < process.argv.length; i++) {
+        const arg = process.argv[i];
 
-				if (arg.startsWith('--')) {
-					// It's a flag - pass through as is
-					commandArgs.push(arg);
-					// Skip the next arg if this is a flag with a value (not --flag=value format)
-					if (
-						!arg.includes('=') &&
-						i + 1 < process.argv.length &&
-						!process.argv[i + 1].startsWith('--')
-					) {
-						commandArgs.push(process.argv[++i]);
-					}
-				} else if (!positionals.has(arg)) {
-					// It's a positional argument we haven't seen
-					commandArgs.push(arg);
-					positionals.add(arg);
-				}
-			}
-		}
+        if (arg.startsWith("--")) {
+          // It's a flag - pass through as is
+          commandArgs.push(arg);
+          // Skip the next arg if this is a flag with a value (not --flag=value format)
+          if (
+            !arg.includes("=") &&
+            i + 1 < process.argv.length &&
+            !process.argv[i + 1].startsWith("--")
+          ) {
+            commandArgs.push(process.argv[++i]);
+          }
+        } else if (!positionals.has(arg)) {
+          // It's a positional argument we haven't seen
+          commandArgs.push(arg);
+          positionals.add(arg);
+        }
+      }
+    }
 
-		// Add all command line args we collected
-		args.push(...commandArgs);
+    // Add all command line args we collected
+    args.push(...commandArgs);
 
-		// 4. Add default options from Commander if not specified on command line
-		// Track which options we've seen on the command line
-		const userOptions = new Set();
-		for (const arg of commandArgs) {
-			if (arg.startsWith('--')) {
-				// Extract option name (without -- and value)
-				const name = arg.split('=')[0].slice(2);
-				userOptions.add(name);
+    // 4. Add default options from Commander if not specified on command line
+    // Track which options we've seen on the command line
+    const userOptions = new Set();
+    for (const arg of commandArgs) {
+      if (arg.startsWith("--")) {
+        // Extract option name (without -- and value)
+        const name = arg.split("=")[0].slice(2);
+        userOptions.add(name);
 
-				// Add the kebab-case version too, to prevent duplicates
-				const kebabName = name.replace(/([A-Z])/g, '-$1').toLowerCase();
-				userOptions.add(kebabName);
+        // Add the kebab-case version too, to prevent duplicates
+        const kebabName = name.replace(/([A-Z])/g, "-$1").toLowerCase();
+        userOptions.add(kebabName);
 
-				// Add the camelCase version as well
-				const camelName = kebabName.replace(/-([a-z])/g, (_, letter) =>
-					letter.toUpperCase()
-				);
-				userOptions.add(camelName);
-			}
-		}
+        // Add the camelCase version as well
+        const camelName = kebabName.replace(/-([a-z])/g, (_, letter) =>
+          letter.toUpperCase(),
+        );
+        userOptions.add(camelName);
+      }
+    }
 
-		// Add Commander-provided defaults for options not specified by user
-		Object.entries(options).forEach(([key, value]) => {
-			// Debug output to see what keys we're getting
-			if (process.env.DEBUG === '1') {
-				console.error(`DEBUG - Processing option: ${key} = ${value}`);
-			}
+    // Add Commander-provided defaults for options not specified by user
+    Object.entries(options).forEach(([key, value]) => {
+      // Debug output to see what keys we're getting
+      if (process.env.DEBUG === "1") {
+        console.error(`DEBUG - Processing option: ${key} = ${value}`);
+      }
 
-			// Special case for numTasks > num-tasks (a known problem case)
-			if (key === 'numTasks') {
-				if (process.env.DEBUG === '1') {
-					console.error('DEBUG - Converting numTasks to num-tasks');
-				}
-				if (!userOptions.has('num-tasks') && !userOptions.has('numTasks')) {
-					args.push(`--num-tasks=${value}`);
-				}
-				return;
-			}
+      // Special case for numTasks > num-tasks (a known problem case)
+      if (key === "numTasks") {
+        if (process.env.DEBUG === "1") {
+          console.error("DEBUG - Converting numTasks to num-tasks");
+        }
+        if (!userOptions.has("num-tasks") && !userOptions.has("numTasks")) {
+          args.push(`--num-tasks=${value}`);
+        }
+        return;
+      }
 
-			// Skip built-in Commander properties and options the user provided
-			if (
-				['parent', 'commands', 'options', 'rawArgs'].includes(key) ||
-				userOptions.has(key)
-			) {
-				return;
-			}
+      // Skip built-in Commander properties and options the user provided
+      if (
+        ["parent", "commands", "options", "rawArgs"].includes(key) ||
+        userOptions.has(key)
+      ) {
+        return;
+      }
 
-			// Also check the kebab-case version of this key
-			const kebabKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
-			if (userOptions.has(kebabKey)) {
-				return;
-			}
+      // Also check the kebab-case version of this key
+      const kebabKey = key.replace(/([A-Z])/g, "-$1").toLowerCase();
+      if (userOptions.has(kebabKey)) {
+        return;
+      }
 
-			// Add default values, using kebab-case for the parameter name
-			if (value !== undefined) {
-				if (typeof value === 'boolean') {
-					if (value === true) {
-						args.push(`--${kebabKey}`);
-					} else if (value === false && key === 'generate') {
-						args.push('--skip-generate');
-					}
-				} else {
-					// Always use kebab-case for option names
-					args.push(`--${kebabKey}=${value}`);
-				}
-			}
-		});
+      // Add default values, using kebab-case for the parameter name
+      if (value !== undefined) {
+        if (typeof value === "boolean") {
+          if (value === true) {
+            args.push(`--${kebabKey}`);
+          } else if (value === false && key === "generate") {
+            args.push("--skip-generate");
+          }
+        } else {
+          // Always use kebab-case for option names
+          args.push(`--${kebabKey}=${value}`);
+        }
+      }
+    });
 
-		// Special handling for parent parameter (uses -p)
-		if (options.parent && !args.includes('-p') && !userOptions.has('parent')) {
-			args.push('-p', options.parent);
-		}
+    // Special handling for parent parameter (uses -p)
+    if (options.parent && !args.includes("-p") && !userOptions.has("parent")) {
+      args.push("-p", options.parent);
+    }
 
-		// Debug output for troubleshooting
-		if (process.env.DEBUG === '1') {
-			console.error('DEBUG - Command args:', commandArgs);
-			console.error('DEBUG - User options:', Array.from(userOptions));
-			console.error('DEBUG - Commander options:', options);
-			console.error('DEBUG - Final args:', args);
-		}
+    // Debug output for troubleshooting
+    if (process.env.DEBUG === "1") {
+      console.error("DEBUG - Command args:", commandArgs);
+      console.error("DEBUG - User options:", Array.from(userOptions));
+      console.error("DEBUG - Commander options:", options);
+      console.error("DEBUG - Final args:", args);
+    }
 
-		// Run the script with our processed args
-		runDevScript(args);
-	};
+    // Run the script with our processed args
+    runDevScript(args);
+  };
 }
 
 // // Special case for the 'init' command which uses a different script
@@ -262,31 +262,31 @@ function createDevScriptAction(commandName) {
 const program = new Command();
 
 program
-	.name('lm-tasker')
-	.description('LM-Tasker CLI')
-	.version(version)
-	.addHelpText('afterAll', () => {
-		// Use the same help display function as dev.js for consistency
-		displayHelp();
-		return ''; // Return empty string to prevent commander's default help
-	});
+  .name("lm-tasker")
+  .description("LM-Tasker CLI")
+  .version(version)
+  .addHelpText("afterAll", () => {
+    // Use the same help display function as dev.js for consistency
+    displayHelp();
+    return ""; // Return empty string to prevent commander's default help
+  });
 
 // Add custom help option to directly call our help display
-program.helpOption('-h, --help', 'Display help information');
-program.on('--help', () => {
-	displayHelp();
+program.helpOption("-h, --help", "Display help information");
+program.on("--help", () => {
+  displayHelp();
 });
 
 // // Add special case commands
 // registerInitCommand(program);
 
 program
-	.command('dev')
-	.description('Run the dev.js script')
-	.action(() => {
-		const args = process.argv.slice(process.argv.indexOf('dev') + 1);
-		runDevScript(args);
-	});
+  .command("dev")
+  .description("Run the dev.js script")
+  .action(() => {
+    const args = process.argv.slice(process.argv.indexOf("dev") + 1);
+    runDevScript(args);
+  });
 
 // Use a temporary Command instance to get all command definitions
 const tempProgram = new Command();
@@ -294,78 +294,78 @@ registerCommands(tempProgram);
 
 // For each command in the temp instance, add a modified version to our actual program
 tempProgram.commands.forEach((cmd) => {
-	if (['dev'].includes(cmd.name())) {
-		// Skip commands we've already defined specially
-		return;
-	}
+  if (["dev"].includes(cmd.name())) {
+    // Skip commands we've already defined specially
+    return;
+  }
 
-	// Create a new command with the same name and description
-	const newCmd = program.command(cmd.name()).description(cmd.description());
+  // Create a new command with the same name and description
+  const newCmd = program.command(cmd.name()).description(cmd.description());
 
-	// Copy all options
-	cmd.options.forEach((opt) => {
-		newCmd.option(opt.flags, opt.description, opt.defaultValue);
-	});
+  // Copy all options
+  cmd.options.forEach((opt) => {
+    newCmd.option(opt.flags, opt.description, opt.defaultValue);
+  });
 
-	// Set the action to proxy to dev.js
-	newCmd.action(createDevScriptAction(cmd.name()));
+  // Set the action to proxy to dev.js
+  newCmd.action(createDevScriptAction(cmd.name()));
 });
 
 // Parse the command line arguments
 program.parse(process.argv);
 
 // Add global error handling for unknown commands and options
-process.on('uncaughtException', (err) => {
-	// Check if this is a commander.js unknown option error
-	if (err.code === 'commander.unknownOption') {
-		const option = err.message.match(/'([^']+)'/)?.[1];
-		const commandArg = process.argv.find(
-			(arg) =>
-				!arg.startsWith('-') &&
-				arg !== 'lm-tasker' &&
-				!arg.includes('/') &&
-				arg !== 'node'
-		);
-		const command = commandArg || 'unknown';
+process.on("uncaughtException", (err) => {
+  // Check if this is a commander.js unknown option error
+  if (err.code === "commander.unknownOption") {
+    const option = err.message.match(/'([^']+)'/)?.[1];
+    const commandArg = process.argv.find(
+      (arg) =>
+        !arg.startsWith("-") &&
+        arg !== "lm-tasker" &&
+        !arg.includes("/") &&
+        arg !== "node",
+    );
+    const command = commandArg || "unknown";
 
-		console.error(chalk.red(`Error: Unknown option '${option}'`));
-		console.error(
-			chalk.yellow(
-				`Run 'lm-tasker ${command} --help' to see available options for this command`
-			)
-		);
-		process.exit(1);
-	}
+    console.error(chalk.red(`Error: Unknown option '${option}'`));
+    console.error(
+      chalk.yellow(
+        `Run 'lm-tasker ${command} --help' to see available options for this command`,
+      ),
+    );
+    process.exit(1);
+  }
 
-	// Check if this is a commander.js unknown command error
-	if (err.code === 'commander.unknownCommand') {
-		const command = err.message.match(/'([^']+)'/)?.[1];
+  // Check if this is a commander.js unknown command error
+  if (err.code === "commander.unknownCommand") {
+    const command = err.message.match(/'([^']+)'/)?.[1];
 
-		console.error(chalk.red(`Error: Unknown command '${command}'`));
-		console.error(
-			chalk.yellow(`Run 'lm-tasker --help' to see available commands`)
-		);
-		process.exit(1);
-	}
+    console.error(chalk.red(`Error: Unknown command '${command}'`));
+    console.error(
+      chalk.yellow(`Run 'lm-tasker --help' to see available commands`),
+    );
+    process.exit(1);
+  }
 
-	// Handle other uncaught exceptions
-	console.error(chalk.red(`Error: ${err.message}`));
-	if (process.env.DEBUG === '1') {
-		console.error(err);
-	}
-	process.exit(1);
+  // Handle other uncaught exceptions
+  console.error(chalk.red(`Error: ${err.message}`));
+  if (process.env.DEBUG === "1") {
+    console.error(err);
+  }
+  process.exit(1);
 });
 
 // Show help if no command was provided (just 'lm-tasker' with no args)
 if (process.argv.length <= 2) {
-	displayBanner();
-	displayHelp();
-	process.exit(0);
+  displayBanner();
+  displayHelp();
+  process.exit(0);
 }
 
 // Add exports at the end of the file
-if (typeof module !== 'undefined') {
-	module.exports = {
-		detectCamelCaseFlags
-	};
+if (typeof module !== "undefined") {
+  module.exports = {
+    detectCamelCaseFlags,
+  };
 }

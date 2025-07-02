@@ -45,20 +45,20 @@ function displayBanner() {
   console.log(chalk.dim("by ") + chalk.cyan.underline("Andreas Frangopoulos"));
 
   // Read version directly from package.json
-  	const version = getLmTaskerVersion();
+  const version = getLmTaskerVersion();
 
   console.log(
     boxen(
       chalk.white(
-        `${chalk.bold("Version:")} ${version}   ${chalk.bold("Project:")} ${getProjectName(null)}`
+        `${chalk.bold("Version:")} ${version}   ${chalk.bold("Project:")} ${getProjectName(null)}`,
       ),
       {
         padding: 1,
         margin: { top: 0, bottom: 1 },
         borderStyle: "round",
         borderColor: "cyan",
-      }
-    )
+      },
+    ),
   );
 }
 
@@ -100,7 +100,7 @@ function createProgressBar(percent, length = 30, statusBreakdown = null) {
         100,
         percent +
           (statusBreakdown.deferred || 0) +
-          (statusBreakdown.cancelled || 0)
+          (statusBreakdown.cancelled || 0),
       )
     : percent;
 
@@ -109,7 +109,7 @@ function createProgressBar(percent, length = 30, statusBreakdown = null) {
 
   // Calculate how many characters to fill for "effective completion" (including deferred/cancelled)
   const effectiveCompletedFilled = Math.round(
-    (effectivePercent * length) / 100
+    (effectivePercent * length) / 100,
   );
 
   // The "deferred/cancelled" section (difference between true and effective)
@@ -138,7 +138,7 @@ function createProgressBar(percent, length = 30, statusBreakdown = null) {
 
   // Gray section for deferred/cancelled items
   const deferredCancelledSection = chalk.gray(
-    "█".repeat(deferredCancelledFilled)
+    "█".repeat(deferredCancelledFilled),
   );
 
   // If we have a status breakdown, create a multi-colored remaining section
@@ -158,7 +158,7 @@ function createProgressBar(percent, length = 30, statusBreakdown = null) {
     const totalRemaining = Object.entries(statusBreakdown)
       .filter(
         ([status]) =>
-          !["deferred", "cancelled", "done", "completed"].includes(status)
+          !["deferred", "cancelled", "done", "completed"].includes(status),
       )
       .reduce((sum, [_, val]) => sum + val, 0);
 
@@ -267,7 +267,7 @@ function getStatusWithColor(status, forTable = false) {
 function formatDependenciesWithStatus(
   dependencies,
   allTasks,
-  forConsole = false
+  forConsole = false,
 ) {
   if (
     !dependencies ||
@@ -378,7 +378,7 @@ function displayHelp() {
       borderColor: "blue",
       borderStyle: "round",
       margin: { top: 1, bottom: 1 },
-    })
+    }),
   );
 
   // Command categories
@@ -456,22 +456,22 @@ function displayHelp() {
         },
         {
           name: "update",
-          args: '--from=<id> --prompt="<context>"',
+          args: '--id=<id> (manual updates only)',
           desc: "Update multiple tasks based on new requirements",
         },
         {
           name: "update-task",
-          args: '--id=<id> --prompt="<context>"',
+          args: '--id=<id> (manual updates only)',
           desc: "Update a single specific task with new information",
         },
         {
           name: "update-subtask",
-          args: '--id=<parentId.subtaskId> --prompt="<context>"',
+          args: '--id=<parentId.subtaskId> --details="<context>"',
           desc: "Append additional information to a subtask",
         },
         {
           name: "add-task",
-          args: '--prompt="<text>" [--dependencies=<ids>] [--priority=<priority>]',
+          args: '--title="<title>" --description="<text>" [--dependencies=<ids>] [--priority=<priority>]',
           desc: "Add a new task using AI",
         },
         {
@@ -565,7 +565,7 @@ function displayHelp() {
         margin: { top: 1, bottom: 0 },
         borderColor: category.color,
         borderStyle: "round",
-      })
+      }),
     );
 
     // Calculate dynamic column widths - adjust ratios as needed
@@ -615,7 +615,7 @@ function displayHelp() {
       margin: { top: 1, bottom: 0 },
       borderColor: "cyan",
       borderStyle: "round",
-    })
+    }),
   );
 
   // Get terminal width if not already defined
@@ -626,7 +626,7 @@ function displayHelp() {
   const configDescWidth = Math.max(50, Math.floor(configTerminalWidth * 0.45));
   const configValueWidth = Math.max(
     30,
-    Math.floor(configTerminalWidth * 0.3) - 10
+    Math.floor(configTerminalWidth * 0.3) - 10,
   );
 
   const configTable = new Table({
@@ -654,7 +654,7 @@ function displayHelp() {
 
   configTable.push(
     [
-      		`${chalk.yellow(".lmtaskerconfig")}${chalk.reset("")}`,
+      `${chalk.yellow(".lmtaskerconfig")}${chalk.reset("")}`,
       `${chalk.white("AI model configuration file (project root)")}${chalk.reset("")}`,
       `${chalk.dim("Managed by models cmd")}${chalk.reset("")}`,
     ],
@@ -667,7 +667,7 @@ function displayHelp() {
       `${chalk.yellow("MCP Keys (mcp.json)")}${chalk.reset("")}`,
       `${chalk.white("API keys for Cursor integration")}${chalk.reset("")}`,
       `${chalk.dim("Required in .cursor/")}${chalk.reset("")}`,
-    ]
+    ],
   );
 
   console.log(configTable.toString());
@@ -698,8 +698,8 @@ function displayHelp() {
         borderStyle: "round",
         margin: { top: 1 },
         width: Math.min(configTerminalWidth - 10, 100), // Limit width to terminal width minus padding, max 100
-      }
-    )
+      },
+    ),
   );
 }
 
@@ -742,8 +742,8 @@ async function displayNextTask(tasksPath) {
           borderColor: "yellow",
           borderStyle: "round",
           margin: { top: 1 },
-        }
-      )
+        },
+      ),
     );
     return;
   }
@@ -755,7 +755,7 @@ async function displayNextTask(tasksPath) {
       borderColor: "blue",
       borderStyle: "round",
       margin: { top: 1, bottom: 0 },
-    })
+    }),
   );
 
   // Create a table with task details
@@ -793,7 +793,7 @@ async function displayNextTask(tasksPath) {
       chalk.cyan.bold("Dependencies:"),
       formatDependenciesWithStatus(nextTask.dependencies, data.tasks, true),
     ],
-    [chalk.cyan.bold("Description:"), nextTask.description]
+    [chalk.cyan.bold("Description:"), nextTask.description],
   );
 
   console.log(taskTable.toString());
@@ -808,8 +808,8 @@ async function displayNextTask(tasksPath) {
           borderColor: "cyan",
           borderStyle: "round",
           margin: { top: 1, bottom: 0 },
-        }
-      )
+        },
+      ),
     );
   }
 
@@ -824,7 +824,7 @@ async function displayNextTask(tasksPath) {
         margin: { top: 1, bottom: 0 },
         borderColor: "magenta",
         borderStyle: "round",
-      })
+      }),
     );
 
     // Calculate available width for the subtask table
@@ -879,7 +879,7 @@ async function displayNextTask(tasksPath) {
         const formattedDeps = st.dependencies.map((depId) => {
           if (typeof depId === "number" && depId < 100) {
             const foundSubtask = nextTask.subtasks.find(
-              (st) => st.id === depId
+              (st) => st.id === depId,
             );
             if (foundSubtask) {
               const isDone =
@@ -926,15 +926,15 @@ async function displayNextTask(tasksPath) {
         chalk.yellow("No subtasks found. Consider breaking down this task:") +
           "\n" +
           chalk.white(
-            `Run: ${chalk.cyan(`task-master add-subtask --parent=${nextTask.id} --title="Subtask title"`)}`
+            `Run: ${chalk.cyan(`task-master add-subtask --parent=${nextTask.id} --title="Subtask title"`)}`,
           ),
         {
           padding: { top: 0, bottom: 0, left: 1, right: 1 },
           borderColor: "yellow",
           borderStyle: "round",
           margin: { top: 1, bottom: 0 },
-        }
-      )
+        },
+      ),
     );
   }
 
@@ -962,7 +962,7 @@ async function displayNextTask(tasksPath) {
       borderColor: "green",
       borderStyle: "round",
       margin: { top: 1 },
-    })
+    }),
   );
 }
 
@@ -977,7 +977,7 @@ async function displayTaskById(
   tasksPath,
   taskId,
   statusFilter = null,
-  outputFormat = "text"
+  outputFormat = "text",
 ) {
   if (outputFormat === "text") {
     displayBanner();
@@ -995,7 +995,7 @@ async function displayTaskById(
   const { task, originalSubtaskCount, originalSubtasks } = findTaskById(
     data.tasks,
     taskId,
-    statusFilter
+    statusFilter,
   );
 
   if (!task) {
@@ -1008,7 +1008,7 @@ async function displayTaskById(
         borderColor: "yellow",
         borderStyle: "round",
         margin: { top: 1 },
-      })
+      }),
     );
     return;
   }
@@ -1027,7 +1027,7 @@ async function displayTaskById(
         (subtask) => {
           const { details: subtaskDetails, ...subtaskRest } = subtask;
           return subtaskRest;
-        }
+        },
       );
     }
 
@@ -1043,15 +1043,15 @@ async function displayTaskById(
     console.log(
       boxen(
         chalk.white.bold(
-          `Subtask: #${task.parentTask.id}.${task.id} - ${task.title}`
+          `Subtask: #${task.parentTask.id}.${task.id} - ${task.title}`,
         ),
         {
           padding: { top: 0, bottom: 0, left: 1, right: 1 },
           borderColor: "magenta",
           borderStyle: "round",
           margin: { top: 1, bottom: 0 },
-        }
-      )
+        },
+      ),
     );
 
     const subtaskTable = new Table({
@@ -1080,7 +1080,7 @@ async function displayTaskById(
       [
         chalk.cyan.bold("Description:"),
         task.description || "No description provided.",
-      ]
+      ],
     );
     console.log(subtaskTable.toString());
 
@@ -1093,8 +1093,8 @@ async function displayTaskById(
             borderColor: "cyan",
             borderStyle: "round",
             margin: { top: 1, bottom: 0 },
-          }
-        )
+          },
+        ),
       );
     }
 
@@ -1110,8 +1110,8 @@ async function displayTaskById(
           borderColor: "green",
           borderStyle: "round",
           margin: { top: 1 },
-        }
-      )
+        },
+      ),
     );
     return; // Exit after displaying subtask details
   }
@@ -1123,7 +1123,7 @@ async function displayTaskById(
       borderColor: "blue",
       borderStyle: "round",
       margin: { top: 1, bottom: 0 },
-    })
+    }),
   );
 
   const taskTable = new Table({
@@ -1157,7 +1157,7 @@ async function displayTaskById(
       chalk.cyan.bold("Dependencies:"),
       formatDependenciesWithStatus(task.dependencies, data.tasks, true),
     ],
-    [chalk.cyan.bold("Description:"), task.description]
+    [chalk.cyan.bold("Description:"), task.description],
   );
   console.log(taskTable.toString());
 
@@ -1170,8 +1170,8 @@ async function displayTaskById(
           borderColor: "cyan",
           borderStyle: "round",
           margin: { top: 1, bottom: 0 },
-        }
-      )
+        },
+      ),
     );
   }
   if (task.testStrategy && task.testStrategy.trim().length > 0) {
@@ -1181,7 +1181,7 @@ async function displayTaskById(
         borderColor: "cyan",
         borderStyle: "round",
         margin: { top: 1, bottom: 0 },
-      })
+      }),
     );
   }
 
@@ -1193,7 +1193,7 @@ async function displayTaskById(
         margin: { top: 1, bottom: 0 },
         borderColor: "magenta",
         borderStyle: "round",
-      })
+      }),
     );
 
     const availableWidth = process.stdout.columns - 10 || 100;
@@ -1278,8 +1278,8 @@ async function displayTaskById(
     if (statusFilter && originalSubtaskCount !== null) {
       console.log(
         chalk.cyan(
-          `  Filtered by status: ${chalk.bold(statusFilter)}. Showing ${chalk.bold(task.subtasks.length)} of ${chalk.bold(originalSubtaskCount)} subtasks.`
-        )
+          `  Filtered by status: ${chalk.bold(statusFilter)}. Showing ${chalk.bold(task.subtasks.length)} of ${chalk.bold(originalSubtaskCount)} subtasks.`,
+        ),
       );
       // Add a newline for spacing before the progress bar if the filter line was shown
       console.log();
@@ -1290,15 +1290,15 @@ async function displayTaskById(
     console.log(
       boxen(
         chalk.yellow(
-          `No subtasks found matching status: ${statusFilter} (Task has no subtasks)`
+          `No subtasks found matching status: ${statusFilter} (Task has no subtasks)`,
         ),
         {
           padding: { top: 0, bottom: 0, left: 1, right: 1 },
           margin: { top: 1, bottom: 0 },
           borderColor: "yellow",
           borderStyle: "round",
-        }
-      )
+        },
+      ),
     );
   } else if (
     statusFilter &&
@@ -1309,15 +1309,15 @@ async function displayTaskById(
     console.log(
       boxen(
         chalk.yellow(
-          `No subtasks found matching status: ${statusFilter} (out of ${originalSubtaskCount} total)`
+          `No subtasks found matching status: ${statusFilter} (out of ${originalSubtaskCount} total)`,
         ),
         {
           padding: { top: 0, bottom: 0, left: 1, right: 1 },
           margin: { top: 1, bottom: 0 },
           borderColor: "yellow",
           borderStyle: "round",
-        }
-      )
+        },
+      ),
     );
   } else if (
     !statusFilter &&
@@ -1332,15 +1332,15 @@ async function displayTaskById(
           chalk.yellow("No subtasks found. Consider breaking down this task:") +
             "\n" +
             chalk.white(
-              `Run: ${chalk.cyan(`task-master add-subtask --parent=${task.id} --title="Subtask title"`)}`
+              `Run: ${chalk.cyan(`task-master add-subtask --parent=${task.id} --title="Subtask title"`)}`,
             ),
           {
             padding: { top: 0, bottom: 0, left: 1, right: 1 },
             borderColor: "yellow",
             borderStyle: "round",
             margin: { top: 1, bottom: 0 },
-          }
-        )
+          },
+        ),
       );
     }
   }
@@ -1353,24 +1353,24 @@ async function displayTaskById(
   if (subtasksForProgress && subtasksForProgress.length > 0) {
     const totalSubtasks = subtasksForProgress.length;
     const completedSubtasks = subtasksForProgress.filter(
-      (st) => st.status === "done" || st.status === "completed"
+      (st) => st.status === "done" || st.status === "completed",
     ).length;
 
     // Count other statuses from the original/complete list
     const inProgressSubtasks = subtasksForProgress.filter(
-      (st) => st.status === "in-progress"
+      (st) => st.status === "in-progress",
     ).length;
     const pendingSubtasks = subtasksForProgress.filter(
-      (st) => st.status === "pending"
+      (st) => st.status === "pending",
     ).length;
     const blockedSubtasks = subtasksForProgress.filter(
-      (st) => st.status === "blocked"
+      (st) => st.status === "blocked",
     ).length;
     const deferredSubtasks = subtasksForProgress.filter(
-      (st) => st.status === "deferred"
+      (st) => st.status === "deferred",
     ).length;
     const cancelledSubtasks = subtasksForProgress.filter(
-      (st) => st.status === "cancelled"
+      (st) => st.status === "cancelled",
     ).length;
 
     const statusBreakdown = {
@@ -1391,8 +1391,8 @@ async function displayTaskById(
       20,
       Math.min(
         60,
-        availableWidth - boxPadding - boxBorders - percentTextLength - 35
-      )
+        availableWidth - boxPadding - boxBorders - percentTextLength - 35,
+      ),
     );
 
     const statusCounts =
@@ -1413,8 +1413,8 @@ async function displayTaskById(
           margin: { top: 1, bottom: 0 },
           width: Math.min(availableWidth - 10, 100),
           textAlignment: "left",
-        }
-      )
+        },
+      ),
     );
   }
 
@@ -1434,8 +1434,8 @@ async function displayTaskById(
         borderColor: "green",
         borderStyle: "round",
         margin: { top: 1 },
-      }
-    )
+      },
+    ),
   );
 }
 
@@ -1448,18 +1448,18 @@ async function confirmTaskOverwrite(tasksPath) {
   console.log(
     boxen(
       chalk.yellow(
-        "It looks like you've already generated tasks for this project.\n"
+        "It looks like you've already generated tasks for this project.\n",
       ) +
         chalk.yellow(
-          "Executing this command will overwrite any existing tasks."
+          "Executing this command will overwrite any existing tasks.",
         ),
       {
         padding: 1,
         borderColor: "yellow",
         borderStyle: "round",
         margin: { top: 1 },
-      }
-    )
+      },
+    ),
   );
 
   // Use dynamic import to get the readline module
@@ -1472,7 +1472,7 @@ async function confirmTaskOverwrite(tasksPath) {
   const answer = await new Promise((resolve) => {
     rl.question(
       chalk.cyan("Are you sure you wish to continue? (y/N): "),
-      resolve
+      resolve,
     );
   });
   rl.close();
@@ -1512,8 +1512,8 @@ function displayApiKeyStatus(statusReport) {
   console.log(table.toString());
   console.log(
     chalk.gray(
-      "  Note: Some providers (e.g., Azure, Ollama) may require additional endpoint configuration in .lmtaskerconfig."
-    )
+      "  Note: Some providers (e.g., Azure, Ollama) may require additional endpoint configuration in .lmtaskerconfig.",
+    ),
   );
 }
 
@@ -1593,7 +1593,7 @@ function displayModelConfiguration(configData, allAvailableModels = []) {
     active.research.modelId,
     formatSweScoreWithTertileStars(
       active.research.sweScore,
-      allAvailableModels
+      allAvailableModels,
     ),
     formatCost(active.research.cost),
     // getCombinedStatus(active.research.keyStatus) // Removed
@@ -1605,7 +1605,7 @@ function displayModelConfiguration(configData, allAvailableModels = []) {
       active.fallback.modelId,
       formatSweScoreWithTertileStars(
         active.fallback.sweScore,
-        allAvailableModels
+        allAvailableModels,
       ),
       formatCost(active.fallback.cost),
       // getCombinedStatus(active.fallback.keyStatus) // Removed
@@ -1630,7 +1630,7 @@ function displayModelConfiguration(configData, allAvailableModels = []) {
 function displayAvailableModels(availableModels) {
   if (!availableModels || availableModels.length === 0) {
     console.log(
-      chalk.gray("\n(No other models available or all are configured)")
+      chalk.gray("\n(No other models available or all are configured)"),
     );
     return;
   }
@@ -1638,7 +1638,7 @@ function displayAvailableModels(availableModels) {
   console.log(chalk.cyan.bold("\nOther Available Models:"));
   const availableTable = new Table({
     head: ["Provider", "Model ID", "SWE Score", "Cost ($/1M tkns)"].map((h) =>
-      chalk.cyan.bold(h)
+      chalk.cyan.bold(h),
     ),
     colWidths: [15, 40, 18, 25],
     style: { head: ["cyan", "bold"] },
@@ -1660,31 +1660,31 @@ function displayAvailableModels(availableModels) {
       chalk.white.bold("Next Steps:") +
         "\n" +
         chalk.cyan(
-          `1. Set main model: ${chalk.yellow("task-master models --set-main <model_id>")}`
+          `1. Set main model: ${chalk.yellow("task-master models --set-main <model_id>")}`,
         ) +
         "\n" +
         chalk.cyan(
-          `2. Set research model: ${chalk.yellow("task-master models --set-research <model_id>")}`
+          `2. Set research model: ${chalk.yellow("task-master models --set-research <model_id>")}`,
         ) +
         "\n" +
         chalk.cyan(
-          `3. Set fallback model: ${chalk.yellow("task-master models --set-fallback <model_id>")}`
+          `3. Set fallback model: ${chalk.yellow("task-master models --set-fallback <model_id>")}`,
         ) +
         "\n" +
         chalk.cyan(
-          `4. Run interactive setup: ${chalk.yellow("task-master models --setup")}`
+          `4. Run interactive setup: ${chalk.yellow("task-master models --setup")}`,
         ) +
         "\n" +
         chalk.cyan(
-          `5. Use custom ollama/openrouter models: ${chalk.yellow("task-master models --openrouter|ollama --set-main|research|fallback <model_id>")}`
+          `5. Use custom ollama/openrouter models: ${chalk.yellow("task-master models --openrouter|ollama --set-main|research|fallback <model_id>")}`,
         ),
       {
         padding: 1,
         borderColor: "yellow",
         borderStyle: "round",
         margin: { top: 1 },
-      }
-    )
+      },
+    ),
   );
 }
 
@@ -1717,7 +1717,7 @@ function displayAiUsageSummary(telemetryData, outputType = "cli") {
   summary += chalk.gray(`  Provider: ${providerName}\n`);
   summary += chalk.gray(`  Model: ${modelUsed}\n`);
   summary += chalk.gray(
-    `  Tokens: ${totalTokens} (Input: ${inputTokens}, Output: ${outputTokens})\n`
+    `  Tokens: ${totalTokens} (Input: ${inputTokens}, Output: ${outputTokens})\n`,
   );
   summary += chalk.gray(`  Est. Cost: $${totalCost.toFixed(6)}`);
 
@@ -1729,7 +1729,7 @@ function displayAiUsageSummary(telemetryData, outputType = "cli") {
       borderStyle: "round",
       title: "💡 Telemetry",
       titleAlignment: "center",
-    })
+    }),
   );
 }
 

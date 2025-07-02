@@ -5,7 +5,7 @@
 # Priority: medium
 # Description: Add the repository title to the window titles in both task details and task list views in the TUI
 # Details:
-Implement functionality to display the repository title in the window title bars of both the task details screen and the task list screen in the TUI. This will help users identify which repository they are working with, especially when multiple TaskMaster instances are open.
+Implement functionality to display the repository title in the window title bars of both the task details screen and the task list screen in the TUI. This will help users identify which repository they are working with, especially when multiple LM-Tasker instances are open.
 
 # Test Strategy:
 

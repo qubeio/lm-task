@@ -1,5 +1,5 @@
 ---
-description: Guidelines for managing Task Master AI providers and models.
+description: Guidelines for managing LM-Tasker AI providers and models.
 globs: 
 alwaysApply: false
 ---

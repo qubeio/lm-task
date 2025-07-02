@@ -59,7 +59,7 @@
           "id": 6,
           "title": "Phase 2: Add CLI Commands for Insert Operations",
           "description": "Add CLI commands for insert-task and insert-between operations to the commands.js file.",
-          "details": "Add to scripts/modules/commands.js: 1) 'insert-task' command with position argument and same options as add-task (--prompt, --title, --description, --details, --dependencies, --priority), 2) 'insert-between' command with after-position argument and same options. Include proper argument validation, error handling, and user feedback. Follow the same patterns as existing commands.",
+          "details": "Add to scripts/modules/commands.js: 1) 'insert-task' command with position argument and same options as add-task (--title, --description, --details, --dependencies, --priority), 2) 'insert-between' command with after-position argument and same options. Include proper argument validation, error handling, and user feedback. Follow the same patterns as existing commands.",
           "status": "pending",
           "dependencies": [],
           "parentTaskId": 105
@@ -155,7 +155,7 @@
       "id": 107,
       "title": "Add Repository Title to TUI Window Titles",
       "description": "Add the repository title to the window titles in both task details and task list views in the TUI",
-      "details": "Implement functionality to display the repository title in the window title bars of both the task details screen and the task list screen in the TUI. This will help users identify which repository they are working with, especially when multiple TaskMaster instances are open.",
+      "details": "Implement functionality to display the repository title in the window title bars of both the task details screen and the task list screen in the TUI. This will help users identify which repository they are working with, especially when multiple LM-Tasker instances are open.",
       "testStrategy": "",
       "status": "done",
       "dependencies": [],
@@ -168,7 +168,7 @@
       "description": "Ensure package.json has all required fields for publishing (name, version, etc.) and configure .npmignore or the 'files' property.",
       "details": "",
       "testStrategy": "",
-      "status": "pending",
+      "status": "done",
       "dependencies": [],
       "priority": "high",
       "subtasks": []
@@ -179,7 +179,7 @@
       "description": "Manual steps for the user to set up their NPM account and registry configuration.",
       "details": "",
       "testStrategy": "",
-      "status": "pending",
+      "status": "done",
       "dependencies": [],
       "priority": "high",
       "subtasks": [
@@ -227,7 +227,7 @@
       "description": "Final checks on the codebase and version bumping before publication.",
       "details": "",
       "testStrategy": "",
-      "status": "pending",
+      "status": "done",
       "dependencies": [],
       "priority": "medium",
       "subtasks": []
@@ -238,7 +238,7 @@
       "description": "Simulate the publishing process to verify package contents without deploying.",
       "details": "",
       "testStrategy": "",
-      "status": "pending",
+      "status": "done",
       "dependencies": [],
       "priority": "medium",
       "subtasks": []
@@ -268,7 +268,7 @@
     {
       "id": 114,
       "title": "Implement Vim-Style Left and Right Navigation in TUI",
-      "description": "Add vim-style h/l key bindings for left and right navigation in the TaskMaster TUI interface, providing an intuitive navigation experience for vim users.",
+      "description": "Add vim-style h/l key bindings for left and right navigation in the LM-Tasker TUI interface, providing an intuitive navigation experience for vim users.",
       "details": "Implement vim-style navigation keys in the TUI:\n- 'h' key for left navigation (go back/previous screen)\n- 'l' key for right navigation (go forward/enter details)\n- Update key handlers in the TUI components to support these bindings\n- Ensure the new bindings work alongside existing navigation methods\n- Test in both task list and task detail screens\n- Update any help text or documentation to reflect the new key bindings\n\nTechnical implementation:\n- Update keyHandlers.js to include h/l key mappings\n- Modify TaskListScreen.js and TaskDetailScreen.js to handle the new keys\n- Ensure proper integration with existing navigation logic\n- Add appropriate visual feedback for the navigation actions",
       "testStrategy": "Manual testing of vim-style navigation:\n1. Launch TUI and verify 'h' key navigates back/left\n2. Verify 'l' key navigates forward/right or enters details\n3. Test in both task list and detail screens\n4. Confirm existing navigation methods still work\n5. Verify help text shows new key bindings if applicable",
       "status": "done",

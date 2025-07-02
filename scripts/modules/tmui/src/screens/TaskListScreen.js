@@ -10,7 +10,7 @@ import { StatusBar } from "../components/StatusBar.js";
 
 export class TaskListScreen {
   constructor(app, options = {}) {
-    logger.log('TaskListScreen constructor called.');
+    logger.log("TaskListScreen constructor called.");
     this.app = app;
     this.options = options;
     this.repositoryName = options.repositoryName || "Tasks"; // Default if not provided
@@ -57,7 +57,7 @@ export class TaskListScreen {
    * Show the screen
    */
   show() {
-    logger.log('TaskListScreen.show() called.');
+    logger.log("TaskListScreen.show() called.");
     this.container.show();
     this.updateDisplay();
     this.statusBar.setSecondLine("Placeholder: Task List View - Second Line"); // Add this line
@@ -104,7 +104,7 @@ export class TaskListScreen {
    * Update the entire display
    */
   updateDisplay() {
-    logger.log('TaskListScreen.updateDisplay() called.');
+    logger.log("TaskListScreen.updateDisplay() called.");
     const tasks = this.app.filteredTasks;
     this.updateTasks(tasks);
     // Note: setSelectedIndex is now called within updateTasks to ensure proper timing
@@ -113,7 +113,7 @@ export class TaskListScreen {
     const totalTasks = this.app.tasks.length;
     const filteredCount = tasks.length;
 
-    let headerText = ` TaskMaster TUI `;
+    let headerText = ` LM-Tasker TUI `;
     if (this.app.searchQuery) {
       headerText += `- Search: "${this.app.searchQuery}" (${filteredCount}/${totalTasks}) `;
     } else {

@@ -79,7 +79,7 @@ export async function migratePRDDirect(args, log, context = {}) {
       if (analysis.oldFormat.length === 1) {
         sourcePath = analysis.oldFormat[0];
         logWrapper.info(
-          `Found old format file: ${path.relative(projectRoot, sourcePath)}`
+          `Found old format file: ${path.relative(projectRoot, sourcePath)}`,
         );
       } else {
         return {

@@ -1,11 +1,11 @@
 /**
  * TUI Application
- * Main application class for the TaskMaster Terminal User Interface
+ * Main application class for the LM-Tasker Terminal User Interface
  */
 
 import fs from "fs";
 import path, { basename } from "path";
-import { execSync } from 'child_process';
+import { execSync } from "child_process";
 import blessed from "blessed";
 import { CliAdapter } from "./utils/cliAdapter.js";
 import { JsonLoader } from "./utils/jsonLoader.js";
@@ -66,7 +66,7 @@ export class TUIApp {
    * Initialize and start the TUI application
    */
   async start() {
-    logger.log('TUIApp.start() called.');
+    logger.log("TUIApp.start() called.");
     try {
       // console.log("DEBUG: Starting TUI initialization...");
       await this.initialize();
@@ -102,7 +102,7 @@ export class TUIApp {
       }
     } catch (error) {
       // console.error("DEBUG: Error in TUI start:", error);
-      logger.error('Error during TUIApp.start()', error);
+      logger.error("Error during TUIApp.start()", error);
       this.cleanup();
       throw error;
     }
@@ -112,7 +112,7 @@ export class TUIApp {
    * Initialize the application components
    */
   async initialize() {
-    logger.log('TUIApp.initialize() called.');
+    logger.log("TUIApp.initialize() called.");
     // Create the main screen
     this.screen = blessed.screen({
       smartCSR: true,
@@ -134,7 +134,7 @@ export class TUIApp {
       projectRoot: this.options.projectRoot,
       tasksFile: this.options.tasksFile,
     });
-    
+
     // Initialize JSON loader for direct file access
     this.jsonLoader = new JsonLoader({
       projectRoot: this.options.projectRoot,
@@ -148,19 +148,27 @@ export class TUIApp {
     this.keyHandlers = new KeyHandlers(this);
 
     // Get Git repository name
-    let repositoryName = "TaskMaster"; // Default value
+    let repositoryName = "LM-Tasker"; // Default value
     try {
-      const repoPath = execSync('git rev-parse --show-toplevel', { encoding: 'utf8', stdio: 'pipe' }).trim();
+      const repoPath = execSync("git rev-parse --show-toplevel", {
+        encoding: "utf8",
+        stdio: "pipe",
+      }).trim();
       if (repoPath) {
         repositoryName = basename(repoPath);
       }
     } catch (error) {
-      logger.warn('Could not determine Git repository name. Using default "TaskMaster". Error: ' + error.message);
+      logger.warn(
+        'Could not determine Git repository name. Using default "LM-Tasker". Error: ' +
+          error.message,
+      );
     }
 
-
     // Initialize screens
-    this.taskListScreen = new TaskListScreen(this, { height: "100%-3", repositoryName });
+    this.taskListScreen = new TaskListScreen(this, {
+      height: "100%-3",
+      repositoryName,
+    });
     this.taskDetailScreen = new TaskDetailScreen(this, { height: "100%-2" });
     this.searchScreen = new SearchScreen(this);
     this.statusModal = new StatusModal(this);
@@ -170,20 +178,20 @@ export class TUIApp {
    * Load tasks directly from tasks.json file
    */
   async loadTasks() {
-    logger.log('TUIApp.loadTasks() called.');
+    logger.log("TUIApp.loadTasks() called.");
     try {
       const result = await this.jsonLoader.getTasks({ withSubtasks: true });
       this.tasks = result.tasks || [];
       this.filteredTasks = [...this.tasks];
       this.currentTaskIndex = Math.min(
         this.currentTaskIndex,
-        this.tasks.length - 1
+        this.tasks.length - 1,
       );
 
       // Update last modification time for auto-refresh
       this.updateLastModTime();
     } catch (error) {
-      logger.error('Error in TUIApp.loadTasks()', error);
+      logger.error("Error in TUIApp.loadTasks()", error);
       this.showError(`Failed to load tasks: ${error.message}`);
       this.tasks = [];
       this.filteredTasks = [];
@@ -267,7 +275,7 @@ export class TUIApp {
       // Try to restore selection to the same task
       if (currentTaskId) {
         const newIndex = this.filteredTasks.findIndex(
-          (task) => task.id === currentTaskId
+          (task) => task.id === currentTaskId,
         );
         if (newIndex >= 0) {
           this.currentTaskIndex = newIndex;
@@ -393,7 +401,7 @@ export class TUIApp {
           task.title.toLowerCase().includes(this.searchQuery) ||
           task.description.toLowerCase().includes(this.searchQuery) ||
           (task.details &&
-            task.details.toLowerCase().includes(this.searchQuery))
+            task.details.toLowerCase().includes(this.searchQuery)),
       );
     }
 
@@ -428,7 +436,7 @@ export class TUIApp {
     // Ensure currentTaskIndex is within bounds
     const validIndex = Math.max(
       0,
-      Math.min(this.currentTaskIndex, this.filteredTasks.length - 1)
+      Math.min(this.currentTaskIndex, this.filteredTasks.length - 1),
     );
 
     // Update currentTaskIndex if it was out of bounds
@@ -456,7 +464,7 @@ export class TUIApp {
     if (this.filteredTasks.length === 0) return;
     this.currentTaskIndex = Math.min(
       this.filteredTasks.length - 1,
-      this.currentTaskIndex + 1
+      this.currentTaskIndex + 1,
     );
     this.taskListScreen.setSelectedIndex(this.currentTaskIndex);
     this.render();
@@ -514,7 +522,7 @@ export class TUIApp {
    * Refresh task list (manual refresh)
    */
   async refresh() {
-    logger.log('TUIApp.refresh() called.');
+    logger.log("TUIApp.refresh() called.");
     // Temporarily disable auto-refresh during manual refresh
     const wasAutoRefreshEnabled = this.autoRefreshTimer !== null;
     if (wasAutoRefreshEnabled) {
@@ -532,7 +540,7 @@ export class TUIApp {
       // Try to restore selection to the same task
       if (currentTaskId) {
         const newIndex = this.filteredTasks.findIndex(
-          (task) => task.id === currentTaskId
+          (task) => task.id === currentTaskId,
         );
         if (newIndex >= 0) {
           this.currentTaskIndex = newIndex;
@@ -574,7 +582,7 @@ export class TUIApp {
       // Show loading message
       this.taskListScreen.statusBar.setMessage(
         `Updating task ${taskId} status to ${newStatus}...`,
-        1000
+        1000,
       );
 
       // Update via JSON loader
@@ -586,7 +594,7 @@ export class TUIApp {
       // Show success message
       this.taskListScreen.statusBar.setMessage(
         `Task ${taskId} status updated to ${newStatus}!`,
-        2000
+        2000,
       );
     } catch (error) {
       this.showError(`Failed to update task status: ${error.message}`);
@@ -720,7 +728,7 @@ export class TUIApp {
    * Cleanup resources
    */
   cleanup() {
-    logger.log('TUIApp.cleanup() called.');
+    logger.log("TUIApp.cleanup() called.");
     // Stop auto-refresh timer
     this.stopAutoRefresh();
 
@@ -736,15 +744,15 @@ export class TUIApp {
         this.screen.program.reset();
         this.screen.program.showCursor();
         this.screen.destroy();
-        logger.log('Screen destroyed successfully.');
+        logger.log("Screen destroyed successfully.");
       } catch (error) {
-        logger.error('Error destroying screen during cleanup', error);
+        logger.error("Error destroying screen during cleanup", error);
         // Silently handle cleanup errors to prevent exit noise
         // The terminal will restore itself anyway
       }
       this.screen = null; // Ensure screen is marked as null after attempt
     }
-    logger.log('TUIApp.cleanup() finished.');
+    logger.log("TUIApp.cleanup() finished.");
   }
 
   /**

@@ -8,14 +8,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Skip integration tests if no API keys are available
-const hasApiKeys = process.env.ANTHROPIC_API_KEY || 
-                  process.env.OPENAI_API_KEY || 
-                  process.env.AZURE_OPENAI_API_KEY ||
-                  process.env.GOOGLE_API_KEY ||
-                  process.env.MISTRAL_API_KEY ||
-                  process.env.PERPLEXITY_API_KEY ||
-                  process.env.OPENROUTER_API_KEY ||
-                  process.env.XAI_API_KEY;
+const hasApiKeys =
+  process.env.ANTHROPIC_API_KEY ||
+  process.env.OPENAI_API_KEY ||
+  process.env.AZURE_OPENAI_API_KEY ||
+  process.env.GOOGLE_API_KEY ||
+  process.env.MISTRAL_API_KEY ||
+  process.env.PERPLEXITY_API_KEY ||
+  process.env.OPENROUTER_API_KEY ||
+  process.env.XAI_API_KEY;
 
 const describeOrSkip = hasApiKeys ? describe : describe.skip;
 
@@ -50,7 +51,7 @@ describeOrSkip("CLI parse-prd Markdown Integration Tests", () => {
           cwd: path.join(__dirname, "..", "..", ".."),
           encoding: "utf8",
           timeout: 30000,
-        }
+        },
       );
 
       // Verify output
@@ -72,7 +73,7 @@ describeOrSkip("CLI parse-prd Markdown Integration Tests", () => {
           cwd: path.join(__dirname, "..", "..", ".."),
           encoding: "utf8",
           timeout: 30000,
-        }
+        },
       );
 
       expect(result).toContain("Successfully parsed PRD");
@@ -95,7 +96,7 @@ describeOrSkip("CLI parse-prd Markdown Integration Tests", () => {
           cwd: path.join(__dirname, "..", "..", ".."),
           encoding: "utf8",
           timeout: 30000,
-        }
+        },
       );
 
       expect(result).toContain("Successfully parsed PRD");
@@ -118,7 +119,7 @@ describeOrSkip("CLI parse-prd Markdown Integration Tests", () => {
             cwd: path.join(__dirname, "..", "..", ".."),
             encoding: "utf8",
             timeout: 10000,
-          }
+          },
         );
       }).toThrow();
     });
@@ -135,7 +136,7 @@ describeOrSkip("CLI parse-prd Markdown Integration Tests", () => {
             cwd: path.join(__dirname, "..", "..", ".."),
             encoding: "utf8",
             timeout: 30000,
-          }
+          },
         );
 
         // If it succeeds, should still create some tasks
@@ -165,9 +166,9 @@ describeOrSkip("CLI parse-prd Markdown Integration Tests", () => {
             cwd: path.join(__dirname, "..", "..", ".."),
             encoding: "utf8",
             timeout: 10000,
-          }
+          },
         );
-        
+
         // If it completes, the original file should be unchanged
         const tasks = JSON.parse(fs.readFileSync(tasksPath, "utf8"));
         expect(tasks.tasks).toHaveLength(0); // Should still be empty
@@ -189,7 +190,7 @@ describeOrSkip("CLI parse-prd Markdown Integration Tests", () => {
           cwd: path.join(__dirname, "..", "..", ".."),
           encoding: "utf8",
           timeout: 30000,
-        }
+        },
       );
 
       const tasks = JSON.parse(fs.readFileSync(tasksPath, "utf8"));
@@ -228,7 +229,7 @@ describeOrSkip("CLI parse-prd Markdown Integration Tests", () => {
           cwd: path.join(__dirname, "..", "..", ".."),
           encoding: "utf8",
           timeout: 30000,
-        }
+        },
       );
 
       // Check that individual task files were created
@@ -261,7 +262,7 @@ describeOrSkip("CLI parse-prd Markdown Integration Tests", () => {
           cwd: path.join(__dirname, "..", "..", ".."),
           encoding: "utf8",
           timeout: 60000, // 1 minute max
-        }
+        },
       );
 
       const endTime = Date.now();
@@ -285,7 +286,7 @@ describeOrSkip("CLI parse-prd Markdown Integration Tests", () => {
                 cwd: path.join(__dirname, "..", "..", ".."),
                 encoding: "utf8",
                 timeout: 30000,
-              }
+              },
             );
             resolve(tasksPath);
           } catch (error) {

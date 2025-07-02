@@ -1,9 +1,9 @@
 ---
 name: Enhancements & feature requests
 about: Suggest an idea for this project
-title: 'feat: '
+title: "feat: "
 labels: enhancement
-assignees: ''
+assignees: ""
 ---
 
 > "Direct quote or clear summary of user request or need or user story."

@@ -26,19 +26,19 @@ export function registerParsePRDTool(server) {
         .string()
         .optional()
         .describe(
-          "Absolute path to the PRD document file (.txt, .md, etc.). If not provided, will search for PRD files in project root and scripts/ directory."
+          "Absolute path to the PRD document file (.txt, .md, etc.). If not provided, will search for PRD files in project root and scripts/ directory.",
         ),
       numTasks: z
         .string()
         .optional()
         .describe(
-          "Approximate number of top-level tasks to generate (default: 10). As the agent, if you have enough information, ensure to enter a number of tasks that would logically scale with project complexity. Avoid entering numbers above 50 due to context window limitations."
+          "Approximate number of top-level tasks to generate (default: 10). As the agent, if you have enough information, ensure to enter a number of tasks that would logically scale with project complexity. Avoid entering numbers above 50 due to context window limitations.",
         ),
       output: z
         .string()
         .optional()
         .describe(
-          "Output path for tasks.json file (default: tasks/tasks.json)"
+          "Output path for tasks.json file (default: tasks/tasks.json)",
         ),
       force: z
         .boolean()
@@ -59,7 +59,7 @@ export function registerParsePRDTool(server) {
       const toolName = "parse_prd";
       try {
         log.info(
-          `Executing ${toolName} tool with args: ${JSON.stringify(args)}`
+          `Executing ${toolName} tool with args: ${JSON.stringify(args)}`,
         );
 
         // Call Direct Function - Pass relevant args including projectRoot
@@ -73,19 +73,19 @@ export function registerParsePRDTool(server) {
             projectRoot: args.projectRoot,
           },
           log,
-          { session }
+          { session },
         );
 
         log.info(
-          `${toolName}: Direct function result: success=${result.success}`
+          `${toolName}: Direct function result: success=${result.success}`,
         );
         return handleApiResult(result, log, "Error parsing PRD");
       } catch (error) {
         log.error(
-          `Critical error in ${toolName} tool execute: ${error.message}`
+          `Critical error in ${toolName} tool execute: ${error.message}`,
         );
         return createErrorResponse(
-          `Internal tool error (${toolName}): ${error.message}`
+          `Internal tool error (${toolName}): ${error.message}`,
         );
       }
     }),

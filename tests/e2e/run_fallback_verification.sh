@@ -202,14 +202,14 @@ jq -c 'to_entries[] | .key as $provider | .value[] | select(.allowed_roles[]? ==
     fi
     log_info "Set main model ok."
 
-    log_info "Running update-subtask --id=1.1 --prompt='Test generateObjectService' (timeout 120s)"
+    log_info "Running update-subtask --id=1.1 --details='Test generateObjectService' (timeout 120s)"
     update_subtask_output_file="update_subtask_raw_output_${provider}_${model_id//\//_}.log"
     
     # Capture output to a variable AND a file
     update_subtask_command_output=""
-    timeout 120s lm-tasker update-subtask --id=1.1 --prompt="Simple test prompt to verify generateObjectService call." 2>&1 | tee "$update_subtask_output_file" &
+    timeout 120s lm-tasker update-subtask --id=1.1 --details="Simple test details to verify generateObjectService call." 2>&1 | tee "$update_subtask_output_file" &
     # Store the command output in a variable simultaneously
-    # update_subtask_command_output=$(timeout 120s lm-tasker update-subtask --id=1.1 --prompt="Simple test prompt to verify generateObjectService call." 2>&1)
+    # update_subtask_command_output=$(timeout 120s lm-tasker update-subtask --id=1.1 --details="Simple test details to verify generateObjectService call." 2>&1)
     # The above direct capture won't work well with tee and backgrounding. Instead, read the file after command completion.
     child_pid=$!
     wait "$child_pid"
@@ -251,7 +251,7 @@ echo "--- Fallback Model Verification Report (via $0) ---"
 echo "Executed inside run directory: $(pwd)"
 echo "Progress log: $(pwd)/$PROGRESS_LOG_FILE"
 echo ""
-echo "Test Command: lm-tasker update-subtask --id=1.1 --prompt=\"...\" (tests generateObjectService)"
+echo "Test Command: lm-tasker update-subtask --id=1.1 --details=\"...\" (tests generateObjectService)"
 echo "Models were tested by setting them as the 'main' model temporarily."
 echo "Results based on exit code and output verification:"
 echo ""

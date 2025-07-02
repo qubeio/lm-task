@@ -57,24 +57,24 @@ lm-tasker show 1.2
 
 ```bash
 # Update tasks from a specific ID and provide context
-lm-tasker update --from=<id> --prompt="<prompt>"
+lm-tasker update-task --id=<id> (manual updates only)
 ```
 
 ## Update a Specific Task
 
 ```bash
 # Update a single task by ID with new information
-lm-tasker update-task --id=<id> --prompt="<prompt>"
+lm-tasker update-task --id=<id> (manual updates only)
 ```
 
 ## Update a Subtask
 
 ```bash
 # Append additional information to a specific subtask
-lm-tasker update-subtask --id=<parentId.subtaskId> --prompt="<prompt>"
+lm-tasker update-subtask --id=<parentId.subtaskId> --details="<details>"
 
 # Example: Add details about API rate limiting to subtask 2 of task 5
-lm-tasker update-subtask --id=5.2 --prompt="Add rate limiting of 100 requests per minute"
+lm-tasker update-subtask --id=5.2 --details="Add rate limiting of 100 requests per minute"
 ```
 
 Unlike the `update-task` command which replaces task information, the `update-subtask` command _appends_ new information
@@ -177,10 +177,10 @@ lm-tasker add-task --title="Task title" --description="Task description" --prior
 lm-tasker add-task --title="Task title" --description="Task description" --test-strategy="Testing approach"
 
 # Legacy AI-assisted task creation (limited functionality)
-lm-tasker add-task --prompt="Description of the new task"
+lm-tasker add-task --title="Task Title" --description="Description of the new task"
 ```
 
-**Note:** Manual task creation is the recommended approach. The AI-assisted option (`--prompt`) provides limited
+**Note:** Manual task creation is the recommended approach. AI-assisted options have been removed in favor of
 functionality and may be deprecated in future versions.
 
 ## Add a New Subtask

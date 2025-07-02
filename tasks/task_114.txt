@@ -3,7 +3,7 @@
 # Status: done
 # Dependencies: None
 # Priority: medium
-# Description: Add vim-style h/l key bindings for left and right navigation in the TaskMaster TUI interface, providing an intuitive navigation experience for vim users.
+# Description: Add vim-style h/l key bindings for left and right navigation in the LM-Tasker TUI interface, providing an intuitive navigation experience for vim users.
 # Details:
 Implement vim-style navigation keys in the TUI:
 - 'h' key for left navigation (go back/previous screen)

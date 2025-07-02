@@ -8,7 +8,9 @@ import { logger } from "../utils/logger.js";
 
 export class StatusBar {
   constructor(screen) {
-    logger.log(`StatusBar constructor called for screen: ${screen.constructor.name}`);
+    logger.log(
+      `StatusBar constructor called for screen: ${screen.constructor.name}`,
+    );
     this.screen = screen;
     this.app = screen.app;
     this.statusBar = null;
@@ -72,7 +74,7 @@ export class StatusBar {
    * Update the status bar display
    */
   updateDisplay() {
-    logger.log('StatusBar.updateDisplay called.');
+    logger.log("StatusBar.updateDisplay called.");
     const shortcuts = this.getKeyboardShortcuts();
     const statsText = this.getStatsText();
 
@@ -106,7 +108,10 @@ export class StatusBar {
 
     if (this.app.searchMode) {
       return ` {bold}ESC{/}: close search │ {bold}Enter{/}: select │ {bold}n/N{/}: next/prev match${autoRefreshIndicator} `;
-    } else if (this.screen && this.screen.constructor.name === 'TaskDetailScreen') {
+    } else if (
+      this.screen &&
+      this.screen.constructor.name === "TaskDetailScreen"
+    ) {
       return ` {bold}j/k{/}: nav subtasks │ {bold}s{/}: status │ {bold}1/2/3{/}: focus P/S/D │ {bold}ESC/q{/}: back${autoRefreshIndicator} `;
     } else {
       return ` {bold}j/k{/}: up/down │ {bold}s{/}: status │ {bold}/{/}: search │ {bold}Enter{/}: details │ {bold}r{/}: refresh │ {bold}q{/}: quit │ {bold}?{/}: help${autoRefreshIndicator} `;
@@ -145,7 +150,9 @@ export class StatusBar {
    * Set status message (for temporary messages)
    */
   setMessage(message, duration = 3000) {
-    logger.log(`StatusBar.setMessage called with message: "${message}", duration: ${duration}`);
+    logger.log(
+      `StatusBar.setMessage called with message: "${message}", duration: ${duration}`,
+    );
     // Clear any existing message timeout
     if (this.messageTimeout) {
       clearTimeout(this.messageTimeout);

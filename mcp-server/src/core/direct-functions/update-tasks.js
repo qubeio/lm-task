@@ -1,128 +1,90 @@
 /**
  * update-tasks.js
- * Direct function implementation for updating tasks based on new context
+ * Direct function implementation for updating multiple tasks - FUNCTIONALITY REMOVED
  */
 
-import path from 'path';
-import { updateTasks } from '../../../../scripts/modules/task-manager.js';
-import { createLogWrapper } from '../../tools/utils.js';
+import { updateTasks } from "../../../../scripts/modules/task-manager.js";
 import {
-	enableSilentMode,
-	disableSilentMode
-} from '../../../../scripts/modules/utils.js';
+  enableSilentMode,
+  disableSilentMode,
+  isSilentMode,
+} from "../../../../scripts/modules/utils.js";
+import { createLogWrapper } from "../../tools/utils.js";
 
 /**
- * Direct function wrapper for updating tasks based on new context.
+ * Direct function wrapper for updateTasks with error handling.
  *
- * @param {Object} args - Command arguments containing projectRoot, from, prompt, research options.
+ * @param {Object} args - Command arguments containing from, tasksJsonPath, and projectRoot.
+ * @param {string} args.tasksJsonPath - Explicit path to the tasks.json file.
+ * @param {string} args.from - Starting task ID.
+ * @param {boolean} [args.research] - Whether to use research role (unused).
+ * @param {string} [args.projectRoot] - Project root path.
  * @param {Object} log - Logger object.
  * @param {Object} context - Context object containing session data.
  * @returns {Promise<Object>} - Result object with success status and data/error information.
  */
 export async function updateTasksDirect(args, log, context = {}) {
-	const { session } = context;
-	const { from, prompt, research, file: fileArg, projectRoot } = args;
+  const { session } = context;
+  const { tasksJsonPath, from, research, projectRoot } = args;
 
-	// Create the standard logger wrapper
-	const logWrapper = createLogWrapper(log);
+  const logWrapper = createLogWrapper(log);
 
-	// --- Input Validation ---
-	if (!projectRoot) {
-		logWrapper.error('updateTasksDirect requires a projectRoot argument.');
-		return {
-			success: false,
-			error: {
-				code: 'MISSING_ARGUMENT',
-				message: 'projectRoot is required.'
-			}
-		};
-	}
+  try {
+    logWrapper.info(
+      `Update tasks functionality has been removed. From: ${from}, ProjectRoot: ${projectRoot}`,
+    );
 
-	if (!from) {
-		logWrapper.error('updateTasksDirect called without from ID');
-		return {
-			success: false,
-			error: {
-				code: 'MISSING_ARGUMENT',
-				message: 'Starting task ID (from) is required'
-			}
-		};
-	}
+    // Check if tasksJsonPath was provided
+    if (!tasksJsonPath) {
+      const errorMessage = "tasksJsonPath is required but was not provided.";
+      logWrapper.error(errorMessage);
+      return {
+        success: false,
+        error: { code: "MISSING_ARGUMENT", message: errorMessage },
+        fromCache: false,
+      };
+    }
 
-	if (!prompt) {
-		logWrapper.error('updateTasksDirect called without prompt');
-		return {
-			success: false,
-			error: {
-				code: 'MISSING_ARGUMENT',
-				message: 'Update prompt is required'
-			}
-		};
-	}
+    // Check required parameters (from)
+    if (!from) {
+      const errorMessage =
+        "No starting task ID specified. Please provide a 'from' ID.";
+      logWrapper.error(errorMessage);
+      return {
+        success: false,
+        error: { code: "MISSING_FROM_ID", message: errorMessage },
+        fromCache: false,
+      };
+    }
 
-	// Resolve tasks file path
-	const tasksFile = fileArg
-		? path.resolve(projectRoot, fileArg)
-		: path.resolve(projectRoot, 'tasks', 'tasks.json');
+    const message = "AI-powered task update functionality has been removed. Please manually edit tasks using other available commands.";
+    logWrapper.info(message);
 
-	logWrapper.info(
-		`Updating tasks via direct function. From: ${from}, Research: ${research}, File: ${tasksFile}, ProjectRoot: ${projectRoot}`
-	);
-
-	enableSilentMode(); // Enable silent mode
-	try {
-		// Call the core updateTasks function
-		const result = await updateTasks(
-			tasksFile,
-			from,
-			prompt,
-			research,
-			{
-				session,
-				mcpLog: logWrapper,
-				projectRoot
-			},
-			'json'
-		);
-
-		if (result && result.success && Array.isArray(result.updatedTasks)) {
-			logWrapper.success(
-				`Successfully updated ${result.updatedTasks.length} tasks.`
-			);
-			return {
-				success: true,
-				data: {
-					message: `Successfully updated ${result.updatedTasks.length} tasks.`,
-					tasksFile,
-					updatedCount: result.updatedTasks.length,
-					telemetryData: result.telemetryData
-				}
-			};
-		} else {
-			// Handle case where core function didn't return expected success structure
-			logWrapper.error(
-				'Core updateTasks function did not return a successful structure.'
-			);
-			return {
-				success: false,
-				error: {
-					code: 'CORE_FUNCTION_ERROR',
-					message:
-						result?.message ||
-						'Core function failed to update tasks or returned unexpected result.'
-				}
-			};
-		}
-	} catch (error) {
-		logWrapper.error(`Error executing core updateTasks: ${error.message}`);
-		return {
-			success: false,
-			error: {
-				code: 'UPDATE_TASKS_CORE_ERROR',
-				message: error.message || 'Unknown error updating tasks'
-			}
-		};
-	} finally {
-		disableSilentMode(); // Ensure silent mode is disabled
-	}
+    return {
+      success: false,
+      error: {
+        code: "FUNCTIONALITY_REMOVED",
+        message: message,
+      },
+      data: {
+        message: message,
+        alternatives: [
+          "Use set_task_status to change task status",
+          "Use add_subtask to add new subtasks", 
+          "Manually edit tasks.json file directly"
+        ]
+      },
+      fromCache: false,
+    };
+  } catch (error) {
+    logWrapper.error(`Setup error in updateTasksDirect: ${error.message}`);
+    return {
+      success: false,
+      error: {
+        code: "DIRECT_FUNCTION_SETUP_ERROR",
+        message: error.message || "Unknown setup error",
+      },
+      fromCache: false,
+    };
+  }
 }

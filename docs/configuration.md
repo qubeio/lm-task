@@ -10,30 +10,30 @@ LM-Tasker uses two primary methods for configuration:
     - **Example Structure:**
       ```json
       {
-      	"models": {
-      		"main": {
-      			"provider": "azure",
-      			"modelId": "gpt-4o",
-      			"maxTokens": 64000,
-      			"temperature": 0.2,
-      			"baseUrl": "https://your-endpoint.openai.azure.com/"
-      		},
-      		"fallback": {
-      			"provider": "azure",
-      			"modelId": "gpt-4o-mini",
-      			"maxTokens": 64000,
-      			"temperature": 0.2,
-      			"baseUrl": "https://your-endpoint.openai.azure.com/"
-      		}
-      	},
-      	"global": {
-      		"logLevel": "info",
-      		"debug": false,
-      		"defaultSubtasks": 5,
-      		"defaultPriority": "medium",
-      		"projectName": "Your Project Name",
-      		"azureOpenaiBaseUrl": "https://your-endpoint.openai.azure.com/"
-      	}
+        "models": {
+          "main": {
+            "provider": "azure",
+            "modelId": "gpt-4o",
+            "maxTokens": 64000,
+            "temperature": 0.2,
+            "baseUrl": "https://your-endpoint.openai.azure.com/"
+          },
+          "fallback": {
+            "provider": "azure",
+            "modelId": "gpt-4o-mini",
+            "maxTokens": 64000,
+            "temperature": 0.2,
+            "baseUrl": "https://your-endpoint.openai.azure.com/"
+          }
+        },
+        "global": {
+          "logLevel": "info",
+          "debug": false,
+          "defaultSubtasks": 5,
+          "defaultPriority": "medium",
+          "projectName": "Your Project Name",
+          "azureOpenaiBaseUrl": "https://your-endpoint.openai.azure.com/"
+        }
       }
       ```
 

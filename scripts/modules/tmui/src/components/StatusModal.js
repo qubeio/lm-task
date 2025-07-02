@@ -74,7 +74,7 @@ export class StatusModal {
         },
       },
       items: this.statusOptions.map(
-        (option) => `{${option.color}-fg}${option.label}{/}`
+        (option) => `{${option.color}-fg}${option.label}{/}`,
       ),
     });
 
@@ -149,12 +149,12 @@ export class StatusModal {
 
     // Update modal label with task info
     this.modal.setLabel(
-      ` Update Status - Task #${task.id}: ${task.title.substring(0, 20)}... `
+      ` Update Status - Task #${task.id}: ${task.title.substring(0, 20)}... `,
     );
 
     // Set initial selection based on current status
     const currentIndex = this.statusOptions.findIndex(
-      (option) => option.value === task.status
+      (option) => option.value === task.status,
     );
     if (currentIndex >= 0) {
       this.list.select(currentIndex);

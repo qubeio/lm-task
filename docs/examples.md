@@ -83,7 +83,7 @@ Task 5 seems complex. Can you help me add some subtasks to break it down into sm
 We need to update task 15 based on the latest React Query v5 changes. Can you update the task?
 ```
 
-(Agent runs: `lm-tasker update-task --id=15 --prompt="Update based on React Query v5 changes"`)
+(Agent runs: `lm-tasker update-task --id=15` and manually updates the task details)
 
 ### Adding Tasks
 
@@ -91,4 +91,5 @@ We need to update task 15 based on the latest React Query v5 changes. Can you up
 Please add a new task to implement user profile image uploads using Cloudinary.
 ```
 
-(Agent runs: `lm-tasker add-task --prompt="Implement user profile image uploads using Cloudinary"`)
+(Agent runs:
+`lm-tasker add-task --title="User Profile Images" --description="Implement user profile image uploads using Cloudinary"`)

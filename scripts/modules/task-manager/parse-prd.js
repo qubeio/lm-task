@@ -100,7 +100,7 @@ async function parsePRD(prdPath, tasksPath, numTasks, options = {}) {
   };
 
   report(
-    `Parsing PRD file: ${prdPath}, Force: ${force}, Append: ${append}, Research: ${research}`
+    `Parsing PRD file: ${prdPath}, Force: ${force}, Append: ${append}, Research: ${research}`,
   );
 
   // Check for old format usage and display deprecation warning
@@ -123,7 +123,7 @@ async function parsePRD(prdPath, tasksPath, numTasks, options = {}) {
       if (append) {
         report(
           `Append mode enabled. Reading existing tasks from ${tasksPath}`,
-          "info"
+          "info",
         );
         const existingData = readJSON(tasksPath); // Use readJSON utility
         if (existingData && Array.isArray(existingData.tasks)) {
@@ -132,20 +132,20 @@ async function parsePRD(prdPath, tasksPath, numTasks, options = {}) {
             nextId = Math.max(...existingTasks.map((t) => t.id || 0)) + 1;
             report(
               `Found ${existingTasks.length} existing tasks. Next ID will be ${nextId}.`,
-              "info"
+              "info",
             );
           }
         } else {
           report(
             `Could not read existing tasks from ${tasksPath} or format is invalid. Proceeding without appending.`,
-            "warn"
+            "warn",
           );
           existingTasks = []; // Reset if read fails
         }
       } else if (!force) {
         // Not appending and not forcing overwrite
         const overwriteError = new Error(
-          `Output file ${tasksPath} already exists. Use --force to overwrite or --append.`
+          `Output file ${tasksPath} already exists. Use --force to overwrite or --append.`,
         );
         report(overwriteError.message, "error");
         if (outputFormat === "text") {
@@ -158,7 +158,7 @@ async function parsePRD(prdPath, tasksPath, numTasks, options = {}) {
         // Force overwrite is true
         report(
           `Force flag enabled. Overwriting existing file: ${tasksPath}`,
-          "info"
+          "info",
         );
       }
     }
@@ -168,8 +168,6 @@ async function parsePRD(prdPath, tasksPath, numTasks, options = {}) {
     if (!prdContent) {
       throw new Error(`Input file ${prdPath} is empty or could not be read.`);
     }
-
-    
 
     // Base system prompt for PRD parsing
     // Research prompt functionality removed; no additional prompt inserted
@@ -231,7 +229,7 @@ Guidelines:
     // Call the unified AI service
     report(
       `Calling AI service to generate tasks from PRD${research ? " with research-backed analysis" : ""}...`,
-      "info"
+      "info",
     );
 
     // Call generateObjectService with the CORRECT schema and additional telemetry params
@@ -253,7 +251,7 @@ Guidelines:
       fs.mkdirSync(tasksDir, { recursive: true });
     }
     logFn.success(
-      `Successfully parsed PRD via AI service${research ? " with research-backed analysis" : ""}.`
+      `Successfully parsed PRD via AI service${research ? " with research-backed analysis" : ""}.`,
     );
 
     // Validate and Process Tasks
@@ -281,10 +279,10 @@ Guidelines:
 
     if (!generatedData || !Array.isArray(generatedData.tasks)) {
       logFn.error(
-        `Internal Error: generateObjectService returned unexpected data structure: ${JSON.stringify(generatedData)}`
+        `Internal Error: generateObjectService returned unexpected data structure: ${JSON.stringify(generatedData)}`,
       );
       throw new Error(
-        "AI service returned unexpected data structure after validation."
+        "AI service returned unexpected data structure after validation.",
       );
     }
 
@@ -312,7 +310,7 @@ Guidelines:
             newDepId != null && // Must exist
             newDepId < task.id && // Must be a lower ID (could be existing or newly generated)
             (findTaskById(existingTasks, newDepId) || // Check if it exists in old tasks OR
-              processedNewTasks.some((t) => t.id === newDepId)) // check if it exists in new tasks
+              processedNewTasks.some((t) => t.id === newDepId)), // check if it exists in new tasks
         );
     });
 
@@ -331,7 +329,7 @@ Guidelines:
     }
     report(
       `Successfully ${append ? "appended" : "generated"} ${processedNewTasks.length} tasks in ${tasksPath}${research ? " with research-backed analysis" : ""}`,
-      "success"
+      "success",
     );
 
     // Generate markdown task files after writing tasks.json
@@ -342,10 +340,10 @@ Guidelines:
       console.log(
         boxen(
           chalk.green(
-            `Successfully generated ${processedNewTasks.length} new tasks${research ? " with research-backed analysis" : ""}. Total tasks in ${tasksPath}: ${finalTasks.length}`
+            `Successfully generated ${processedNewTasks.length} new tasks${research ? " with research-backed analysis" : ""}. Total tasks in ${tasksPath}: ${finalTasks.length}`,
           ),
-          { padding: 1, borderColor: "green", borderStyle: "round" }
-        )
+          { padding: 1, borderColor: "green", borderStyle: "round" },
+        ),
       );
 
       console.log(
@@ -359,8 +357,8 @@ Guidelines:
             borderColor: "cyan",
             borderStyle: "round",
             margin: { top: 1 },
-          }
-        )
+          },
+        ),
       );
 
       if (aiServiceResponse && aiServiceResponse.telemetryData) {

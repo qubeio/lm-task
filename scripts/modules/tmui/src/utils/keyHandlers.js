@@ -163,7 +163,7 @@ export class KeyHandlers {
     const pageSize = 10; // Number of tasks to skip
     const newIndex = Math.min(
       this.app.filteredTasks.length - 1,
-      this.app.currentTaskIndex + pageSize
+      this.app.currentTaskIndex + pageSize,
     );
 
     this.app.currentTaskIndex = newIndex;
@@ -201,7 +201,7 @@ export class KeyHandlers {
    */
   showHelp() {
     const helpText = `
-{bold}TaskMaster TUI - Keyboard Shortcuts{/}
+{bold}LM-Tasker TUI - Keyboard Shortcuts{/}
 
 {bold}Navigation:{/}
   j, ↓        Move down one task

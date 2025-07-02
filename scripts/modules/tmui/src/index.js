@@ -1,6 +1,6 @@
 /**
  * TUI Entry Point
- * Main entry point for the TaskMaster Terminal User Interface
+ * Main entry point for the LM-Tasker Terminal User Interface
  */
 
 import { program } from "commander";
@@ -17,29 +17,29 @@ export function registerTUICommand(programInstance) {
   programInstance
     .command("ui")
     .alias("tmui")
-    .description("Launch the TaskMaster Terminal User Interface")
+    .description("Launch the LM-Tasker Terminal User Interface")
     .option("-f, --file <file>", "Path to tasks.json file")
     .option("--theme <theme>", "Color theme (default, dark, light)", "default")
     .option(
       "--refresh-interval <seconds>",
       "Auto-refresh interval in seconds",
-      "30"
+      "30",
     )
     .option("--auto-refresh", "Enable automatic refresh (default: true)")
     .option("--no-auto-refresh", "Disable automatic refresh")
     .option(
       "--auto-refresh-interval <ms>",
       "Auto-refresh interval in milliseconds",
-      "2000"
+      "2000",
     )
     .option(
       "--snapshot",
-      "Take a snapshot of the TUI and exit (for debugging/testing)"
+      "Take a snapshot of the TUI and exit (for debugging/testing)",
     )
     .option(
       "--snapshot-delay <ms>",
       "Delay before taking snapshot in milliseconds",
-      "2000"
+      "2000",
     )
     .action(async (options) => {
       try {
@@ -69,11 +69,11 @@ export function registerTUICommand(programInstance) {
  * Standalone CLI entry point for tmui command
  */
 export async function runTUI() {
-  	const version = await getLmTaskerVersion();
+  const version = await getLmTaskerVersion();
 
   program
     .name("ui")
-    .description("TaskMaster Terminal User Interface")
+    .description("LM-Tasker Terminal User Interface")
     .version(version);
 
   registerTUICommand(program);

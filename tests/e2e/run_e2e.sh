@@ -331,7 +331,7 @@ log_step() {
   npm link lm-tasker
   log_success "Package linked locally."
 
-  log_step "Initializing Task Master project (non-interactive)"
+  log_step "Initializing LM-Tasker project (non-interactive)"
   lm-tasker init -y --name="E2E Test $TIMESTAMP" --description="Automated E2E test run"
   if [ ! -f ".lmtaskerconfig" ]; then
     log_error "Initialization failed: .lmtaskerconfig not found."
@@ -460,7 +460,7 @@ log_step() {
     log_info "Running add-task with prompt..."
     add_task_output_file="add_task_raw_output_${provider}_${model//\//_}.log" # Sanitize ID
     # Run add-task and capture ALL output (stdout & stderr) to a file AND a variable
-    add_task_cmd_output=$(lm-tasker add-task --prompt "$add_task_prompt" 2>&1 | tee "$add_task_output_file")
+    add_task_cmd_output=$(lm-tasker add-task --title="E2E Test Task" --description="$add_task_prompt" 2>&1 | tee "$add_task_output_file")
     add_task_exit_code=${PIPESTATUS[0]}
 
     # 3. Check for success and extract task ID
@@ -606,54 +606,30 @@ log_step() {
   lm-tasker add-task --title="Manual E2E Task" --description="Add basic health check endpoint" --priority=low --dependencies=3 # Depends on backend setup
   log_success "Added Task $manual_task_id manually."
 
-  log_step "Adding Task $ai_task_id (AI)"
-  cmd_output_add_ai=$(lm-tasker add-task --prompt="Implement basic UI styling using CSS variables for colors and spacing" --priority=medium --dependencies=1 2>&1)
+  log_step "Adding Task $ai_task_id (Manual)"
+  cmd_output_add_ai=$(lm-tasker add-task --title="UI Styling" --description="Implement basic UI styling using CSS variables for colors and spacing" --priority=medium --dependencies=1 2>&1)
   exit_status_add_ai=$?
   echo "$cmd_output_add_ai"
   extract_and_sum_cost "$cmd_output_add_ai"
   if [ $exit_status_add_ai -ne 0 ]; then
     log_error "Adding AI Task $ai_task_id failed. Exit status: $exit_status_add_ai"
   else
-    log_success "Added Task $ai_task_id via AI prompt."
+    log_success "Added Task $ai_task_id manually."
   fi
 
 
-  log_step "Updating Task 3 (update-task AI)"
-  cmd_output_update_task3=$(lm-tasker update-task --id=3 --prompt="Update backend server setup: Ensure CORS is configured to allow requests from the frontend origin." 2>&1)
-  exit_status_update_task3=$?
-  echo "$cmd_output_update_task3"
-  extract_and_sum_cost "$cmd_output_update_task3"
-  if [ $exit_status_update_task3 -ne 0 ]; then
-    log_error "Updating Task 3 failed. Exit status: $exit_status_update_task3"
-  else
-    log_success "Attempted update for Task 3."
-  fi
+  log_step "Skipping Task 3 update (AI functionality removed)"
+  log_success "AI-powered update functionality has been removed."
 
-  log_step "Updating Tasks from Task 5 (update AI)"
-  cmd_output_update_from5=$(lm-tasker update --from=5 --prompt="Refactor the backend storage module to use a simple JSON file (storage.json) instead of an in-memory object for persistence. Update relevant tasks." 2>&1)
-  exit_status_update_from5=$?
-  echo "$cmd_output_update_from5"
-  extract_and_sum_cost "$cmd_output_update_from5"
-  if [ $exit_status_update_from5 -ne 0 ]; then
-    log_error "Updating from Task 5 failed. Exit status: $exit_status_update_from5"
-  else
-    log_success "Attempted update from Task 5 onwards."
-  fi
+  log_step "Skipping bulk update from Task 5 (AI functionality removed)"
+  log_success "AI-powered bulk update functionality has been removed."
 
   log_step "Adding test subtask to Task 8 for update testing"
   lm-tasker add-subtask --parent=8 --title="Test subtask 8.1" --description="Test subtask for update testing"
   log_success "Added test subtask to Task 8."
 
-  log_step "Updating Subtask 8.1 (update-subtask AI)"
-  cmd_output_update_subtask81=$(lm-tasker update-subtask --id=8.1 --prompt="Implementation note: Remember to handle potential API errors and display a user-friendly message." 2>&1)
-  exit_status_update_subtask81=$?
-  echo "$cmd_output_update_subtask81"
-  extract_and_sum_cost "$cmd_output_update_subtask81"
-  if [ $exit_status_update_subtask81 -ne 0 ]; then
-    log_error "Updating Subtask 8.1 failed. Exit status: $exit_status_update_subtask81"
-  else
-    log_success "Attempted update for Subtask 8.1."
-  fi
+  log_step "Skipping Subtask 8.1 update (AI functionality removed)"
+  log_success "AI-powered subtask update functionality has been removed."
 
   # Add a couple more subtasks for multi-remove test
   log_step 'Adding subtasks to Task 2 (for multi-remove test)'

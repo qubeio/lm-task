@@ -192,7 +192,7 @@ describe("Commands Module", () => {
       const args = ["node", "lm-tasker", "--camelCase", "--kebab-case"];
       const camelCaseFlags = args.filter(
         (arg) =>
-          arg.startsWith("--") && /[A-Z]/.test(arg) && !arg.includes("-[A-Z]")
+          arg.startsWith("--") && /[A-Z]/.test(arg) && !arg.includes("-[A-Z]"),
       );
       expect(camelCaseFlags).toContain("--camelCase");
       expect(camelCaseFlags).not.toContain("--kebab-case");
@@ -202,7 +202,7 @@ describe("Commands Module", () => {
       const args = ["node", "lm-tasker", "--kebab-case"];
       const camelCaseFlags = args.filter(
         (arg) =>
-          arg.startsWith("--") && /[A-Z]/.test(arg) && !arg.includes("-[A-Z]")
+          arg.startsWith("--") && /[A-Z]/.test(arg) && !arg.includes("-[A-Z]"),
       );
       expect(camelCaseFlags).toHaveLength(0);
     });
@@ -251,8 +251,8 @@ describe("Commands Module", () => {
 
         console.log(
           chalk.yellow(
-            "No PRD file found. Searched for PRD.md, prd.md, PRD.txt, prd.txt in project root and scripts/ directory."
-          )
+            "No PRD file found. Searched for PRD.md, prd.md, PRD.txt, prd.txt in project root and scripts/ directory.",
+          ),
         );
         return;
       }
@@ -292,13 +292,13 @@ describe("Commands Module", () => {
 
       // Assert
       expect(mockConsoleLog).toHaveBeenCalledWith(
-        expect.stringContaining("Using PRD file: PRD.md")
+        expect.stringContaining("Using PRD file: PRD.md"),
       );
       expect(mockParsePRD).toHaveBeenCalledWith(
         "PRD.md",
         "tasks/tasks.json",
         10, // Default value from command definition
-        { append: false }
+        { append: false },
       );
     });
 
@@ -314,7 +314,7 @@ describe("Commands Module", () => {
 
       // Assert
       expect(mockConsoleLog).toHaveBeenCalledWith(
-        expect.stringContaining("No PRD file found")
+        expect.stringContaining("No PRD file found"),
       );
       expect(mockParsePRD).not.toHaveBeenCalled();
     });
@@ -331,13 +331,13 @@ describe("Commands Module", () => {
 
       // Assert
       expect(mockConsoleLog).toHaveBeenCalledWith(
-        expect.stringContaining(`Parsing PRD file: ${testFile}`)
+        expect.stringContaining(`Parsing PRD file: ${testFile}`),
       );
       expect(mockParsePRD).toHaveBeenCalledWith(
         testFile,
         "tasks/tasks.json",
         10,
-        { append: false }
+        { append: false },
       );
       expect(mockExistsSync).not.toHaveBeenCalledWith("scripts/prd.txt");
     });
@@ -355,13 +355,13 @@ describe("Commands Module", () => {
 
       // Assert
       expect(mockConsoleLog).toHaveBeenCalledWith(
-        expect.stringContaining(`Parsing PRD file: ${testFile}`)
+        expect.stringContaining(`Parsing PRD file: ${testFile}`),
       );
       expect(mockParsePRD).toHaveBeenCalledWith(
         testFile,
         "tasks/tasks.json",
         10,
-        { append: false }
+        { append: false },
       );
       expect(mockExistsSync).not.toHaveBeenCalledWith("scripts/prd.txt");
     });
@@ -383,7 +383,7 @@ describe("Commands Module", () => {
         testFile,
         outputFile,
         numTasks,
-        { append: false }
+        { append: false },
       );
     });
 
@@ -400,13 +400,13 @@ describe("Commands Module", () => {
 
       // Assert
       expect(mockConsoleLog).toHaveBeenCalledWith(
-        expect.stringContaining("Appending to existing tasks")
+        expect.stringContaining("Appending to existing tasks"),
       );
       expect(mockParsePRD).toHaveBeenCalledWith(
         testFile,
         "tasks/tasks.json",
         10,
-        { append: true }
+        { append: true },
       );
     });
 
@@ -514,8 +514,8 @@ describe("Commands Module", () => {
           console.error(chalk.red("Error: --id parameter is required"));
           console.log(
             chalk.yellow(
-              'Usage example: lm-tasker update-task --id=23 --prompt="Update with new information"'
-            )
+              'Usage example: lm-tasker update-task --id=23 (manual updates only)',
+            ),
           );
           process.exit(1);
           return; // Add early return to prevent calling updateTaskById
@@ -526,13 +526,13 @@ describe("Commands Module", () => {
         if (isNaN(taskId) || taskId <= 0) {
           console.error(
             chalk.red(
-              `Error: Invalid task ID: ${options.id}. Task ID must be a positive integer.`
-            )
+              `Error: Invalid task ID: ${options.id}. Task ID must be a positive integer.`,
+            ),
           );
           console.log(
             chalk.yellow(
-              'Usage example: lm-tasker update-task --id=23 --prompt="Update with new information"'
-            )
+              'Usage example: lm-tasker update-task --id=23 (manual updates only)',
+            ),
           );
           process.exit(1);
           return; // Add early return to prevent calling updateTaskById
@@ -541,13 +541,13 @@ describe("Commands Module", () => {
         if (!options.prompt) {
           console.error(
             chalk.red(
-              "Error: --prompt parameter is required. Please provide information about the changes."
-            )
+              "Error: Manual updates only. Use the interactive update process.",
+            ),
           );
           console.log(
             chalk.yellow(
-              'Usage example: lm-tasker update-task --id=23 --prompt="Update with new information"'
-            )
+              'Usage example: lm-tasker update-task --id=23 (manual updates only)',
+            ),
           );
           process.exit(1);
           return; // Add early return to prevent calling updateTaskById
@@ -559,19 +559,19 @@ describe("Commands Module", () => {
         // Validate tasks file exists
         if (!fs.existsSync(tasksPath)) {
           console.error(
-            chalk.red(`Error: Tasks file not found at path: ${tasksPath}`)
+            chalk.red(`Error: Tasks file not found at path: ${tasksPath}`),
           );
           if (tasksPath === "tasks/tasks.json") {
             console.log(
               chalk.yellow(
-                "Hint: Run lm-tasker init or lm-tasker parse-prd to create tasks.json first"
-              )
+                "Hint: Run lm-tasker init or lm-tasker parse-prd to create tasks.json first",
+              ),
             );
           } else {
             console.log(
               chalk.yellow(
-                `Hint: Check if the file path is correct: ${tasksPath}`
-              )
+                `Hint: Check if the file path is correct: ${tasksPath}`,
+              ),
             );
           }
           process.exit(1);
@@ -579,7 +579,7 @@ describe("Commands Module", () => {
         }
 
         console.log(
-          chalk.blue(`Updating task ${taskId} with prompt: "${prompt}"`)
+          chalk.blue(`Updating task ${taskId} with prompt: "${prompt}"`),
         );
         console.log(chalk.blue(`Tasks file: ${tasksPath}`));
 
@@ -588,15 +588,15 @@ describe("Commands Module", () => {
           if (!process.env.PERPLEXITY_API_KEY) {
             console.log(
               chalk.yellow(
-                "Warning: PERPLEXITY_API_KEY environment variable is missing. Research-backed updates will not be available."
-              )
+                "Warning: PERPLEXITY_API_KEY environment variable is missing. Research-backed updates will not be available.",
+              ),
             );
             console.log(
-              chalk.yellow("Falling back to Claude AI for task update.")
+              chalk.yellow("Falling back to Claude AI for task update."),
             );
           } else {
             console.log(
-              chalk.blue("Using Perplexity AI for research-backed task update")
+              chalk.blue("Using Perplexity AI for research-backed task update"),
             );
           }
         }
@@ -605,15 +605,15 @@ describe("Commands Module", () => {
           tasksPath,
           taskId,
           prompt,
-          useResearch
+          useResearch,
         );
 
         // If the task wasn't updated (e.g., if it was already marked as done)
         if (!result) {
           console.log(
             chalk.yellow(
-              "\nTask update was not completed. Review the messages above for details."
-            )
+              "\nTask update was not completed. Review the messages above for details.",
+            ),
           );
         }
       } catch (error) {
@@ -625,15 +625,13 @@ describe("Commands Module", () => {
           error.message.includes("not found")
         ) {
           console.log(chalk.yellow("\nTo fix this issue:"));
-          console.log(
-            "  1. Run lm-tasker list to see all available task IDs"
-          );
+          console.log("  1. Run lm-tasker list to see all available task IDs");
           console.log("  2. Use a valid task ID with the --id parameter");
         } else if (error.message.includes("API key")) {
           console.log(
             chalk.yellow(
-              "\nThis error is related to API keys. Check your environment variables."
-            )
+              "\nThis error is related to API keys. Check your environment variables.",
+            ),
           );
         }
 
@@ -666,7 +664,7 @@ describe("Commands Module", () => {
 
       // Verify validation error
       expect(mockConsoleError).toHaveBeenCalledWith(
-        expect.stringContaining("--id parameter is required")
+        expect.stringContaining("--id parameter is required"),
       );
       expect(mockExit).toHaveBeenCalledWith(1);
       expect(mockUpdateTaskById).not.toHaveBeenCalled();
@@ -685,7 +683,7 @@ describe("Commands Module", () => {
 
       // Verify validation error
       expect(mockConsoleError).toHaveBeenCalledWith(
-        expect.stringContaining("Invalid task ID")
+        expect.stringContaining("Invalid task ID"),
       );
       expect(mockExit).toHaveBeenCalledWith(1);
       expect(mockUpdateTaskById).not.toHaveBeenCalled();
@@ -703,7 +701,7 @@ describe("Commands Module", () => {
 
       // Verify validation error
       expect(mockConsoleError).toHaveBeenCalledWith(
-        expect.stringContaining("--prompt parameter is required")
+        expect.stringContaining("Manual updates only"),
       );
       expect(mockExit).toHaveBeenCalledWith(1);
       expect(mockUpdateTaskById).not.toHaveBeenCalled();
@@ -725,7 +723,7 @@ describe("Commands Module", () => {
 
       // Verify validation error
       expect(mockConsoleError).toHaveBeenCalledWith(
-        expect.stringContaining("Tasks file not found")
+        expect.stringContaining("Tasks file not found"),
       );
       expect(mockExit).toHaveBeenCalledWith(1);
       expect(mockUpdateTaskById).not.toHaveBeenCalled();
@@ -751,15 +749,15 @@ describe("Commands Module", () => {
         "test-tasks.json",
         2,
         "Update the task",
-        true
+        true,
       );
 
       // Verify console output
       expect(mockConsoleLog).toHaveBeenCalledWith(
-        expect.stringContaining("Updating task 2")
+        expect.stringContaining("Updating task 2"),
       );
       expect(mockConsoleLog).toHaveBeenCalledWith(
-        expect.stringContaining("Using Perplexity AI")
+        expect.stringContaining("Using Perplexity AI"),
       );
 
       // Clean up
@@ -785,7 +783,7 @@ describe("Commands Module", () => {
 
       // Verify console output for null result
       expect(mockConsoleLog).toHaveBeenCalledWith(
-        expect.stringContaining("Task update was not completed")
+        expect.stringContaining("Task update was not completed"),
       );
     });
 
@@ -805,7 +803,7 @@ describe("Commands Module", () => {
 
       // Verify error handling
       expect(mockConsoleError).toHaveBeenCalledWith(
-        expect.stringContaining("Error: Task update failed")
+        expect.stringContaining("Error: Task update failed"),
       );
       expect(mockExit).toHaveBeenCalledWith(1);
     });
@@ -839,12 +837,12 @@ describe("Commands Module", () => {
               session,
               research,
               generateFiles,
-              manualTaskData
+              manualTaskData,
             ) => {
               // Return the next ID after the last one in sample tasks
               const newId = sampleTasks.tasks.length + 1;
               return Promise.resolve(newId.toString());
-            }
+            },
           ),
       };
 
@@ -857,10 +855,10 @@ describe("Commands Module", () => {
         // Get prompt directly or from p shorthand
         const prompt = options.prompt || options.p;
 
-        // Validate that either prompt or title+description are provided
-        if (!prompt && !isManualCreation) {
+        // Validate that title+description are provided (manual creation only)
+        if (!isManualCreation) {
           throw new Error(
-            "Either --prompt or both --title and --description must be provided"
+            "Both --title and --description must be provided",
           );
         }
 
@@ -890,19 +888,19 @@ describe("Commands Module", () => {
           { session: process.env },
           options.research || options.r || false,
           null,
-          manualTaskData
+          manualTaskData,
         );
       };
     });
 
-    test("should throw error if no prompt or manual task data provided", async () => {
+    test("should throw error if no manual task data provided", async () => {
       // Call without required params
       const options = { file: "tasks/tasks.json" };
 
       await expect(async () => {
         await addTaskAction(undefined, options);
       }).rejects.toThrow(
-        "Either --prompt or both --title and --description must be provided"
+        "Both --title and --description must be provided",
       );
     });
 
@@ -924,7 +922,7 @@ describe("Commands Module", () => {
         { session: process.env },
         false, // Research flag
         null, // Generate files parameter
-        null // Manual task data
+        null, // Manual task data
       );
     });
 
@@ -946,7 +944,7 @@ describe("Commands Module", () => {
         { session: process.env },
         true, // Research flag should be true
         null, // Generate files parameter
-        null // Manual task data
+        null, // Manual task data
       );
     });
 
@@ -975,7 +973,7 @@ describe("Commands Module", () => {
           description: "Create a reusable login form",
           details: "Implementation details here",
           testStrategy: "",
-        }
+        },
       );
     });
 
@@ -997,7 +995,7 @@ describe("Commands Module", () => {
         { session: process.env },
         false,
         null, // Generate files parameter
-        null // Manual task data
+        null, // Manual task data
       );
     });
 
@@ -1019,7 +1017,7 @@ describe("Commands Module", () => {
         { session: process.env },
         false,
         null, // Generate files parameter
-        null // Manual task data
+        null, // Manual task data
       );
     });
 
@@ -1040,7 +1038,7 @@ describe("Commands Module", () => {
         { session: process.env },
         false, // Research is false by default
         null, // Generate files parameter
-        null // Manual task data
+        null, // Manual task data
       );
     });
   });

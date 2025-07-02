@@ -42,7 +42,7 @@ operations, and a fallback model in case of errors.
 
 Once the MCP server is configured and API keys are added, initialize LM-Tasker in the user's project:
 
-> Can you initialize Task Master in my project?
+> Can you initialize LM-Tasker in my project?
 
 This will run the `initialize_project` tool to set up the basic file structure.
 
@@ -81,7 +81,7 @@ parsing.
 
 After installation, verify everything is working:
 
-1. **Check MCP Connection**: The AI should be able to access Task Master tools
+1. **Check MCP Connection**: The AI should be able to access LM-Tasker tools
 2. **Test Basic Commands**: Try `get_tasks` to list current tasks
 3. **Verify API Keys**: Ensure AI-powered commands work (like `add_task`)
 
@@ -121,4 +121,4 @@ Once installed, users can:
 - Set up model preferences with `models` tool
 - Add subtasks to tasks with `add-subtask`
 
-For detailed documentation, refer to the Task Master docs directory.``
+For detailed documentation, refer to the LM-Tasker docs directory.``

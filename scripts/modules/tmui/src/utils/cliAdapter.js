@@ -1,6 +1,6 @@
 /**
  * CLI Adapter
- * Interface for calling existing TaskMaster CLI commands from the TUI
+ * Interface for calling existing LM-Tasker CLI commands from the TUI
  */
 
 import { exec } from "child_process";
@@ -54,7 +54,7 @@ export class CliAdapter {
       }
     } catch (error) {
       throw new Error(
-        `Failed to execute command '${command}': ${error.message}`
+        `Failed to execute command '${command}': ${error.message}`,
       );
     }
   }
@@ -270,7 +270,7 @@ export class CliAdapter {
 
       // Check if this looks like a task line
       const taskMatch = trimmed.match(
-        /^│?\s*(\d+(?:\.\d+)?)\s*│\s*([^│]+)\s*│\s*([^│]+)\s*│\s*(.+?)\s*│?$/
+        /^│?\s*(\d+(?:\.\d+)?)\s*│\s*([^│]+)\s*│\s*([^│]+)\s*│\s*(.+?)\s*│?$/,
       );
 
       if (taskMatch) {
@@ -338,7 +338,7 @@ export class CliAdapter {
       // Parse status, priority, etc.
       if (trimmed.startsWith("Status:")) {
         task.status = this.parseStatusText(
-          trimmed.replace("Status:", "").trim()
+          trimmed.replace("Status:", "").trim(),
         );
         continue;
       }

@@ -94,8 +94,8 @@ async function runInteractiveSetup(projectRoot) {
   if (!projectRoot) {
     console.error(
       chalk.red(
-        "Error: Could not determine project root for interactive setup."
-      )
+        "Error: Could not determine project root for interactive setup.",
+      ),
     );
     process.exit(1);
   }
@@ -111,8 +111,8 @@ async function runInteractiveSetup(projectRoot) {
   ) {
     console.warn(
       chalk.yellow(
-        `Warning: Could not load current model configuration: ${currentConfigResult.error?.message || "Unknown error"}. Proceeding with defaults.`
-      )
+        `Warning: Could not load current model configuration: ${currentConfigResult.error?.message || "Unknown error"}. Proceeding with defaults.`,
+      ),
     );
   }
 
@@ -144,7 +144,7 @@ async function runInteractiveSetup(projectRoot) {
             }
           } else {
             console.error(
-              `OpenRouter API request failed with status code: ${res.statusCode}`
+              `OpenRouter API request failed with status code: ${res.statusCode}`,
             );
             resolve(null); // Indicate failure
           }
@@ -198,7 +198,7 @@ async function runInteractiveSetup(projectRoot) {
               }
             } else {
               console.error(
-                `Ollama API request failed with status code: ${res.statusCode}`
+                `Ollama API request failed with status code: ${res.statusCode}`,
               );
               resolve(null); // Indicate failure
             }
@@ -261,7 +261,7 @@ async function runInteractiveSetup(projectRoot) {
             name: `${provider} / ${m.id} ${
               m.cost_per_1m_tokens
                 ? chalk.gray(
-                    `($${m.cost_per_1m_tokens.input.toFixed(2)} input | $${m.cost_per_1m_tokens.output.toFixed(2)} output)`
+                    `($${m.cost_per_1m_tokens.input.toFixed(2)} input | $${m.cost_per_1m_tokens.output.toFixed(2)} output)`,
                   )
                 : ""
             }`,
@@ -283,7 +283,7 @@ async function runInteractiveSetup(projectRoot) {
         (choice) =>
           typeof choice.value === "object" &&
           choice.value.id === currentModel.modelId &&
-          choice.value.provider === currentModel.provider
+          choice.value.provider === currentModel.provider,
       );
     }
 
@@ -333,7 +333,7 @@ async function runInteractiveSetup(projectRoot) {
       // If default calculation failed or pointed outside bounds, reset intelligently
       defaultIndex = 0; // Default to 'Cancel'
       console.warn(
-        `Warning: Could not determine default model for role '${role}'. Defaulting to 'Cancel'.`
+        `Warning: Could not determine default model for role '${role}'. Defaulting to 'Cancel'.`,
       ); // Add warning
     }
 
@@ -370,7 +370,7 @@ async function runInteractiveSetup(projectRoot) {
   async function handleSetModel(role, selectedValue, currentModelId) {
     if (selectedValue === "__CANCEL__") {
       console.log(
-        chalk.yellow(`\nSetup canceled during ${role} model selection.`)
+        chalk.yellow(`\nSetup canceled during ${role} model selection.`),
       );
       setupSuccess = false; // Also mark success as false on cancel
       return false; // Indicate cancellation
@@ -409,8 +409,8 @@ async function runInteractiveSetup(projectRoot) {
       ) {
         console.error(
           chalk.red(
-            `Error: Model ID "${modelIdToSet}" not found in the live OpenRouter model list. Please check the ID.`
-          )
+            `Error: Model ID "${modelIdToSet}" not found in the live OpenRouter model list. Please check the ID.`,
+          ),
         );
         setupSuccess = false;
         return true; // Continue setup, but mark as failed
@@ -437,21 +437,21 @@ async function runInteractiveSetup(projectRoot) {
       if (ollamaModels === null) {
         console.error(
           chalk.red(
-            `Error: Unable to connect to Ollama server at ${ollamaBaseUrl}. Please ensure Ollama is running and try again.`
-          )
+            `Error: Unable to connect to Ollama server at ${ollamaBaseUrl}. Please ensure Ollama is running and try again.`,
+          ),
         );
         setupSuccess = false;
         return true; // Continue setup, but mark as failed
       } else if (!ollamaModels.some((m) => m.model === modelIdToSet)) {
         console.error(
           chalk.red(
-            `Error: Model ID "${modelIdToSet}" not found in the Ollama instance. Please verify the model is pulled and available.`
-          )
+            `Error: Model ID "${modelIdToSet}" not found in the Ollama instance. Please verify the model is pulled and available.`,
+          ),
         );
         console.log(
           chalk.yellow(
-            `You can check available models with: curl ${ollamaBaseUrl}/tags`
-          )
+            `You can check available models with: curl ${ollamaBaseUrl}/tags`,
+          ),
         );
         setupSuccess = false;
         return true; // Continue setup, but mark as failed
@@ -471,8 +471,8 @@ async function runInteractiveSetup(projectRoot) {
     } else if (selectedValue) {
       console.error(
         chalk.red(
-          `Internal Error: Unexpected selection value for ${role}: ${JSON.stringify(selectedValue)}`
-        )
+          `Internal Error: Unexpected selection value for ${role}: ${JSON.stringify(selectedValue)}`,
+        ),
       );
       setupSuccess = false;
       return true;
@@ -489,8 +489,8 @@ async function runInteractiveSetup(projectRoot) {
         if (result.success) {
           console.log(
             chalk.blue(
-              `Set ${role} model: ${result.data.provider} / ${result.data.modelId}`
-            )
+              `Set ${role} model: ${result.data.provider} / ${result.data.modelId}`,
+            ),
           );
           if (result.data.warning) {
             // Display warning if returned by setModel
@@ -500,8 +500,8 @@ async function runInteractiveSetup(projectRoot) {
         } else {
           console.error(
             chalk.red(
-              `Error setting ${role} model: ${result.error?.message || "Unknown"}`
-            )
+              `Error setting ${role} model: ${result.error?.message || "Unknown"}`,
+            ),
           );
           setupSuccess = false;
         }
@@ -520,7 +520,7 @@ async function runInteractiveSetup(projectRoot) {
             setupConfigModified = true;
           } else {
             console.error(
-              chalk.red("Failed to disable fallback model in config file.")
+              chalk.red("Failed to disable fallback model in config file."),
             );
             setupSuccess = false;
           }
@@ -537,7 +537,7 @@ async function runInteractiveSetup(projectRoot) {
     !(await handleSetModel(
       "main",
       answers.mainModel,
-      currentModels.main?.modelId // <--- Now 'currentModels' is defined
+      currentModels.main?.modelId, // <--- Now 'currentModels' is defined
     ))
   ) {
     return false; // Explicitly return false if cancelled
@@ -546,7 +546,7 @@ async function runInteractiveSetup(projectRoot) {
     !(await handleSetModel(
       "fallback",
       answers.fallbackModel,
-      currentModels.fallback?.modelId // <--- Now 'currentModels' is defined
+      currentModels.fallback?.modelId, // <--- Now 'currentModels' is defined
     ))
   ) {
     return false; // Explicitly return false if cancelled
@@ -559,8 +559,8 @@ async function runInteractiveSetup(projectRoot) {
   } else if (!setupSuccess) {
     console.error(
       chalk.red(
-        "\nErrors occurred during model selection. Please review and try again."
-      )
+        "\nErrors occurred during model selection. Please review and try again.",
+      ),
     );
   }
   return true; // Indicate setup flow completed (not cancelled)
@@ -578,8 +578,8 @@ function registerCommands(programInstance) {
     console.error(chalk.red(`Error: Unknown option '${unknownOption}'`));
     console.error(
       chalk.yellow(
-        `Run 'lm-tasker ${commandName} --help' to see available options`
-      )
+        `Run 'lm-tasker ${commandName} --help' to see available options`,
+      ),
     );
     process.exit(1);
   });
@@ -591,14 +591,14 @@ function registerCommands(programInstance) {
     .argument("[file]", "Path to the PRD file")
     .option(
       "-i, --input <file>",
-      "Path to the PRD file (alternative to positional argument)"
+      "Path to the PRD file (alternative to positional argument)",
     )
     .option("-o, --output <file>", "Output file path", "tasks/tasks.json")
     .option("-n, --num-tasks <number>", "Number of tasks to generate", "10")
     .option("-f, --force", "Skip confirmation when overwriting existing tasks")
     .option(
       "--append",
-      "Append new tasks to existing tasks.json instead of overwriting"
+      "Append new tasks to existing tasks.json instead of overwriting",
     )
 
     .action(async (file, options) => {
@@ -655,8 +655,8 @@ function registerCommands(programInstance) {
 
           console.log(
             chalk.yellow(
-              "No PRD file found. Searched for PRD.md, prd.md, PRD.txt, prd.txt in project root and scripts/ directory."
-            )
+              "No PRD file found. Searched for PRD.md, prd.md, PRD.txt, prd.txt in project root and scripts/ directory.",
+            ),
           );
           console.log(
             boxen(
@@ -687,15 +687,15 @@ function registerCommands(programInstance) {
                 "  3. Generate tasks from the PRD and either:\n" +
                 "     - Overwrite any existing tasks.json file (default)\n" +
                 "     - Append to existing tasks.json if --append is used",
-              { padding: 1, borderColor: "blue", borderStyle: "round" }
-            )
+              { padding: 1, borderColor: "blue", borderStyle: "round" },
+            ),
           );
           return;
         }
 
         if (!fs.existsSync(inputFile)) {
           console.error(
-            chalk.red(`Error: Input PRD file not found: ${inputFile}`)
+            chalk.red(`Error: Input PRD file not found: ${inputFile}`),
           );
           process.exit(1);
         }
@@ -731,19 +731,19 @@ function registerCommands(programInstance) {
     .argument("[source]", "Path to the source PRD file to migrate")
     .option(
       "-s, --source <file>",
-      "Source PRD file path (alternative to positional argument)"
+      "Source PRD file path (alternative to positional argument)",
     )
     .option(
       "-t, --target <file>",
-      "Target path for migrated file (default: PRD.md in project root)"
+      "Target path for migrated file (default: PRD.md in project root)",
     )
     .option(
       "-f, --force",
-      "Overwrite existing target file without confirmation"
+      "Overwrite existing target file without confirmation",
     )
     .option(
       "--remove-original",
-      "Remove the original file after successful migration"
+      "Remove the original file after successful migration",
     )
     .option("--analyze", "Analyze PRD files in the project without migrating")
     .action(async (source, options) => {
@@ -770,8 +770,8 @@ function registerCommands(programInstance) {
                   ? "yellow"
                   : "green",
               borderStyle: "round",
-            }
-          )
+            },
+          ),
         );
         return;
       }
@@ -789,8 +789,8 @@ function registerCommands(programInstance) {
           console.log(chalk.green("No old format PRD files found to migrate."));
           console.log(
             chalk.blue(
-              "Run with --analyze to see all PRD files in the project."
-            )
+              "Run with --analyze to see all PRD files in the project.",
+            ),
           );
           return;
         }
@@ -799,22 +799,22 @@ function registerCommands(programInstance) {
           sourcePath = analysis.oldFormat[0];
           console.log(
             chalk.blue(
-              `Found old format file: ${chalk.cyan(path.relative(projectRoot, sourcePath))}`
-            )
+              `Found old format file: ${chalk.cyan(path.relative(projectRoot, sourcePath))}`,
+            ),
           );
         } else {
           console.log(chalk.yellow("Multiple old format files found:"));
           analysis.oldFormat.forEach((file, index) => {
             console.log(
-              `  ${index + 1}. ${chalk.cyan(path.relative(projectRoot, file))}`
+              `  ${index + 1}. ${chalk.cyan(path.relative(projectRoot, file))}`,
             );
           });
           console.log(
             chalk.blue(
-              "\nPlease specify which file to migrate using the source argument:"
-            )
+              "\nPlease specify which file to migrate using the source argument:",
+            ),
           );
-                      console.log(chalk.yellow("  lm-tasker migrate-prd <source-file>"));
+          console.log(chalk.yellow("  lm-tasker migrate-prd <source-file>"));
           return;
         }
       } else {
@@ -825,7 +825,7 @@ function registerCommands(programInstance) {
 
         if (!fs.existsSync(sourcePath)) {
           console.error(
-            chalk.red(`Error: Source file not found: ${sourcePath}`)
+            chalk.red(`Error: Source file not found: ${sourcePath}`),
           );
           process.exit(1);
         }
@@ -866,8 +866,8 @@ function registerCommands(programInstance) {
                 borderColor: "green",
                 borderStyle: "round",
                 margin: { top: 1 },
-              }
-            )
+              },
+            ),
           );
         }
       } catch (error) {
@@ -883,22 +883,17 @@ function registerCommands(programInstance) {
   programInstance
     .command("update")
     .description(
-      'Update multiple tasks with ID >= "from" based on new information or implementation changes'
+      'Update multiple tasks with ID >= "from" based on new information or implementation changes',
     )
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
     .option(
       "--from <id>",
       "Task ID to start updating from (tasks with ID >= this value will be updated)",
-      "1"
-    )
-    .option(
-      "-p, --prompt <text>",
-      "Prompt explaining the changes or new context (required)"
+      "1",
     )
     .action(async (options) => {
       const tasksPath = options.file;
       const fromId = parseInt(options.from, 10); // Validation happens here
-      const prompt = options.prompt;
 
       // Check if there's an 'id' option which is a common mistake (instead of 'from')
       if (
@@ -906,36 +901,29 @@ function registerCommands(programInstance) {
         process.argv.some((arg) => arg.startsWith("--id="))
       ) {
         console.error(
-          chalk.red("Error: The update command uses --from=<id>, not --id=<id>")
+          chalk.red(
+            "Error: The update command uses --from=<id>, not --id=<id>",
+          ),
         );
         console.log(chalk.yellow("\nTo update multiple tasks:"));
         console.log(
-                      `  lm-tasker update --from=${fromId} --prompt="Your prompt here"`
+          `  lm-tasker update --from=${fromId}`,
         );
         console.log(
           chalk.yellow(
-            "\nTo update a single specific task, use the update-task command instead:"
-          )
+            "\nTo update a single specific task, use the update-task command instead:",
+          ),
         );
         console.log(
-                      `  lm-tasker update-task --id=<id> --prompt="Your prompt here"`
-        );
-        process.exit(1);
-      }
-
-      if (!prompt) {
-        console.error(
-          chalk.red(
-            "Error: --prompt parameter is required. Please provide information about the changes."
-          )
+          `  lm-tasker update-task --id=<id>`,
         );
         process.exit(1);
       }
 
       console.log(
         chalk.blue(
-          `Updating tasks from ID >= ${fromId} with prompt: "${prompt}"`
-        )
+          `Updating tasks from ID >= ${fromId}`,
+        ),
       );
       console.log(chalk.blue(`Tasks file: ${tasksPath}`));
 
@@ -943,9 +931,8 @@ function registerCommands(programInstance) {
       await updateTasks(
         tasksPath,
         fromId,
-        prompt,
         false, // research disabled
-        {} // Pass empty context
+        {}, // Pass empty context
       );
     });
 
@@ -953,14 +940,10 @@ function registerCommands(programInstance) {
   programInstance
     .command("update-task")
     .description(
-      "Update a single specific task by ID with new information (use --id parameter)"
+      "Update a single specific task by ID with new information (use --id parameter)",
     )
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
     .option("-i, --id <id>", "Task ID to update (required)")
-    .option(
-      "-p, --prompt <text>",
-      "Prompt explaining the changes or new context (required)"
-    )
     .action(async (options) => {
       try {
         const tasksPath = options.file;
@@ -970,8 +953,8 @@ function registerCommands(programInstance) {
           console.error(chalk.red("Error: --id parameter is required"));
           console.log(
             chalk.yellow(
-              'Usage example: lm-tasker update-task --id=23 --prompt="Update with new information"'
-            )
+              'Usage example: lm-tasker update-task --id=23',
+            ),
           );
           process.exit(1);
         }
@@ -981,95 +964,58 @@ function registerCommands(programInstance) {
         if (isNaN(taskId) || taskId <= 0) {
           console.error(
             chalk.red(
-              `Error: Invalid task ID: ${options.id}. Task ID must be a positive integer.`
-            )
+              `Error: Invalid task ID: ${options.id}. Task ID must be a positive integer.`,
+            ),
           );
           console.log(
             chalk.yellow(
-              'Usage example: lm-tasker update-task --id=23 --prompt="Update with new information"'
-            )
+              'Usage example: lm-tasker update-task --id=23',
+            ),
           );
           process.exit(1);
         }
-
-        if (!options.prompt) {
-          console.error(
-            chalk.red(
-              "Error: --prompt parameter is required. Please provide information about the changes."
-            )
-          );
-          console.log(
-            chalk.yellow(
-              'Usage example: lm-tasker update-task --id=23 --prompt="Update with new information"'
-            )
-          );
-          process.exit(1);
-        }
-
-        const prompt = options.prompt;
 
         // Validate tasks file exists
         if (!fs.existsSync(tasksPath)) {
           console.error(
-            chalk.red(`Error: Tasks file not found at path: ${tasksPath}`)
+            chalk.red(`Error: Tasks file not found at path: ${tasksPath}`),
           );
           if (tasksPath === "tasks/tasks.json") {
             console.log(
               chalk.yellow(
-                "Hint: Run task-master init or task-master parse-prd to create tasks.json first"
-              )
+                "Hint: Run task-master init or task-master parse-prd to create tasks.json first",
+              ),
             );
           } else {
             console.log(
               chalk.yellow(
-                `Hint: Check if the file path is correct: ${tasksPath}`
-              )
+                `Hint: Check if the file path is correct: ${tasksPath}`,
+              ),
             );
           }
           process.exit(1);
         }
 
         console.log(
-          chalk.blue(`Updating task ${taskId} with prompt: "${prompt}"`)
+          chalk.blue(`Updating task ${taskId}`),
         );
         console.log(chalk.blue(`Tasks file: ${tasksPath}`));
 
-        const result = await updateTaskById(tasksPath, taskId, prompt, false);
+        const result = await updateTaskById(tasksPath, taskId, false);
 
         // If the task wasn't updated (e.g., if it was already marked as done)
         if (!result) {
           console.log(
             chalk.yellow(
-              "\nTask update was not completed. Review the messages above for details."
-            )
+              "\nTask update was not completed. Review the messages above for details.",
+            ),
           );
         }
       } catch (error) {
         console.error(chalk.red(`Error: ${error.message}`));
-
-        // Provide more helpful error messages for common issues
-        if (
-          error.message.includes("task") &&
-          error.message.includes("not found")
-        ) {
-          console.log(chalk.yellow("\nTo fix this issue:"));
-          console.log(
-            "  1. Run lm-tasker list to see all available task IDs"
-          );
-          console.log("  2. Use a valid task ID with the --id parameter");
-        } else if (error.message.includes("API key")) {
-          console.log(
-            chalk.yellow(
-              "\nThis error is related to API keys. Check your environment variables."
-            )
-          );
-        }
-
-        // Use getDebugFlag getter instead of CONFIG.debug
         if (getDebugFlag()) {
           console.error(error);
         }
-
         process.exit(1);
       }
     });
@@ -1078,16 +1024,12 @@ function registerCommands(programInstance) {
   programInstance
     .command("update-subtask")
     .description(
-      "Update a subtask by appending additional timestamped information"
+      "Append additional information to a specific subtask without replacing existing content",
     )
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
     .option(
       "-i, --id <id>",
-      'Subtask ID to update in format "parentId.subtaskId" (required)'
-    )
-    .option(
-      "-p, --prompt <text>",
-      "Prompt explaining what information to add (required)"
+      "Subtask ID in format parentId.subtaskId (e.g., 5.2)",
     )
     .action(async (options) => {
       try {
@@ -1095,115 +1037,74 @@ function registerCommands(programInstance) {
 
         // Validate required parameters
         if (!options.id) {
-          console.error(chalk.red("Error: --id parameter is required"));
+          console.error(
+            chalk.red("Error: --id parameter is required"),
+          );
           console.log(
             chalk.yellow(
-              'Usage example: task-master update-subtask --id=5.2 --prompt="Add more details about the API endpoint"'
-            )
+              'Usage example: task-master update-subtask --id=5.2',
+            ),
           );
           process.exit(1);
         }
 
-        // Validate subtask ID format (should contain a dot)
+        // Validate subtask ID format
         const subtaskId = options.id;
         if (!subtaskId.includes(".")) {
           console.error(
             chalk.red(
-              `Error: Invalid subtask ID format: ${subtaskId}. Subtask ID must be in format "parentId.subtaskId"`
-            )
+              `Error: Invalid subtask ID format: ${subtaskId}. Must be in format parentId.subtaskId (e.g., 5.2)`,
+            ),
           );
           console.log(
             chalk.yellow(
-              'Usage example: task-master update-subtask --id=5.2 --prompt="Add more details about the API endpoint"'
-            )
+              'Usage example: task-master update-subtask --id=5.2',
+            ),
           );
           process.exit(1);
         }
-
-        if (!options.prompt) {
-          console.error(
-            chalk.red(
-              "Error: --prompt parameter is required. Please provide information to add to the subtask."
-            )
-          );
-          console.log(
-            chalk.yellow(
-              'Usage example: task-master update-subtask --id=5.2 --prompt="Add more details about the API endpoint"'
-            )
-          );
-          process.exit(1);
-        }
-
-        const prompt = options.prompt;
 
         // Validate tasks file exists
         if (!fs.existsSync(tasksPath)) {
           console.error(
-            chalk.red(`Error: Tasks file not found at path: ${tasksPath}`)
+            chalk.red(`Error: Tasks file not found at path: ${tasksPath}`),
           );
           if (tasksPath === "tasks/tasks.json") {
             console.log(
               chalk.yellow(
-                "Hint: Run task-master init or task-master parse-prd to create tasks.json first"
-              )
+                "Hint: Run task-master init or task-master parse-prd to create tasks.json first",
+              ),
             );
           } else {
             console.log(
               chalk.yellow(
-                `Hint: Check if the file path is correct: ${tasksPath}`
-              )
+                `Hint: Check if the file path is correct: ${tasksPath}`,
+              ),
             );
           }
           process.exit(1);
         }
 
         console.log(
-          chalk.blue(`Updating subtask ${subtaskId} with prompt: "${prompt}"`)
+          chalk.blue(`Updating subtask ${subtaskId}`),
         );
         console.log(chalk.blue(`Tasks file: ${tasksPath}`));
 
-        const result = await updateSubtaskById(
-          tasksPath,
-          subtaskId,
-          prompt,
-          false
-        );
+        const result = await updateSubtaskById(tasksPath, subtaskId);
 
+        // If the subtask wasn't updated
         if (!result) {
           console.log(
             chalk.yellow(
-              "\nSubtask update was not completed. Review the messages above for details."
-            )
+              "\nSubtask update was not completed. Review the messages above for details.",
+            ),
           );
         }
       } catch (error) {
         console.error(chalk.red(`Error: ${error.message}`));
-
-        // Provide more helpful error messages for common issues
-        if (
-          error.message.includes("subtask") &&
-          error.message.includes("not found")
-        ) {
-          console.log(chalk.yellow("\nTo fix this issue:"));
-          console.log(
-            "  1. Run lm-tasker list --with-subtasks to see all available subtask IDs"
-          );
-          console.log(
-            '  2. Use a valid subtask ID with the --id parameter in format "parentId.subtaskId"'
-          );
-        } else if (error.message.includes("API key")) {
-          console.log(
-            chalk.yellow(
-              "\nThis error is related to API keys. Check your environment variables."
-            )
-          );
-        }
-
-        // Use getDebugFlag getter instead of CONFIG.debug
         if (getDebugFlag()) {
           console.error(error);
         }
-
         process.exit(1);
       }
     });
@@ -1232,11 +1133,11 @@ function registerCommands(programInstance) {
     .description("Set the status of a task")
     .option(
       "-i, --id <id>",
-      "Task ID (can be comma-separated for multiple tasks)"
+      "Task ID (can be comma-separated for multiple tasks)",
     )
     .option(
       "-s, --status <status>",
-      `New status (one of: ${TASK_STATUS_OPTIONS.join(", ")})`
+      `New status (one of: ${TASK_STATUS_OPTIONS.join(", ")})`,
     )
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
     .action(async (options) => {
@@ -1252,15 +1153,15 @@ function registerCommands(programInstance) {
       if (!isValidTaskStatus(status)) {
         console.error(
           chalk.red(
-            `Error: Invalid status value: ${status}. Use one of: ${TASK_STATUS_OPTIONS.join(", ")}`
-          )
+            `Error: Invalid status value: ${status}. Use one of: ${TASK_STATUS_OPTIONS.join(", ")}`,
+          ),
         );
 
         process.exit(1);
       }
 
       console.log(
-        chalk.blue(`Setting status of task(s) ${taskId} to: ${status}`)
+        chalk.blue(`Setting status of task(s) ${taskId} to: ${status}`),
       );
 
       await setTaskStatus(tasksPath, taskId, status);
@@ -1294,7 +1195,7 @@ function registerCommands(programInstance) {
         tasksPath,
         statusFilter,
         withSubtasks,
-        outputFormat
+        outputFormat,
       );
 
       if (outputFormat === "json") {
@@ -1309,7 +1210,7 @@ function registerCommands(programInstance) {
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
     .option(
       "-i, --id <ids>",
-      "Task IDs (comma-separated) to clear subtasks from"
+      "Task IDs (comma-separated) to clear subtasks from",
     )
     .option("--all", "Clear subtasks from all tasks")
     .action(async (options) => {
@@ -1320,8 +1221,8 @@ function registerCommands(programInstance) {
       if (!taskIds && !all) {
         console.error(
           chalk.red(
-            "Error: Please specify task IDs with --id=<ids> or use --all to clear all tasks"
-          )
+            "Error: Please specify task IDs with --id=<ids> or use --all to clear all tasks",
+          ),
         );
         process.exit(1);
       }
@@ -1343,40 +1244,36 @@ function registerCommands(programInstance) {
   // add-task command
   programInstance
     .command("add-task")
-    .description("Add a new task using AI, optionally providing manual details")
+    .description("Add a new task manually with specified details")
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
-    .option(
-      "-p, --prompt <prompt>",
-      "Description of the task to add (required if not using manual fields)"
-    )
-    .option("-t, --title <title>", "Task title (for manual task creation)")
+    .option("-t, --title <title>", "Task title (required)")
     .option(
       "-d, --description <description>",
-      "Task description (for manual task creation)"
+      "Task description (required)",
     )
     .option(
       "--details <details>",
-      "Implementation details (for manual task creation)"
+      "Implementation details (optional)",
     )
     .option(
       "--dependencies <dependencies>",
-      "Comma-separated list of task IDs this task depends on"
+      "Comma-separated list of task IDs this task depends on",
     )
     .option(
       "--priority <priority>",
       "Task priority (high, medium, low)",
-      "medium"
+      "medium",
     )
     .action(async (options) => {
-      const isManualCreation = options.title && options.description;
-
-      // Validate that either prompt or title+description are provided
-      if (!options.prompt && !isManualCreation) {
+      // Validate that both title and description are provided
+      if (!options.title || !options.description) {
         console.error(
           chalk.red(
-            "Error: Either --prompt or both --title and --description must be provided"
-          )
+            "Error: Both --title and --description are required for manual task creation",
+          ),
         );
+        console.log(chalk.yellow("\nUsage example:"));
+        console.log("  lm-tasker add-task --title=\"Setup Database\" --description=\"Configure PostgreSQL database for the application\"");
         process.exit(1);
       }
 
@@ -1388,32 +1285,24 @@ function registerCommands(programInstance) {
       // Correctly determine projectRoot
       const projectRoot = findProjectRoot();
 
-      let manualTaskData = null;
-      if (isManualCreation) {
-        manualTaskData = {
-          title: options.title,
-          description: options.description,
-          details: options.details || "",
-          testStrategy: options.testStrategy || "",
-        };
-        // Restore specific logging for manual creation
-        console.log(
-          chalk.blue(`Creating task manually with title: "${options.title}"`)
-        );
-      } else {
-        // Restore specific logging for AI creation
-        console.log(
-          chalk.blue(`Creating task with AI using prompt: "${options.prompt}"`)
-        );
-      }
+      const manualTaskData = {
+        title: options.title,
+        description: options.description,
+        details: options.details || "",
+        testStrategy: options.testStrategy || "",
+      };
 
-      // Log dependencies and priority if provided (restored)
+      console.log(
+        chalk.blue(`Creating task manually with title: "${options.title}"`),
+      );
+
+      // Log dependencies and priority if provided
       const dependenciesArray = options.dependencies
         ? options.dependencies.split(",").map((id) => id.trim())
         : [];
       if (dependenciesArray.length > 0) {
         console.log(
-          chalk.blue(`Dependencies: [${dependenciesArray.join(", ")}]`)
+          chalk.blue(`Dependencies: [${dependenciesArray.join(", ")}]`),
         );
       }
       if (options.priority) {
@@ -1429,17 +1318,16 @@ function registerCommands(programInstance) {
       try {
         const { newTaskId, telemetryData } = await addTask(
           tasksPath,
-          options.prompt,
+          null, // No prompt for manual creation
           dependenciesArray,
           options.priority,
           context,
           "text",
           manualTaskData,
-          false // research disabled
+          false, // research disabled
         );
 
-        // addTask handles detailed CLI success logging AND telemetry display when outputFormat is 'text'
-        // No need to call displayAiUsageSummary here anymore.
+        console.log(chalk.green(`Successfully created task ${newTaskId}`));
       } catch (error) {
         console.error(chalk.red(`Error adding task: ${error.message}`));
         if (error.details) {
@@ -1453,7 +1341,7 @@ function registerCommands(programInstance) {
   programInstance
     .command("next")
     .description(
-      `Show the next task to work on based on dependencies and status${chalk.reset("")}`
+      `Show the next task to work on based on dependencies and status${chalk.reset("")}`,
     )
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
     .action(async (options) => {
@@ -1465,7 +1353,7 @@ function registerCommands(programInstance) {
   programInstance
     .command("show")
     .description(
-      `Display detailed information about a specific task${chalk.reset("")}`
+      `Display detailed information about a specific task${chalk.reset("")}`,
     )
     .argument("[id]", "Task ID to show")
     .option("-i, --id <id>", "Task ID to show")
@@ -1488,7 +1376,7 @@ function registerCommands(programInstance) {
         tasksPath,
         idArg,
         statusFilter,
-        outputFormat
+        outputFormat,
       );
 
       if (outputFormat === "json") {
@@ -1510,7 +1398,7 @@ function registerCommands(programInstance) {
 
       if (!taskId || !dependencyId) {
         console.error(
-          chalk.red("Error: Both --id and --depends-on are required")
+          chalk.red("Error: Both --id and --depends-on are required"),
         );
         process.exit(1);
       }
@@ -1541,7 +1429,7 @@ function registerCommands(programInstance) {
 
       if (!taskId || !dependencyId) {
         console.error(
-          chalk.red("Error: Both --id and --depends-on are required")
+          chalk.red("Error: Both --id and --depends-on are required"),
         );
         process.exit(1);
       }
@@ -1562,7 +1450,7 @@ function registerCommands(programInstance) {
   programInstance
     .command("validate-dependencies")
     .description(
-      `Identify invalid dependencies without fixing them${chalk.reset("")}`
+      `Identify invalid dependencies without fixing them${chalk.reset("")}`,
     )
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
     .action(async (options) => {
@@ -1587,13 +1475,13 @@ function registerCommands(programInstance) {
     .option("-i, --task-id <id>", "Existing task ID to convert to subtask")
     .option(
       "-t, --title <title>",
-      "Title for the new subtask (when creating a new subtask)"
+      "Title for the new subtask (when creating a new subtask)",
     )
     .option("-d, --description <text>", "Description for the new subtask")
     .option("--details <text>", "Implementation details for the new subtask")
     .option(
       "--dependencies <ids>",
-      "Comma-separated list of dependency IDs for the new subtask"
+      "Comma-separated list of dependency IDs for the new subtask",
     )
     .option("-s, --status <status>", "Status for the new subtask", "pending")
     .option("--skip-generate", "Skip regenerating task files")
@@ -1606,8 +1494,8 @@ function registerCommands(programInstance) {
       if (!parentId) {
         console.error(
           chalk.red(
-            "Error: --parent parameter is required. Please provide a parent task ID."
-          )
+            "Error: --parent parameter is required. Please provide a parent task ID.",
+          ),
         );
         showAddSubtaskHelp();
         process.exit(1);
@@ -1627,25 +1515,25 @@ function registerCommands(programInstance) {
           // Convert existing task to subtask
           console.log(
             chalk.blue(
-              `Converting task ${existingTaskId} to a subtask of ${parentId}...`
-            )
+              `Converting task ${existingTaskId} to a subtask of ${parentId}...`,
+            ),
           );
           await addSubtask(
             tasksPath,
             parentId,
             existingTaskId,
             null,
-            generateFiles
+            generateFiles,
           );
           console.log(
             chalk.green(
-              `✓ Task ${existingTaskId} successfully converted to a subtask of task ${parentId}`
-            )
+              `✓ Task ${existingTaskId} successfully converted to a subtask of task ${parentId}`,
+            ),
           );
         } else if (options.title) {
           // Create new subtask with provided data
           console.log(
-            chalk.blue(`Creating new subtask for parent task ${parentId}...`)
+            chalk.blue(`Creating new subtask for parent task ${parentId}...`),
           );
 
           const newSubtaskData = {
@@ -1661,19 +1549,19 @@ function registerCommands(programInstance) {
             parentId,
             null,
             newSubtaskData,
-            generateFiles
+            generateFiles,
           );
           console.log(
             chalk.green(
-              `✓ New subtask ${parentId}.${subtask.id} successfully created`
-            )
+              `✓ New subtask ${parentId}.${subtask.id} successfully created`,
+            ),
           );
 
           // Display success message and suggested next steps
           console.log(
             boxen(
               chalk.white.bold(
-                `Subtask ${parentId}.${subtask.id} Added Successfully`
+                `Subtask ${parentId}.${subtask.id} Added Successfully`,
               ) +
                 "\n\n" +
                 chalk.white(`Title: ${subtask.title}`) +
@@ -1688,23 +1576,23 @@ function registerCommands(programInstance) {
                 chalk.white.bold("Next Steps:") +
                 "\n" +
                 chalk.cyan(
-                  `1. Run ${chalk.yellow(`lm-tasker show ${parentId}`)} to see the parent task with all subtasks`
+                  `1. Run ${chalk.yellow(`lm-tasker show ${parentId}`)} to see the parent task with all subtasks`,
                 ) +
                 "\n" +
                 chalk.cyan(
-                  `2. Run ${chalk.yellow(`lm-tasker set-status --id=${parentId}.${subtask.id} --status=in-progress`)} to start working on it`
+                  `2. Run ${chalk.yellow(`lm-tasker set-status --id=${parentId}.${subtask.id} --status=in-progress`)} to start working on it`,
                 ),
               {
                 padding: 1,
                 borderColor: "green",
                 borderStyle: "round",
                 margin: { top: 1 },
-              }
-            )
+              },
+            ),
           );
         } else {
           console.error(
-            chalk.red("Error: Either --task-id or --title must be provided.")
+            chalk.red("Error: Either --task-id or --title must be provided."),
           );
           console.log(
             boxen(
@@ -1712,18 +1600,16 @@ function registerCommands(programInstance) {
                 "\n\n" +
                 chalk.white("Convert existing task to subtask:") +
                 "\n" +
-                chalk.yellow(
-                  `  lm-tasker add-subtask --parent=5 --task-id=8`
-                ) +
+                chalk.yellow(`  lm-tasker add-subtask --parent=5 --task-id=8`) +
                 "\n\n" +
                 chalk.white("Create new subtask:") +
                 "\n" +
                 chalk.yellow(
-                  `  lm-tasker add-subtask --parent=5 --title="Implement login UI" --description="Create the login form"`
+                  `  lm-tasker add-subtask --parent=5 --title="Implement login UI" --description="Create the login form"`,
                 ) +
                 "\n\n",
-              { padding: 1, borderColor: "blue", borderStyle: "round" }
-            )
+              { padding: 1, borderColor: "blue", borderStyle: "round" },
+            ),
           );
           process.exit(1);
         }
@@ -1763,8 +1649,8 @@ function registerCommands(programInstance) {
           "\n" +
           "  task-master add-subtask --parent=5 --task-id=8\n" +
           '  task-master add-subtask -p 5 -t "Implement login UI" -d "Create the login form"',
-        { padding: 1, borderColor: "blue", borderStyle: "round" }
-      )
+        { padding: 1, borderColor: "blue", borderStyle: "round" },
+      ),
     );
   }
 
@@ -1775,11 +1661,11 @@ function registerCommands(programInstance) {
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
     .option(
       "-i, --id <id>",
-      'Subtask ID(s) to remove in format "parentId.subtaskId" (can be comma-separated for multiple subtasks)'
+      'Subtask ID(s) to remove in format "parentId.subtaskId" (can be comma-separated for multiple subtasks)',
     )
     .option(
       "-c, --convert",
-      "Convert the subtask to a standalone task instead of deleting it"
+      "Convert the subtask to a standalone task instead of deleting it",
     )
     .option("--skip-generate", "Skip regenerating task files")
     .action(async (options) => {
@@ -1791,8 +1677,8 @@ function registerCommands(programInstance) {
       if (!subtaskIds) {
         console.error(
           chalk.red(
-            'Error: --id parameter is required. Please provide subtask ID(s) in format "parentId.subtaskId".'
-          )
+            'Error: --id parameter is required. Please provide subtask ID(s) in format "parentId.subtaskId".',
+          ),
         );
         showRemoveSubtaskHelp();
         process.exit(1);
@@ -1807,8 +1693,8 @@ function registerCommands(programInstance) {
           if (!subtaskId.includes(".")) {
             console.error(
               chalk.red(
-                `Error: Subtask ID "${subtaskId}" must be in format "parentId.subtaskId"`
-              )
+                `Error: Subtask ID "${subtaskId}" must be in format "parentId.subtaskId"`,
+              ),
             );
             showRemoveSubtaskHelp();
             process.exit(1);
@@ -1817,7 +1703,7 @@ function registerCommands(programInstance) {
           console.log(chalk.blue(`Removing subtask ${subtaskId}...`));
           if (convertToTask) {
             console.log(
-              chalk.blue("The subtask will be converted to a standalone task")
+              chalk.blue("The subtask will be converted to a standalone task"),
             );
           }
 
@@ -1825,7 +1711,7 @@ function registerCommands(programInstance) {
             tasksPath,
             subtaskId,
             convertToTask,
-            generateFiles
+            generateFiles,
           );
 
           if (convertToTask && result) {
@@ -1833,7 +1719,7 @@ function registerCommands(programInstance) {
             console.log(
               boxen(
                 chalk.white.bold(
-                  `Subtask ${subtaskId} Converted to Task #${result.id}`
+                  `Subtask ${subtaskId} Converted to Task #${result.id}`,
                 ) +
                   "\n\n" +
                   chalk.white(`Title: ${result.title}`) +
@@ -1841,25 +1727,25 @@ function registerCommands(programInstance) {
                   chalk.white(`Status: ${getStatusWithColor(result.status)}`) +
                   "\n" +
                   chalk.white(
-                    `Dependencies: ${result.dependencies.join(", ")}`
+                    `Dependencies: ${result.dependencies.join(", ")}`,
                   ) +
                   "\n\n" +
                   chalk.white.bold("Next Steps:") +
                   "\n" +
                   chalk.cyan(
-                    `1. Run ${chalk.yellow(`task-master show ${result.id}`)} to see details of the new task`
+                    `1. Run ${chalk.yellow(`task-master show ${result.id}`)} to see details of the new task`,
                   ) +
                   "\n" +
                   chalk.cyan(
-                    `2. Run ${chalk.yellow(`task-master set-status --id=${result.id} --status=in-progress`)} to start working on it`
+                    `2. Run ${chalk.yellow(`task-master set-status --id=${result.id} --status=in-progress`)} to start working on it`,
                   ),
                 {
                   padding: 1,
                   borderColor: "green",
                   borderStyle: "round",
                   margin: { top: 1 },
-                }
-              )
+                },
+              ),
             );
           } else {
             // Display success message for deleted subtask
@@ -1873,8 +1759,8 @@ function registerCommands(programInstance) {
                   borderColor: "green",
                   borderStyle: "round",
                   margin: { top: 1 },
-                }
-              )
+                },
+              ),
             );
           }
         }
@@ -1910,8 +1796,8 @@ function registerCommands(programInstance) {
           "  task-master remove-subtask --id=5.2\n" +
           "  task-master remove-subtask --id=5.2,6.3,7.1\n" +
           "  task-master remove-subtask --id=5.2 --convert",
-        { padding: 1, borderColor: "blue", borderStyle: "round" }
-      )
+        { padding: 1, borderColor: "blue", borderStyle: "round" },
+      ),
     );
   }
 
@@ -1922,7 +1808,7 @@ function registerCommands(programInstance) {
     .description("Remove one or more tasks or subtasks permanently")
     .option(
       "-i, --id <ids>",
-      'ID(s) of the task(s) or subtask(s) to remove (e.g., "5", "5.2", or "5,6.1,7")'
+      'ID(s) of the task(s) or subtask(s) to remove (e.g., "5", "5.2", or "5,6.1,7")',
     )
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
     .option("-y, --yes", "Skip confirmation prompt", false)
@@ -1934,8 +1820,8 @@ function registerCommands(programInstance) {
         console.error(chalk.red("Error: Task ID(s) are required"));
         console.error(
           chalk.yellow(
-            "Usage: task-master remove-task --id=<taskId1,taskId2...>"
-          )
+            "Usage: task-master remove-task --id=<taskId1,taskId2...>",
+          ),
         );
         process.exit(1);
       }
@@ -1955,7 +1841,7 @@ function registerCommands(programInstance) {
         const data = readJSON(tasksPath);
         if (!data || !data.tasks) {
           console.error(
-            chalk.red(`Error: No valid tasks found in ${tasksPath}`)
+            chalk.red(`Error: No valid tasks found in ${tasksPath}`),
           );
           process.exit(1);
         }
@@ -1985,11 +1871,11 @@ function registerCommands(programInstance) {
                 const dependentTasks = data.tasks.filter(
                   (t) =>
                     t.dependencies &&
-                    t.dependencies.includes(parseInt(taskId, 10))
+                    t.dependencies.includes(parseInt(taskId, 10)),
                 );
                 if (dependentTasks.length > 0) {
                   dependentTaskMessages.push(
-                    `  - Task ${taskId}: ${dependentTasks.length} dependent tasks (${dependentTasks.map((t) => t.id).join(", ")})`
+                    `  - Task ${taskId}: ${dependentTasks.length} dependent tasks (${dependentTasks.map((t) => t.id).join(", ")})`,
                   );
                 }
               }
@@ -2003,8 +1889,8 @@ function registerCommands(programInstance) {
         if (nonExistentIds.length > 0) {
           console.warn(
             chalk.yellow(
-              `Warning: The following task IDs were not found: ${nonExistentIds.join(", ")}`
-            )
+              `Warning: The following task IDs were not found: ${nonExistentIds.join(", ")}`,
+            ),
           );
         }
 
@@ -2018,8 +1904,8 @@ function registerCommands(programInstance) {
           console.log();
           console.log(
             chalk.red.bold(
-              `⚠️ WARNING: This will permanently delete the following ${existingTasksToRemove.length} item(s):`
-            )
+              `⚠️ WARNING: This will permanently delete the following ${existingTasksToRemove.length} item(s):`,
+            ),
           );
           console.log();
 
@@ -2028,20 +1914,20 @@ function registerCommands(programInstance) {
             if (task.isSubtask) {
               // Subtask - title is directly on the task object
               console.log(
-                chalk.white(`  Subtask ${id}: ${task.title || "(no title)"}`)
+                chalk.white(`  Subtask ${id}: ${task.title || "(no title)"}`),
               );
               // Optionally show parent context if available
               if (task.parentTask) {
                 console.log(
                   chalk.gray(
-                    `    (Parent: ${task.parentTask.id} - ${task.parentTask.title || "(no title)"})`
-                  )
+                    `    (Parent: ${task.parentTask.id} - ${task.parentTask.title || "(no title)"})`,
+                  ),
                 );
               }
             } else {
               // Main task - title is directly on the task object
               console.log(
-                chalk.white.bold(`  Task ${id}: ${task.title || "(no title)"}`)
+                chalk.white.bold(`  Task ${id}: ${task.title || "(no title)"}`),
               );
             }
           });
@@ -2049,19 +1935,19 @@ function registerCommands(programInstance) {
           if (totalSubtasksToDelete > 0) {
             console.log(
               chalk.yellow(
-                `⚠️ This will also delete ${totalSubtasksToDelete} subtasks associated with the selected main tasks!`
-              )
+                `⚠️ This will also delete ${totalSubtasksToDelete} subtasks associated with the selected main tasks!`,
+              ),
             );
           }
 
           if (dependentTaskMessages.length > 0) {
             console.log(
               chalk.yellow(
-                "⚠️ Warning: Dependencies on the following tasks will be removed:"
-              )
+                "⚠️ Warning: Dependencies on the following tasks will be removed:",
+              ),
             );
             dependentTaskMessages.forEach((msg) =>
-              console.log(chalk.yellow(msg))
+              console.log(chalk.yellow(msg)),
             );
           }
 
@@ -2072,7 +1958,7 @@ function registerCommands(programInstance) {
               type: "confirm",
               name: "confirm",
               message: chalk.red.bold(
-                `Are you sure you want to permanently delete these ${existingTasksToRemove.length} item(s)?`
+                `Are you sure you want to permanently delete these ${existingTasksToRemove.length} item(s)?`,
               ),
               default: false,
             },
@@ -2085,7 +1971,7 @@ function registerCommands(programInstance) {
         }
 
         const indicator = startLoadingIndicator(
-          `Removing ${existingTasksToRemove.length} task(s)/subtask(s)...`
+          `Removing ${existingTasksToRemove.length} task(s)/subtask(s)...`,
         );
 
         // Use the string of existing IDs for the core function
@@ -2100,20 +1986,20 @@ function registerCommands(programInstance) {
           console.log(
             boxen(
               chalk.green(
-                `Successfully removed ${result.removedTasks.length} task(s)/subtask(s).`
+                `Successfully removed ${result.removedTasks.length} task(s)/subtask(s).`,
               ) +
                 (result.message ? `\n\nDetails:\n${result.message}` : "") +
                 (result.error
                   ? `\n\nWarnings:\n${chalk.yellow(result.error)}`
                   : ""),
-              { padding: 1, borderColor: "green", borderStyle: "round" }
-            )
+              { padding: 1, borderColor: "green", borderStyle: "round" },
+            ),
           );
         } else {
           console.error(
             boxen(
               chalk.red(
-                `Operation completed with errors. Removed ${result.removedTasks.length} task(s)/subtask(s).`
+                `Operation completed with errors. Removed ${result.removedTasks.length} task(s)/subtask(s).`,
               ) +
                 (result.message ? `\n\nDetails:\n${result.message}` : "") +
                 (result.error ? `\n\nErrors:\n${chalk.red(result.error)}` : ""),
@@ -2121,8 +2007,8 @@ function registerCommands(programInstance) {
                 padding: 1,
                 borderColor: "red",
                 borderStyle: "round",
-              }
-            )
+              },
+            ),
           );
           process.exit(1); // Exit with error code if any part failed
         }
@@ -2131,8 +2017,8 @@ function registerCommands(programInstance) {
         if (nonExistentIds.length > 0) {
           console.warn(
             chalk.yellow(
-              `Note: The following IDs were not found initially and were skipped: ${nonExistentIds.join(", ")}`
-            )
+              `Note: The following IDs were not found initially and were skipped: ${nonExistentIds.join(", ")}`,
+            ),
           );
 
           // Exit with error if any removals failed
@@ -2142,7 +2028,7 @@ function registerCommands(programInstance) {
         }
       } catch (error) {
         console.error(
-          chalk.red(`Error: ${error.message || "An unknown error occurred"}`)
+          chalk.red(`Error: ${error.message || "An unknown error occurred"}`),
         );
         process.exit(1);
       }
@@ -2151,7 +2037,7 @@ function registerCommands(programInstance) {
   // init command (Directly calls the implementation from init.js)
   programInstance
     .command("init")
-    .description("Initialize a new project with Task Master structure")
+    .description("Initialize a new project with LM-Tasker structure")
     .option("-y, --yes", "Skip prompts and use default values")
     .option("-n, --name <name>", "Project name")
     .option("-d, --description <description>", "Project description")
@@ -2166,14 +2052,14 @@ function registerCommands(programInstance) {
         // console.log("DEBUG: Running init command action in commands.js");
         console.log(
           "DEBUG: Options received by action:",
-          JSON.stringify(cmdOptions)
+          JSON.stringify(cmdOptions),
         );
         // Directly call the initializeProject function, passing the parsed options
         await initializeProject(cmdOptions);
         // initializeProject handles its own flow, including potential process.exit()
       } catch (error) {
         console.error(
-          chalk.red(`Error during initialization: ${error.message}`)
+          chalk.red(`Error during initialization: ${error.message}`),
         );
         process.exit(1);
       }
@@ -2185,21 +2071,21 @@ function registerCommands(programInstance) {
     .description("Manage AI model configurations")
     .option(
       "--set-main <model_id>",
-      "Set the primary model for task generation/updates"
+      "Set the primary model for task generation/updates",
     )
 
     .option(
       "--set-fallback <model_id>",
-      "Set the model to use if the primary fails"
+      "Set the model to use if the primary fails",
     )
     .option("--setup", "Run interactive setup to configure models")
     .option(
       "--openrouter",
-      "Allow setting a custom OpenRouter model ID (use with --set-*) "
+      "Allow setting a custom OpenRouter model ID (use with --set-*) ",
     )
     .option(
       "--ollama",
-      "Allow setting a custom Ollama model ID (use with --set-*) "
+      "Allow setting a custom Ollama model ID (use with --set-*) ",
     )
     .addHelpText(
       "after",
@@ -2210,7 +2096,7 @@ Examples:
   $ task-master models --set-fallback claude-3-5-sonnet-20241022 # Set fallback
   $ task-master models --set-main my-custom-model --ollama  # Set custom Ollama model for main role
   $ task-master models --set-main some/other-model --openrouter # Set custom OpenRouter model for main role
-  $ task-master models --setup                            # Run interactive setup`
+  $ task-master models --setup                            # Run interactive setup`,
     )
     .action(async (options) => {
       const projectRoot = findProjectRoot(); // Find project root for context
@@ -2219,8 +2105,8 @@ Examples:
       if (options.openrouter && options.ollama) {
         console.error(
           chalk.red(
-            "Error: Cannot use both --openrouter and --ollama flags simultaneously."
-          )
+            "Error: Cannot use both --openrouter and --ollama flags simultaneously.",
+          ),
         );
         process.exit(1);
       }
@@ -2240,7 +2126,7 @@ Examples:
         } catch (setupError) {
           console.error(
             chalk.red("\\nInteractive setup failed unexpectedly:"),
-            setupError.message
+            setupError.message,
           );
         }
         // --- IMPORTANT: Exit after setup ---
@@ -2267,7 +2153,7 @@ Examples:
             updateOccurred = true;
           } else {
             console.error(
-              chalk.red(`❌ Error setting main model: ${result.error.message}`)
+              chalk.red(`❌ Error setting main model: ${result.error.message}`),
             );
           }
         }
@@ -2289,8 +2175,8 @@ Examples:
           } else {
             console.error(
               chalk.red(
-                `❌ Error setting fallback model: ${result.error.message}`
-              )
+                `❌ Error setting fallback model: ${result.error.message}`,
+              ),
             );
           }
         }
@@ -2301,8 +2187,8 @@ Examples:
         } else {
           console.log(
             chalk.yellow(
-              "\nNo model configuration changes were made (or errors occurred)."
-            )
+              "\nNo model configuration changes were made (or errors occurred).",
+            ),
           );
         }
 
@@ -2320,13 +2206,13 @@ Examples:
       if (!configResult.success) {
         console.error(
           chalk.red(
-            `❌ Error fetching configuration: ${configResult.error.message}`
-          )
+            `❌ Error fetching configuration: ${configResult.error.message}`,
+          ),
         );
       } else {
         displayModelConfiguration(
           configResult.data,
-          availableResult.data?.models || []
+          availableResult.data?.models || [],
         );
       }
 
@@ -2336,8 +2222,8 @@ Examples:
       } else {
         console.error(
           chalk.yellow(
-            `⚠️ Warning: Could not display API Key status: ${apiKeyStatusResult.error.message}`
-          )
+            `⚠️ Warning: Could not display API Key status: ${apiKeyStatusResult.error.message}`,
+          ),
         );
       }
 
@@ -2350,14 +2236,14 @@ Examples:
             ].filter(Boolean)
           : [];
         const displayableAvailable = availableResult.data.models.filter(
-          (m) => !activeIds.includes(m.modelId) && !m.modelId.startsWith("[")
+          (m) => !activeIds.includes(m.modelId) && !m.modelId.startsWith("["),
         );
         displayAvailableModels(displayableAvailable);
       } else {
         console.error(
           chalk.yellow(
-            `⚠️ Warning: Could not display available models: ${availableResult.error.message}`
-          )
+            `⚠️ Warning: Could not display available models: ${availableResult.error.message}`,
+          ),
         );
       }
 
@@ -2366,8 +2252,8 @@ Examples:
       if (!configExists) {
         console.log(
           chalk.yellow(
-            "\\nHint: Run 'task-master models --setup' to create or update your configuration."
-          )
+            "\\nHint: Run 'task-master models --setup' to create or update your configuration.",
+          ),
         );
       }
       // --- IMPORTANT: Exit after displaying status ---
@@ -2381,11 +2267,11 @@ Examples:
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
     .option(
       "--from <id>",
-      'ID of the task/subtask to move (e.g., "5" or "5.2"). Can be comma-separated to move multiple tasks (e.g., "5,6,7")'
+      'ID of the task/subtask to move (e.g., "5" or "5.2"). Can be comma-separated to move multiple tasks (e.g., "5,6,7")',
     )
     .option(
       "--to <id>",
-      'ID of the destination (e.g., "7" or "7.3"). Must match the number of source IDs if comma-separated'
+      'ID of the destination (e.g., "7" or "7.3"). Must match the number of source IDs if comma-separated',
     )
     .action(async (options) => {
       const tasksPath = options.file;
@@ -2394,12 +2280,12 @@ Examples:
 
       if (!sourceId || !destinationId) {
         console.error(
-          chalk.red("Error: Both --from and --to parameters are required")
+          chalk.red("Error: Both --from and --to parameters are required"),
         );
         console.log(
           chalk.yellow(
-            "Usage: task-master move --from=<sourceId> --to=<destinationId>"
-          )
+            "Usage: task-master move --from=<sourceId> --to=<destinationId>",
+          ),
         );
         process.exit(1);
       }
@@ -2412,11 +2298,11 @@ Examples:
       if (sourceIds.length !== destinationIds.length) {
         console.error(
           chalk.red(
-            "Error: The number of source and destination IDs must match"
-          )
+            "Error: The number of source and destination IDs must match",
+          ),
         );
         console.log(
-          chalk.yellow("Example: task-master move --from=5,6,7 --to=10,11,12")
+          chalk.yellow("Example: task-master move --from=5,6,7 --to=10,11,12"),
         );
         process.exit(1);
       }
@@ -2425,8 +2311,8 @@ Examples:
       if (sourceIds.length > 1) {
         console.log(
           chalk.blue(
-            `Moving multiple tasks: ${sourceIds.join(", ")} to ${destinationIds.join(", ")}...`
-          )
+            `Moving multiple tasks: ${sourceIds.join(", ")} to ${destinationIds.join(", ")}...`,
+          ),
         );
 
         try {
@@ -2434,7 +2320,7 @@ Examples:
           const tasksData = readJSON(tasksPath);
           if (!tasksData || !tasksData.tasks) {
             console.error(
-              chalk.red(`Error: Invalid or missing tasks file at ${tasksPath}`)
+              chalk.red(`Error: Invalid or missing tasks file at ${tasksPath}`),
             );
             process.exit(1);
           }
@@ -2447,29 +2333,31 @@ Examples:
             // Skip if source and destination are the same
             if (fromId === toId) {
               console.log(
-                chalk.yellow(`Skipping ${fromId} -> ${toId} (same ID)`)
+                chalk.yellow(`Skipping ${fromId} -> ${toId} (same ID)`),
               );
               continue;
             }
 
             console.log(
-              chalk.blue(`Moving task/subtask ${fromId} to ${toId}...`)
+              chalk.blue(`Moving task/subtask ${fromId} to ${toId}...`),
             );
             try {
               await moveTask(
                 tasksPath,
                 fromId,
                 toId,
-                i === sourceIds.length - 1
+                i === sourceIds.length - 1,
               );
               console.log(
                 chalk.green(
-                  `✓ Successfully moved task/subtask ${fromId} to ${toId}`
-                )
+                  `✓ Successfully moved task/subtask ${fromId} to ${toId}`,
+                ),
               );
             } catch (error) {
               console.error(
-                chalk.red(`Error moving ${fromId} to ${toId}: ${error.message}`)
+                chalk.red(
+                  `Error moving ${fromId} to ${toId}: ${error.message}`,
+                ),
               );
               // Continue with the next task rather than exiting
             }
@@ -2481,7 +2369,7 @@ Examples:
       } else {
         // Moving a single task (existing logic)
         console.log(
-          chalk.blue(`Moving task/subtask ${sourceId} to ${destinationId}...`)
+          chalk.blue(`Moving task/subtask ${sourceId} to ${destinationId}...`),
         );
 
         try {
@@ -2489,12 +2377,12 @@ Examples:
             tasksPath,
             sourceId,
             destinationId,
-            true
+            true,
           );
           console.log(
             chalk.green(
-              `✓ Successfully moved task/subtask ${sourceId} to ${destinationId}`
-            )
+              `✓ Successfully moved task/subtask ${sourceId} to ${destinationId}`,
+            ),
           );
         } catch (error) {
           console.error(chalk.red(`Error: ${error.message}`));
@@ -2524,7 +2412,7 @@ function setupCLI() {
         const packageJsonPath = path.join(process.cwd(), "package.json");
         if (fs.existsSync(packageJsonPath)) {
           const packageJson = JSON.parse(
-            fs.readFileSync(packageJsonPath, "utf8")
+            fs.readFileSync(packageJsonPath, "utf8"),
           );
           return packageJson.version;
         }
@@ -2532,7 +2420,7 @@ function setupCLI() {
         // Silently fall back to 'unknown'
         log(
           "warn",
-          "Could not read package.json for version info in .version()"
+          "Could not read package.json for version info in .version()",
         );
       }
       return "unknown"; // Default fallback if package.json fails
@@ -2558,7 +2446,7 @@ function setupCLI() {
  */
 async function checkForUpdate() {
   // Get current version from package.json ONLY
-  		const currentVersion = getLmTaskerVersion();
+  const currentVersion = getLmTaskerVersion();
 
   return new Promise((resolve) => {
     // Get the latest version from npm registry
@@ -2656,13 +2544,13 @@ function compareVersions(v1, v2) {
 function displayUpgradeNotification(currentVersion, latestVersion) {
   const message = boxen(
     `${chalk.blue.bold("Update Available!")} ${chalk.dim(currentVersion)} → ${chalk.green(latestVersion)}\n\n` +
-      					`Run ${chalk.cyan("npm i lm-tasker@latest -g")} to update to the latest version with new features and bug fixes.`,
+      `Run ${chalk.cyan("npm i lm-tasker@latest -g")} to update to the latest version with new features and bug fixes.`,
     {
       padding: 1,
       margin: { top: 1, bottom: 1 },
       borderColor: "yellow",
       borderStyle: "round",
-    }
+    },
   );
 
   console.log(message);
@@ -2706,7 +2594,7 @@ async function runCLI(argv = process.argv) {
       if (updateInfo.needsUpdate) {
         displayUpgradeNotification(
           updateInfo.currentVersion,
-          updateInfo.latestVersion
+          updateInfo.latestVersion,
         );
       }
     }
@@ -2721,7 +2609,7 @@ async function runCLI(argv = process.argv) {
             chalk.yellow.bold(".lmtaskerconfig") +
             chalk.white(
               " file in your project root for AI model choices and settings.\n\n" +
-                "This file appears to be "
+                "This file appears to be ",
             ) +
             chalk.red.bold("missing") +
             chalk.white(". No worries though.\n\n") +
@@ -2734,7 +2622,7 @@ async function runCLI(argv = process.argv) {
             chalk.white("*   ") +
             chalk.yellow.bold(".lmtaskerconfig") +
             chalk.white(
-              ": Stores your AI model settings (do not manually edit)\n"
+              ": Stores your AI model settings (do not manually edit)\n",
             ) +
             chalk.white("*   ") +
             chalk.yellow.bold(".env & .mcp.json") +
@@ -2742,18 +2630,18 @@ async function runCLI(argv = process.argv) {
             chalk.red.bold("only") +
             chalk.white(" for your AI provider API keys.\n\n") +
             chalk.cyan(
-              "`lm-tasker models` to check your config & available models\n"
+              "`lm-tasker models` to check your config & available models\n",
             ) +
             chalk.cyan(
-              "`lm-tasker models --setup` to adjust the AI models used by LM-Tasker"
+              "`lm-tasker models --setup` to adjust the AI models used by LM-Tasker",
             ),
           {
             padding: 1,
             margin: { top: 1 },
             borderColor: "red",
             borderStyle: "round",
-          }
-        )
+          },
+        ),
       );
     } else {
       // Generic error handling for other errors

@@ -19,4 +19,5 @@ Welcome to the LM-Tasker documentation. Use the links below to navigate to the i
 
 ## Need More Help?
 
-If you can't find what you're looking for in these docs, please check the [main README](../README.md) or visit our [GitHub repository](https://github.com/finastra-platform/MCP-TaskMaster).
+If you can't find what you're looking for in these docs, please check the [main README](../README.md) or visit our
+[GitHub repository](https://github.com/finastra-platform/MCP-LM-Tasker).

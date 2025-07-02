@@ -3,15 +3,16 @@
  * Utility for loading task data directly from tasks.json file
  */
 
-import fs from 'fs';
-import path from 'path';
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import fs from "fs";
+import path from "path";
+import { exec } from "child_process";
+import { promisify } from "util";
 
 export class JsonLoader {
   constructor(options = {}) {
     this.projectRoot = options.projectRoot || process.cwd();
-    this.tasksFile = options.tasksFile || path.join(this.projectRoot, 'tasks', 'tasks.json');
+    this.tasksFile =
+      options.tasksFile || path.join(this.projectRoot, "tasks", "tasks.json");
     this.debug = options.debug || false;
   }
 
@@ -22,12 +23,15 @@ export class JsonLoader {
    */
   readTasksJson() {
     try {
-      const rawData = fs.readFileSync(this.tasksFile, 'utf8');
+      const rawData = fs.readFileSync(this.tasksFile, "utf8");
       return JSON.parse(rawData);
     } catch (error) {
-      console.error(`Error reading JSON file ${this.tasksFile}:`, error.message);
+      console.error(
+        `Error reading JSON file ${this.tasksFile}:`,
+        error.message,
+      );
       if (this.debug) {
-        console.error('Full error details:', error);
+        console.error("Full error details:", error);
       }
       return null;
     }
@@ -48,12 +52,14 @@ export class JsonLoader {
       }
 
       // Filter tasks by status if specified
-      const filteredTasks = options.status && options.status.toLowerCase() !== 'all'
-        ? data.tasks.filter(task => 
-            task.status && 
-            task.status.toLowerCase() === options.status.toLowerCase()
-          )
-        : data.tasks;
+      const filteredTasks =
+        options.status && options.status.toLowerCase() !== "all"
+          ? data.tasks.filter(
+              (task) =>
+                task.status &&
+                task.status.toLowerCase() === options.status.toLowerCase(),
+            )
+          : data.tasks;
 
       // Calculate statistics
       const stats = this.calculateStats(data.tasks);
@@ -70,7 +76,7 @@ export class JsonLoader {
 
       return { tasks: tasksToReturn, stats };
     } catch (error) {
-      console.error('Error getting tasks:', error.message);
+      console.error("Error getting tasks:", error.message);
       return { tasks: [], stats: this.getEmptyStats() };
     }
   }
@@ -90,25 +96,25 @@ export class JsonLoader {
       }
 
       // Parse task ID to handle both numeric and string IDs
-      const parsedId = String(taskId).includes('.')
+      const parsedId = String(taskId).includes(".")
         ? taskId // It's a subtask ID (e.g., "1.2")
         : Number(taskId); // It's a main task ID
 
       // Handle subtask ID (e.g., "1.2")
-      if (typeof parsedId === 'string' && parsedId.includes('.')) {
-        const [parentId, subtaskId] = parsedId.split('.').map(Number);
-        const parentTask = data.tasks.find(t => t.id === parentId);
-        
+      if (typeof parsedId === "string" && parsedId.includes(".")) {
+        const [parentId, subtaskId] = parsedId.split(".").map(Number);
+        const parentTask = data.tasks.find((t) => t.id === parentId);
+
         if (!parentTask || !parentTask.subtasks) {
           return null;
         }
-        
-        const subtask = parentTask.subtasks.find(s => s.id === subtaskId);
+
+        const subtask = parentTask.subtasks.find((s) => s.id === subtaskId);
         return subtask || null;
       }
 
       // Handle main task ID
-      const task = data.tasks.find(t => t.id === parsedId);
+      const task = data.tasks.find((t) => t.id === parsedId);
       if (!task) {
         return null;
       }
@@ -116,7 +122,7 @@ export class JsonLoader {
       // Filter subtasks by status if specified
       if (options.statusFilter && task.subtasks) {
         task.subtasks = task.subtasks.filter(
-          subtask => subtask.status === options.statusFilter
+          (subtask) => subtask.status === options.statusFilter,
         );
       }
 
@@ -141,50 +147,52 @@ export class JsonLoader {
       }
 
       // Parse task ID to handle both numeric and string IDs
-      const isSubtask = String(taskId).includes('.');
-      
+      const isSubtask = String(taskId).includes(".");
+
       if (isSubtask) {
         // Handle subtask ID (e.g., "1.2")
-        const [parentId, subtaskId] = String(taskId).split('.').map(Number);
-        const parentTaskIndex = data.tasks.findIndex(t => t.id === parentId);
-        
+        const [parentId, subtaskId] = String(taskId).split(".").map(Number);
+        const parentTaskIndex = data.tasks.findIndex((t) => t.id === parentId);
+
         if (parentTaskIndex === -1 || !data.tasks[parentTaskIndex].subtasks) {
           throw new Error(`Task ${parentId} or its subtasks not found`);
         }
-        
+
         const subtaskIndex = data.tasks[parentTaskIndex].subtasks.findIndex(
-          s => s.id === subtaskId
+          (s) => s.id === subtaskId,
         );
-        
+
         if (subtaskIndex === -1) {
           throw new Error(`Subtask ${taskId} not found`);
         }
-        
+
         data.tasks[parentTaskIndex].subtasks[subtaskIndex].status = newStatus;
       } else {
         // Handle main task ID
-        const taskIndex = data.tasks.findIndex(t => t.id === Number(taskId));
-        
+        const taskIndex = data.tasks.findIndex((t) => t.id === Number(taskId));
+
         if (taskIndex === -1) {
           throw new Error(`Task ${taskId} not found`);
         }
-        
+
         data.tasks[taskIndex].status = newStatus;
       }
 
       // Write updated data back to file
-      fs.writeFileSync(this.tasksFile, JSON.stringify(data, null, 2), 'utf8');
-      
+      fs.writeFileSync(this.tasksFile, JSON.stringify(data, null, 2), "utf8");
+
       // Generate individual task files to keep them in sync with tasks.json
       try {
         // Use the CLI command to generate task files
         const execAsync = promisify(exec);
         await execAsync(`npx lm-tasker generate --file="${this.tasksFile}"`);
       } catch (genError) {
-        console.warn(`Warning: Failed to regenerate task files: ${genError.message}`);
+        console.warn(
+          `Warning: Failed to regenerate task files: ${genError.message}`,
+        );
         // Continue even if file generation fails - the JSON is still updated
       }
-      
+
       return true;
     } catch (error) {
       console.error(`Error updating task ${taskId} status:`, error.message);
@@ -200,60 +208,60 @@ export class JsonLoader {
    */
   calculateStats(tasks) {
     const stats = this.getEmptyStats();
-    
+
     if (!tasks || !Array.isArray(tasks)) {
       return stats;
     }
 
     stats.total = tasks.length;
-    
+
     // Count task statuses
     for (const task of tasks) {
-      if (task.status === 'done' || task.status === 'completed') {
+      if (task.status === "done" || task.status === "completed") {
         stats.completed++;
-      } else if (task.status === 'in-progress') {
+      } else if (task.status === "in-progress") {
         stats.inProgress++;
-      } else if (task.status === 'pending') {
+      } else if (task.status === "pending") {
         stats.pending++;
-      } else if (task.status === 'blocked') {
+      } else if (task.status === "blocked") {
         stats.blocked++;
-      } else if (task.status === 'deferred') {
+      } else if (task.status === "deferred") {
         stats.deferred++;
-      } else if (task.status === 'cancelled') {
+      } else if (task.status === "cancelled") {
         stats.cancelled++;
       }
-      
+
       // Count subtask statuses
       if (task.subtasks && Array.isArray(task.subtasks)) {
         stats.subtasks.total += task.subtasks.length;
-        
+
         for (const subtask of task.subtasks) {
-          if (subtask.status === 'done' || subtask.status === 'completed') {
+          if (subtask.status === "done" || subtask.status === "completed") {
             stats.subtasks.completed++;
-          } else if (subtask.status === 'in-progress') {
+          } else if (subtask.status === "in-progress") {
             stats.subtasks.inProgress++;
-          } else if (subtask.status === 'pending') {
+          } else if (subtask.status === "pending") {
             stats.subtasks.pending++;
-          } else if (subtask.status === 'blocked') {
+          } else if (subtask.status === "blocked") {
             stats.subtasks.blocked++;
-          } else if (subtask.status === 'deferred') {
+          } else if (subtask.status === "deferred") {
             stats.subtasks.deferred++;
-          } else if (subtask.status === 'cancelled') {
+          } else if (subtask.status === "cancelled") {
             stats.subtasks.cancelled++;
           }
         }
       }
     }
-    
+
     // Calculate completion percentages
-    stats.completionPercentage = stats.total > 0 
-      ? (stats.completed / stats.total) * 100 
-      : 0;
-      
-    stats.subtasks.completionPercentage = stats.subtasks.total > 0 
-      ? (stats.subtasks.completed / stats.subtasks.total) * 100 
-      : 0;
-    
+    stats.completionPercentage =
+      stats.total > 0 ? (stats.completed / stats.total) * 100 : 0;
+
+    stats.subtasks.completionPercentage =
+      stats.subtasks.total > 0
+        ? (stats.subtasks.completed / stats.subtasks.total) * 100
+        : 0;
+
     return stats;
   }
 
@@ -280,8 +288,8 @@ export class JsonLoader {
         blocked: 0,
         deferred: 0,
         cancelled: 0,
-        completionPercentage: 0
-      }
+        completionPercentage: 0,
+      },
     };
   }
 }

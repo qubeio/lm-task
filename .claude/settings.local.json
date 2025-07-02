@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(git remote set-url:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "mcp__lm-tasker__get_tasks"
     ],
     "deny": []
   }

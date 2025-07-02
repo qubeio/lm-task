@@ -14,13 +14,13 @@ const migratePRDSchema = z.object({
     .string()
     .optional()
     .describe(
-      "Path to the source PRD file to migrate. If not provided, will auto-detect old format files."
+      "Path to the source PRD file to migrate. If not provided, will auto-detect old format files.",
     ),
   target: z
     .string()
     .optional()
     .describe(
-      "Path where the migrated PRD.md file should be saved. Defaults to PRD.md in project root."
+      "Path where the migrated PRD.md file should be saved. Defaults to PRD.md in project root.",
     ),
   force: z
     .boolean()
@@ -58,7 +58,7 @@ export function registerMigratePRDTool(server) {
             analyze: args.analyze,
           },
           log,
-          { session }
+          { session },
         );
         return handleApiResult(result, log);
       } catch (error) {

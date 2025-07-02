@@ -1,5 +1,5 @@
 ---
-description: Guide for using Task Master to manage task-driven development workflows
+description: Guide for using LM-Tasker to manage task-driven development workflows
 globs: **/*
 alwaysApply: true
 ---

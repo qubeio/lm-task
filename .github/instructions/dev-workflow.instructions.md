@@ -1,21 +1,21 @@
 ---
 applyTo: "**"
-description: Guide for using Task Master to manage task-driven development workflows
+description: Guide for using LM-Tasker to manage task-driven development workflows
 ---
 
-Task Master Development Workflow
+LM-Tasker Development Workflow
 
-This guide outlines the typical process for using Task Master to manage software development projects.
+This guide outlines the typical process for using LM-Tasker to manage software development projects.
 
 ## Primary Interaction: MCP Server vs. CLI
 
-Task Master offers two primary ways to interact:
+LM-Tasker offers two primary ways to interact:
 
 1.  **MCP Server (Recommended for Integrated Tools)**:
 
     - For AI agents and integrated development environments (like Cursor), interacting via the **MCP server is the
       preferred method**.
-    - The MCP server exposes Task Master functionality through a set of tools (e.g., `get_tasks`, `add_subtask`).
+    - The MCP server exposes LM-Tasker functionality through a set of tools (e.g., `get_tasks`, `add_subtask`).
     - This method offers better performance, structured data exchange, and richer error handling compared to CLI
       parsing.
     - Refer to [`mcp.mdc`](mdc:.cursor/rules/mcp.mdc) for details on the MCP architecture and available tools.
@@ -49,15 +49,14 @@ Task Master offers two primary ways to interact:
 - Verify tasks according to test strategies before marking as complete (See [`tests.mdc`](mdc:.cursor/rules/tests.mdc))
 - Mark completed tasks with `set_task_status` / `task-master set-status --id=<id> --status=done` (see
   [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc))
-- Update dependent tasks when implementation differs from original plan using `update` /
-  `task-master update --from=<id> --prompt="..."` or `update_task` / `task-master update-task --id=<id> --prompt="..."`
-  (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc))
-- Add new tasks discovered during implementation using `add_task` / `task-master add-task --prompt=` (see
-  [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)).
+- Update dependent tasks when implementation differs from original plan using `update` / `update_task` /
+  `task-master update-task --id=<id>` (manual updates only) (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc))
+- Add new tasks discovered during implementation using `add_task` /
+  `task-master add-task --title="..." --description="..."` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)).
 - Add new subtasks as needed using `add_subtask` / `task-master add-subtask --parent=<id> --title="..."` (see
   [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)).
 - Append notes or details to subtasks using `update_subtask` /
-  `task-master update-subtask --id=<subtaskId> --prompt='Add implementation notes here...\nMore details...'` (see
+  `task-master update-subtask --id=<subtaskId> --details='Add implementation notes here...\nMore details...'` (see
   [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)).
 - Generate task files with `generate` / `task-master generate` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc))
   after updating tasks.json
@@ -75,10 +74,9 @@ Task Master offers two primary ways to interact:
 - When implementation differs significantly from planned approach
 - When future tasks need modification due to current implementation choices
 - When new dependencies or requirements emerge
-- Use `update` / `task-master update --from=<futureTaskId> --prompt='<explanation>\nUpdate context...' --research` to
-  update multiple future tasks.
-- Use `update_task` / `task-master update-task --id=<taskId> --prompt='<explanation>\nUpdate context...' --research` to
-  update a single specific task.
+- Use `update_task` / `task-master update-task --id=<futureTaskId>` (manual updates only) to update multiple future
+  tasks.
+- Use `update_task` / `task-master update-task --id=<taskId>` (manual updates only) to update a single specific task.
 
 ## Task Status Management
 
@@ -204,12 +202,12 @@ Once a task has been broken down into subtasks, follow this iterative process fo
     - Consider potential challenges or edge cases that may arise during implementation.
     - If a subtask is too complex or requires significant research, consider using breaking it down further into smaller
       subtasks. This can be done by running `add_subtask` /
-      `task-master add-subtask --parent=<subtaskId> --title='<new subtask title>' --prompt='<detailed description of the new subtask>'`.
+      `task-master add-subtask --parent=<subtaskId> --title='<new subtask title>' --description='<detailed description of the new subtask>'`.
       This allows for more focused exploration and implementation.
 
 3.  **Log the Plan:**
 
-    - Run `update_subtask` / `task-master update-subtask --id=<subtaskId> --prompt='<detailed plan>'`.
+    - Run `update_subtask` / `task-master update-subtask --id=<subtaskId> --details='<detailed plan>'`.
     - Provide the _complete and detailed_ findings from the exploration phase in the prompt. Include file paths, line
       numbers, proposed diffs, reasoning, and any potential challenges identified. Do not omit details. The goal is to
       create a rich, timestamped log within the subtask's `details`.
@@ -230,7 +228,7 @@ Once a task has been broken down into subtasks, follow this iterative process fo
     - **Before appending new information**: Briefly review the _existing_ details logged in the subtask (using
       `get_task` or recalling from context) to ensure the update adds fresh insights and avoids redundancy.
     - **Regularly** use `update_subtask` /
-      `task-master update-subtask --id=<subtaskId> --prompt='<update details>\n- What worked...\n- What didn't work...'`
+      `task-master update-subtask --id=<subtaskId> --details='<update details>\n- What worked...\n- What didn't work...'`
       to append new findings.
     - **Crucially, log:**
       - What worked ("fundamental truths" discovered).

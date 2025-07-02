@@ -7,13 +7,13 @@ import { log } from "../utils.js";
 /**
  * migrate-prd.js
  * Migration support for transitioning from legacy PRD formats
- * 
+ *
  * This module handles the migration from older PRD formats to the current
  * task structure. It maintains backward compatibility and provides a smooth
  * transition path for existing projects.
- * 
+ *
  * Provides backward compatibility and migration support for LM-Tasker PRD refactor
- * 
+ *
  * @module migrate-prd
  */
 
@@ -53,7 +53,7 @@ export function isInScriptsDirectory(filePath) {
 export function displayDeprecationWarning(
   oldPath,
   outputFormat = "text",
-  logFn = log
+  logFn = log,
 ) {
   const isOldFormat = isOldFormatPRD(oldPath);
   const isOldLocation = isInScriptsDirectory(oldPath);
@@ -63,7 +63,7 @@ export function displayDeprecationWarning(
   const warningMessage = buildWarningMessage(
     oldPath,
     isOldFormat,
-    isOldLocation
+    isOldLocation,
   );
 
   if (outputFormat === "text") {
@@ -75,8 +75,8 @@ export function displayDeprecationWarning(
           borderColor: "yellow",
           borderStyle: "round",
           margin: { top: 1, bottom: 1 },
-        }
-      )
+        },
+      ),
     );
   } else {
     logFn("warn", `DEPRECATION WARNING: ${warningMessage.replace(/\n/g, " ")}`);
@@ -221,7 +221,7 @@ export async function migratePRDFile(sourcePath, projectRoot, options = {}) {
     // Check if target already exists
     if (fs.existsSync(targetPath) && !force) {
       throw new Error(
-        `Target file already exists: ${targetPath}. Use --force to overwrite.`
+        `Target file already exists: ${targetPath}. Use --force to overwrite.`,
       );
     }
 
@@ -252,7 +252,7 @@ export async function migratePRDFile(sourcePath, projectRoot, options = {}) {
     } else {
       logFn(
         "success",
-        `Successfully migrated PRD from ${sourcePath} to ${targetPath}`
+        `Successfully migrated PRD from ${sourcePath} to ${targetPath}`,
       );
     }
 
@@ -313,8 +313,8 @@ function displayMigrationSuccess(result) {
         borderColor: "green",
         borderStyle: "round",
         margin: { top: 1, bottom: 1 },
-      }
-    )
+      },
+    ),
   );
 }
 
@@ -401,8 +401,8 @@ export async function promptForMigration(oldPath, projectRoot) {
         borderColor: "blue",
         borderStyle: "round",
         margin: { top: 1, bottom: 1 },
-      }
-    )
+      },
+    ),
   );
 
   return false; // Don't auto-migrate, let user decide

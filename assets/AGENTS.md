@@ -17,11 +17,9 @@ lm-tasker show <id>                             # View detailed task information
 lm-tasker set-status --id=<id> --status=done    # Mark task complete
 
 # Task Management
-lm-tasker add-task --prompt="description" --research        # Add new task with AI assistance
+lm-tasker add-task --title="title" --description="description"  # Add new task manually
 lm-tasker add-subtask --parent=<id> --title="subtask"      # Add subtask to existing task
-lm-tasker update-task --id=<id> --prompt="changes"         # Update specific task
-lm-tasker update --from=<id> --prompt="changes"            # Update multiple tasks from ID onwards
-lm-tasker update-subtask --id=<id> --prompt="notes"        # Add implementation notes to subtask
+# Note: AI-powered update commands have been removed - use manual editing instead
 
 
 
@@ -131,7 +129,7 @@ lm-tasker init
 lm-tasker parse-prd
 
 # Add subtasks to break down complex tasks
-lm-tasker add-subtask --parent=<id> --title="subtask name"
+lm-tasker add-subtask --parent=<id> --title="subtask name" --description="subtask description"
 
 
 ```
@@ -146,8 +144,8 @@ will add the generated tasks to the existing list of tasks..
 lm-tasker next                           # Find next available task
 lm-tasker show <id>                     # Review task details
 
-# During implementation, check in code context into the tasks and subtasks
-lm-tasker update-subtask --id=<id> --prompt="implementation notes..."
+# During implementation, manually edit tasks.json or use other commands as needed
+# Note: AI-powered update functionality has been removed
 
 # Complete tasks
 lm-tasker set-status --id=<id> --status=done
@@ -287,10 +285,10 @@ lm-tasker models --set-fallback gpt-4o-mini
 
 1. `lm-tasker show <subtask-id>` - Understand requirements
 2. Explore codebase and plan implementation
-3. `lm-tasker update-subtask --id=<id> --prompt="detailed plan"` - Log plan
+3. `lm-tasker update-subtask --id=<id> --details="detailed plan"` - Log plan
 4. `lm-tasker set-status --id=<id> --status=in-progress` - Start work
 5. Implement code following logged plan
-6. `lm-tasker update-subtask --id=<id> --prompt="what worked/didn't work"` - Log progress
+6. `lm-tasker update-subtask --id=<id> --details="what worked/didn't work"` - Log progress
 7. `lm-tasker set-status --id=<id> --status=done` - Complete task
 
 ### Complex Workflows with Checklists

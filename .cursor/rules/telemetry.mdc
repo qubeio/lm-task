@@ -1,12 +1,12 @@
 ---
-description: Guidelines for integrating AI usage telemetry across Task Master.
+description: Guidelines for integrating AI usage telemetry across LM-Tasker.
 globs: 
 alwaysApply: false
 ---
 
 # AI Usage Telemetry Integration
 
-This document outlines the standard pattern for capturing, propagating, and handling AI usage telemetry data (cost, tokens, model, etc.) across the Task Master stack. This ensures consistent telemetry for both CLI and MCP interactions.
+This document outlines the standard pattern for capturing, propagating, and handling AI usage telemetry data (cost, tokens, model, etc.) across the LM-Tasker stack. This ensures consistent telemetry for both CLI and MCP interactions.
 
 ## Overview
 

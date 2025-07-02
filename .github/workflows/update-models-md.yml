@@ -6,8 +6,8 @@ on:
       - main
       - next
     paths:
-      - 'scripts/modules/supported-models.json'
-      - 'docs/scripts/models-json-to-markdown.js'
+      - "scripts/modules/supported-models.json"
+      - "docs/scripts/models-json-to-markdown.js"
 
 jobs:
   update_markdown:
@@ -35,6 +35,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref_name }}
-          message: 'docs: Auto-update and format models.md'
-          author_name: 'github-actions[bot]'
-          author_email: 'github-actions[bot]@users.noreply.github.com'
+          message: "docs: Auto-update and format models.md"
+          author_name: "github-actions[bot]"
+          author_email: "github-actions[bot]@users.noreply.github.com"

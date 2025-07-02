@@ -1,5 +1,5 @@
 ---
-description: Guidelines for implementing and interacting with the Task Master MCP Server
+description: Guidelines for implementing and interacting with the LM-Tasker MCP Server
 globs: mcp-server/src/**/*, scripts/modules/**/*
 alwaysApply: false
 ---
@@ -332,7 +332,7 @@ These functions, located in `mcp-server/src/core/direct-functions/`, form the co
 
 ## Key Principles
 
-- **Prefer Direct Function Calls**: MCP tools should always call `*Direct` wrappers instead of `executeTaskMasterCommand`.
+- **Prefer Direct Function Calls**: MCP tools should always call `*Direct` wrappers instead of `executeLM-TaskerCommand`.
 - **Standardized Execution Flow**: Follow the pattern: MCP Tool -> `getProjectRootFromSession` -> `*Direct` Function -> Core Logic / AI Logic.
 - **Path Resolution via Direct Functions**: The `*Direct` function is responsible for finding the exact `tasks.json` path using `findTasksJsonPath`, relying on the `projectRoot` passed in `args`.
 - **AI Logic in Core Modules**: AI interactions (prompt building, calling unified service) reside within the core logic functions (`scripts/modules/*`), not direct functions.
@@ -411,7 +411,7 @@ Follow these steps to add MCP support for an existing LM-Tasker command (see [`n
         2.  Receive the result object (typically `{ success, data/error, fromCache }`).
         3.  Pass this result object to the `handleApiResult` utility (from [`tools/utils.js`](mdc:mcp-server/src/tools/utils.js)) for standardized response formatting and error handling.
         4.  Return the formatted response object provided by `handleApiResult`.
-- **CLI Execution as Fallback**: The `executeTaskMasterCommand` utility in [`tools/utils.js`](mdc:mcp-server/src/tools/utils.js) allows executing commands via the CLI (`lm-tasker ...`). This should **only** be used as a fallback if a direct function wrapper is not yet implemented or if a specific command intrinsically requires CLI execution.
+- **CLI Execution as Fallback**: The `executeLM-TaskerCommand` utility in [`tools/utils.js`](mdc:mcp-server/src/tools/utils.js) allows executing commands via the CLI (`lm-tasker ...`). This should **only** be used as a fallback if a direct function wrapper is not yet implemented or if a specific command intrinsically requires CLI execution.
 - **Centralized Utilities** (See also: [`utilities.mdc`](mdc:.cursor/rules/utilities.mdc)):
     - Use `findTasksJsonPath` (in [`task-master-core.js`](mdc:mcp-server/src/core/task-master-core.js)) *within direct function wrappers* to locate the `tasks.json` file consistently.
     - **Leverage MCP Utilities**: The file [`tools/utils.js`](mdc:mcp-server/src/tools/utils.js) contains essential helpers for MCP tool implementation:
@@ -420,7 +420,7 @@ Follow these steps to add MCP support for an existing LM-Tasker command (see [`n
         - `createContentResponse`/`createErrorResponse`: Used by `handleApiResult` to format successful/error MCP responses.
         - `processMCPResponseData`: Filters/cleans data (e.g., removing `details`, `testStrategy`) before it's sent in the MCP response. Called by `handleApiResult`.
         - `getCachedOrExecute`: **Used inside `*Direct` functions** in `task-master-core.js` to implement caching logic.
-        - `executeTaskMasterCommand`: Fallback for executing CLI commands.
+        - `executeLM-TaskerCommand`: Fallback for executing CLI commands.
 - **Caching**: To improve performance for frequently called read operations (like `listTasks`, `showTask`, `nextTask`), a caching layer using `lru-cache` is implemented.
     - **Caching logic resides *within* the direct function wrappers** in [`task-master-core.js`](mdc:mcp-server/src/core/task-master-core.js) using the `getCachedOrExecute` utility from [`tools/utils.js`](mdc:mcp-server/src/tools/utils.js).
     - Generate unique cache keys based on function arguments that define a distinct call (e.g., file path, filters).

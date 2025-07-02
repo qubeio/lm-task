@@ -96,7 +96,7 @@ export async function parsePRDDirect(args, log, context = {}) {
     }
   } catch (dirError) {
     logWrapper.error(
-      `Failed to create output directory ${outputDir}: ${dirError.message}`
+      `Failed to create output directory ${outputDir}: ${dirError.message}`,
     );
     // Return an error response immediately if dir creation fails
     return {
@@ -116,7 +116,7 @@ export async function parsePRDDirect(args, log, context = {}) {
       // Ensure positive number
       numTasks = getDefaultNumTasks(projectRoot); // Fallback to default if parsing fails or invalid
       logWrapper.warn(
-        `Invalid numTasks value: ${numTasksArg}. Using default: ${numTasks}`
+        `Invalid numTasks value: ${numTasksArg}. Using default: ${numTasks}`,
       );
     }
   }
@@ -125,19 +125,19 @@ export async function parsePRDDirect(args, log, context = {}) {
     logWrapper.info("Append mode enabled.");
     if (force) {
       logWrapper.warn(
-        "Both --force and --append flags were provided. --force takes precedence; append mode will be ignored."
+        "Both --force and --append flags were provided. --force takes precedence; append mode will be ignored.",
       );
     }
   }
 
   if (research) {
     logWrapper.info(
-      "Research mode enabled. Using Perplexity AI for enhanced PRD analysis."
+      "Research mode enabled. Using Perplexity AI for enhanced PRD analysis.",
     );
   }
 
   logWrapper.info(
-    `Parsing PRD via direct function. Input: ${inputPath}, Output: ${outputPath}, NumTasks: ${numTasks}, Force: ${force}, Append: ${append}, Research: ${research}, ProjectRoot: ${projectRoot}`
+    `Parsing PRD via direct function. Input: ${inputPath}, Output: ${outputPath}, NumTasks: ${numTasks}, Force: ${force}, Append: ${append}, Research: ${research}, ProjectRoot: ${projectRoot}`,
   );
 
   const wasSilent = isSilentMode();
@@ -161,7 +161,7 @@ export async function parsePRDDirect(args, log, context = {}) {
         commandName: "parse-prd",
         outputType: "mcp",
       },
-      "json"
+      "json",
     );
 
     // Adjust check for the new return structure
@@ -179,7 +179,7 @@ export async function parsePRDDirect(args, log, context = {}) {
     } else {
       // Handle case where core function didn't return expected success structure
       logWrapper.error(
-        "Core parsePRD function did not return a successful structure."
+        "Core parsePRD function did not return a successful structure.",
       );
       return {
         success: false,

@@ -1,6 +1,6 @@
 # Task ID: 109
 # Title: User Account and Registry Setup
-# Status: pending
+# Status: done
 # Dependencies: None
 # Priority: high
 # Description: Manual steps for the user to set up their NPM account and registry configuration.

@@ -2,8 +2,8 @@
 
 ## Overview
 
-This document outlines the design and implementation plan for a Terminal User Interface (TUI) for TaskMaster, inspired
-by tools like K9s. The TUI will provide an interactive, keyboard-driven interface for managing TaskMaster tasks.
+This document outlines the design and implementation plan for a Terminal User Interface (TUI) for LM-Tasker, inspired by
+tools like K9s. The TUI will provide an interactive, keyboard-driven interface for managing TasLM-Taskersks.
 
 ## Goals & Requirements
 
@@ -14,7 +14,7 @@ by tools like K9s. The TUI will provide an interactive, keyboard-driven interfac
 - **Search Functionality**: Forward slash (/) search similar to Vim/Less
 - **Task Management**: View, navigate, and interact with tasks efficiently
 - **Performance**: Handle large task lists smoothly
-- **Consistency**: Match existing TaskMaster CLI output formats where possible
+- **Consistency**: Match existing LM-Tasker CLI output formats where possible
 
 ### MVP Requirements
 
@@ -40,7 +40,7 @@ by tools like K9s. The TUI will provide an interactive, keyboard-driven interfac
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   TUI Frontend  │    │  CLI Adapter    │    │  TaskMaster CLI │
+│   TUI Frontend  │    │  CLI Adapter    │    │  LM-Tasker CLI │
 │  (Blessed.js)   │◄──►│   (Internal)    │◄──►│   Commands      │
 │                 │    │                 │    │                 │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
@@ -349,9 +349,9 @@ Existing CLI commands need `--json` flag support to return structured data:
 
 ## Conclusion
 
-This design provides a solid foundation for building a powerful, efficient TUI for TaskMaster. The phased approach
-allows for iterative development and user feedback, while the CLI integration ensures consistency with existing
-TaskMaster functionality.
+This design provides a solid foundation for building a powerful, efficient TUI for LM-Tasker. The phased approach allows
+for iterative development and user feedback, while the CLI integration ensures consistency with existing LM-Tasker
+functionality.
 
 The choice of Blessed.js provides the necessary performance and features for a professional TUI experience, while the
 modular architecture allows for future enhancements and maintenance.

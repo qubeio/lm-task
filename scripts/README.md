@@ -96,21 +96,21 @@ The `update` command allows you to update tasks based on new information or impl
 
 ```bash
 # Update tasks starting from ID 4 with a new prompt
-node scripts/dev.js update --from=4 --prompt="Refactor tasks from ID 4 onward to use Express instead of Fastify"
+node scripts/dev.js update-task --id=4 --title="Use Express Framework" --description="Refactor to use Express instead of Fastify"
 
 # Update all tasks (default from=1)
-node scripts/dev.js update --prompt="Add authentication to all relevant tasks"
+node scripts/dev.js add-task --title="Add Authentication" --description="Add authentication to all relevant tasks"
 
 # With research-backed updates using Perplexity AI
-node scripts/dev.js update --from=4 --prompt="Integrate OAuth 2.0" --research
+node scripts/dev.js update-task --id=4 --title="OAuth 2.0 Integration" --description="Integrate OAuth 2.0 authentication"
 
 # Specify a different tasks file
-node scripts/dev.js update --file=custom-tasks.json --from=5 --prompt="Change database from MongoDB to PostgreSQL"
+node scripts/dev.js update-task --file=custom-tasks.json --id=5 --title="Use PostgreSQL Database" --description="Change database from MongoDB to PostgreSQL"
 ```
 
 Notes:
 
-- The `--prompt` parameter is required and should explain the changes or new context
+- Manual updates only - use --title and --description parameters to specify changes
 - Only tasks that aren't marked as 'done' will be updated
 - Tasks with ID >= the specified --from value will be updated
 - The `--research` flag uses Perplexity AI for more informed updates when available
@@ -121,10 +121,10 @@ The `update-task` command allows you to update a specific task instead of multip
 
 ```bash
 # Update a specific task with new information
-node scripts/dev.js update-task --id=4 --prompt="Use JWT for authentication"
+node scripts/dev.js update-task --id=4 --title="JWT Authentication" --description="Use JWT for authentication"
 
 # With research-backed updates using Perplexity AI
-node scripts/dev.js update-task --id=4 --prompt="Use JWT for authentication" --research
+node scripts/dev.js update-task --id=4 --title="JWT Authentication" --description="Use JWT for authentication with best practices research"
 ```
 
 This command:

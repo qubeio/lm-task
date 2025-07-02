@@ -9,7 +9,7 @@ import { logger } from "../utils/logger.js";
 
 export class TaskDetailScreen {
   constructor(app, options = {}) {
-    logger.log('TaskDetailScreen constructor called.');
+    logger.log("TaskDetailScreen constructor called.");
     this.app = app;
     this.options = options; // Store options on the instance
     this.container = null;
@@ -22,7 +22,7 @@ export class TaskDetailScreen {
     this.subtaskList = null;
     this.subtaskDetailBox = null;
     this.statusBar = null;
-    
+
     // Mouse wheel scroll configuration
     this.wheelScrollAmount = 0.5; // Scroll half a line at a time to compensate for double events
 
@@ -150,15 +150,15 @@ export class TaskDetailScreen {
         this.updateSubtaskDetail();
       }
     });
-    
+
     // Control mouse wheel scroll amount for subtask list
-    this.subtaskList.on('wheeldown', () => {
+    this.subtaskList.on("wheeldown", () => {
       this.subtaskList.scroll(this.wheelScrollAmount); // Scroll half a line to compensate for double events
       this.app.render();
       return false; // Prevent default handling
     });
-    
-    this.subtaskList.on('wheelup', () => {
+
+    this.subtaskList.on("wheelup", () => {
       this.subtaskList.scroll(-this.wheelScrollAmount); // Scroll half a line to compensate for double events
       this.app.render();
       return false; // Prevent default handling
@@ -205,21 +205,21 @@ export class TaskDetailScreen {
     });
 
     // Control mouse wheel scroll amount for subtask details
-    this.subtaskDetailBox.on('wheeldown', () => {
+    this.subtaskDetailBox.on("wheeldown", () => {
       this.subtaskDetailBox.scroll(this.wheelScrollAmount); // Scroll half a line to compensate for double events
       this.app.render();
       return false; // Prevent default handling
     });
-    
-    this.subtaskDetailBox.on('wheelup', () => {
+
+    this.subtaskDetailBox.on("wheelup", () => {
       this.subtaskDetailBox.scroll(-this.wheelScrollAmount); // Scroll half a line to compensate for double events
       this.app.render();
       return false; // Prevent default handling
     });
-    
+
     // Status bar (bottom, above search box)
     // The StatusBar component now has a height of 2, so adjust bottom position accordingly
-    this.statusBar = new StatusBar(this); 
+    this.statusBar = new StatusBar(this);
     // The actual blessed widget is accessed via this.statusBar.getWidget()
     // We need to ensure it's positioned correctly, if its parent is this.container
     // The StatusBar constructor sets parent to this.screen.getContainer() which is this.container
@@ -234,32 +234,31 @@ export class TaskDetailScreen {
     // Let's assume it should be at the absolute bottom of this.container.
     // The StatusBar component itself sets its blessed box to bottom: 0 of its parent.
 
-    
     // Add click-to-focus handlers
-    this.parentTaskBox.on('click', () => {
+    this.parentTaskBox.on("click", () => {
       this.focusParentTask();
       this.app.render();
     });
-    
+
     // Control mouse wheel scroll amount
-    this.parentTaskBox.on('wheeldown', () => {
+    this.parentTaskBox.on("wheeldown", () => {
       this.parentTaskBox.scroll(this.wheelScrollAmount); // Scroll half a line to compensate for double events
       this.app.render();
       return false; // Prevent default handling
     });
-    
-    this.parentTaskBox.on('wheelup', () => {
+
+    this.parentTaskBox.on("wheelup", () => {
       this.parentTaskBox.scroll(-this.wheelScrollAmount); // Scroll half a line to compensate for double events
       this.app.render();
       return false; // Prevent default handling
     });
-    
-    this.subtaskList.on('click', () => {
+
+    this.subtaskList.on("click", () => {
       this.focusSubtasks();
       this.app.render();
     });
-    
-    this.subtaskDetailBox.on('click', () => {
+
+    this.subtaskDetailBox.on("click", () => {
       this.focusSubtaskDetails();
       this.app.render();
     });
@@ -300,7 +299,7 @@ export class TaskDetailScreen {
     this.container.key(["2"], () => {
       this.focusSubtasks();
     });
-    
+
     this.container.key(["3"], () => {
       this.focusSubtaskDetails();
     });
@@ -356,7 +355,7 @@ export class TaskDetailScreen {
     this.subtaskList.key(["2"], () => {
       this.focusSubtasks();
     });
-    
+
     this.subtaskList.key(["3"], () => {
       this.focusSubtaskDetails();
     });
@@ -409,7 +408,7 @@ export class TaskDetailScreen {
     this.parentTaskBox.key(["2"], () => {
       this.focusSubtasks();
     });
-    
+
     this.parentTaskBox.key(["3"], () => {
       this.focusSubtaskDetails();
     });
@@ -421,7 +420,7 @@ export class TaskDetailScreen {
     this.parentTaskBox.key(["s"], () => {
       this.showStatusUpdate();
     });
-    
+
     // Setup subtask details box key handlers
     this.subtaskDetailBox.key(["j", "down"], () => {
       if (this.focusedComponent === "subtaskDetails") {
@@ -436,14 +435,14 @@ export class TaskDetailScreen {
         this.app.render();
       }
     });
-    
+
     this.subtaskDetailBox.key(["space"], () => {
       if (this.focusedComponent === "subtaskDetails") {
         this.subtaskDetailBox.scroll(this.subtaskDetailBox.height - 2);
         this.app.render();
       }
     });
-    
+
     this.subtaskDetailBox.key(["b"], () => {
       if (this.focusedComponent === "subtaskDetails") {
         this.subtaskDetailBox.scroll(-(this.subtaskDetailBox.height - 2));
@@ -458,7 +457,7 @@ export class TaskDetailScreen {
     this.subtaskDetailBox.key(["2"], () => {
       this.focusSubtasks();
     });
-    
+
     this.subtaskDetailBox.key(["3"], () => {
       this.focusSubtaskDetails();
     });
@@ -476,7 +475,9 @@ export class TaskDetailScreen {
    * Set the task to display
    */
   setTask(task) {
-    logger.log(`TaskDetailScreen.setTask() called for task ID: ${task ? task.id : 'undefined'}.`);
+    logger.log(
+      `TaskDetailScreen.setTask() called for task ID: ${task ? task.id : "undefined"}.`,
+    );
     this.task = task;
     this.currentSubtaskIndex = 0; // Reset to the first subtask
     this.container.show();
@@ -507,9 +508,9 @@ export class TaskDetailScreen {
    * Update the entire display with task information
    */
   updateDisplay() {
-    logger.log('TaskDetailScreen.updateDisplay() called.');
+    logger.log("TaskDetailScreen.updateDisplay() called.");
     if (!this.task) {
-      logger.log('TaskDetailScreen.updateDisplay - no task, returning.');
+      logger.log("TaskDetailScreen.updateDisplay - no task, returning.");
       return;
     }
 
@@ -530,7 +531,7 @@ export class TaskDetailScreen {
     // Basic information
     lines.push(`{bold}Status:{/bold} ${this.task.status}`);
     lines.push(
-      `{bold}Priority:{/bold} ${this.getPriorityDisplay(this.task.priority)}`
+      `{bold}Priority:{/bold} ${this.getPriorityDisplay(this.task.priority)}`,
     );
 
     if (this.task.dependencies && this.task.dependencies.length > 0) {
@@ -577,7 +578,7 @@ export class TaskDetailScreen {
   stripEmojis(text) {
     // Simply return the text as is - we'll handle emoji display differently
     // This ensures we don't accidentally strip out status indicators like checkmarks
-    if (!text) return '';
+    if (!text) return "";
     return text;
   }
 
@@ -594,10 +595,10 @@ export class TaskDetailScreen {
       maxWidth -= (box.padding.left || 0) + (box.padding.right || 0);
     }
     if (typeof maxWidth !== "number" || maxWidth < 10) maxWidth = 80;
-    
+
     // Strip emojis before processing
     const cleanItem = this.stripEmojis(item);
-    
+
     // Remove blessed tags for length calculation
     const visible = cleanItem.replace(/\{[^}]+\}/g, "");
     if (visible.length > maxWidth) {
@@ -630,7 +631,7 @@ export class TaskDetailScreen {
     // Ensure valid subtask index and select it
     this.currentSubtaskIndex = Math.max(
       0,
-      Math.min(this.currentSubtaskIndex, this.task.subtasks.length - 1)
+      Math.min(this.currentSubtaskIndex, this.task.subtasks.length - 1),
     );
 
     this.subtaskList.select(this.currentSubtaskIndex);
@@ -656,7 +657,7 @@ export class TaskDetailScreen {
 
     // Subtask header
     lines.push(
-      `{bold}Subtask ${String(this.task.id)}.${String(subtask.id)} - ${subtask.title}{/bold}`
+      `{bold}Subtask ${String(this.task.id)}.${String(subtask.id)} - ${subtask.title}{/bold}`,
     );
     lines.push("");
 
@@ -664,7 +665,7 @@ export class TaskDetailScreen {
     lines.push(`{bold}Status:{/bold} ${subtask.status}`);
     if (subtask.priority) {
       lines.push(
-        `{bold}Priority:{/bold} ${this.getPriorityDisplay(subtask.priority)}`
+        `{bold}Priority:{/bold} ${this.getPriorityDisplay(subtask.priority)}`,
       );
     }
 
@@ -866,7 +867,7 @@ export class TaskDetailScreen {
     // StatusBar.updateDisplay() will be called by updateStatusBarContent
     this.updateStatusBarContent();
   }
-  
+
   /**
    * Update status bar for subtask details scrolling mode
    */
@@ -904,7 +905,7 @@ export class TaskDetailScreen {
       this.app.render();
     }
   }
-  
+
   /**
    * Focus the subtask details box
    */
@@ -946,7 +947,7 @@ export class TaskDetailScreen {
           this.app.statusModal.show(subtaskForModal, async (newStatus) => {
             await this.updateTaskStatus(
               `${this.task.id}.${currentSubtask.id}`,
-              newStatus
+              newStatus,
             );
           });
         }
@@ -973,7 +974,7 @@ export class TaskDetailScreen {
       } else {
         updatedTask = await this.app.cliAdapter.getTask(this.task.id);
       }
-      
+
       this.setTask(updatedTask);
 
       // Show success message
@@ -1030,18 +1031,18 @@ export class TaskDetailScreen {
     if (box.padding) {
       maxWidth -= (box.padding.left || 0) + (box.padding.right || 0);
     }
-    
+
     // Reduce width further for subtaskDetailBox to account for scrollbar
     if (box === this.subtaskDetailBox) {
       maxWidth -= 5; // Additional reduction for scrollbar
     }
-    
+
     if (typeof maxWidth !== "number" || maxWidth < 10) maxWidth = 80;
     const wrapped = [];
     for (const line of lines) {
       // Strip emojis before processing
       let l = this.stripEmojis(line);
-      
+
       // Remove blessed tags for length calculation
       let visible = l.replace(/\{[^}]+\}/g, "");
       while (visible.length > maxWidth) {

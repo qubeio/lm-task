@@ -4,6 +4,7 @@
 .vscode
 .idea
 .DS_Store
+.cursor/
 
 # Logs
 logs
@@ -11,26 +12,35 @@ logs
 npm-debug.log*
 dev-debug.log
 init-debug.log
+tui_debug.log
 
 # Source files not needed in the package
-src
 test
-tests
-docs
-examples
+tests/
+docs/
+examples/
 .editorconfig
 .eslintrc
 .prettierrc
+.prettierignore
 .travis.yml
 .gitlab-ci.yml
 tsconfig.json
 jest.config.js
 
-# Original project files
+# Project-specific files not needed in package
 tasks.json
 tasks/
-scripts/prd.txt
-.env 
+context/
+output.json
+npm_publishing_prd.txt
+test-*.js
+mcp-test.js
+llms-install.md
+PRD.md
+.lmtaskerconfig
+.env
+.env.*
 
 # Temporary files
 .tmp
@@ -42,4 +52,10 @@ scripts/prd.txt
 node_modules/
 
 # Debug files
-*.debug 
+*.debug
+
+# Changeset files
+.changeset/
+
+# Claude/AI files
+.claude/ 

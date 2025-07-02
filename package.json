@@ -39,7 +39,7 @@
     "lm-tasker"
   ],
   "author": "Andreas Frangopoulos",
-  "license": "MIT WITH Commons-Clause",
+  "license": "MIT",
   "dependencies": {
     "@ai-sdk/azure": "^1.3.17",
     "ai": "^4.3.10",
@@ -68,11 +68,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/andreas/lm-tasker.git"
+    "url": "git+https://github.com/qubeio/lm-task.git"
   },
-  "homepage": "https://github.com/andreas/lm-tasker#readme",
+  "homepage": "https://github.com/qubeio/lm-task#readme",
   "bugs": {
-    "url": "https://github.com/andreas/lm-tasker/issues"
+    "url": "https://github.com/qubeio/lm-task/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "scripts/**",

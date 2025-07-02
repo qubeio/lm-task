@@ -1,400 +1,397 @@
-import { jest } from '@jest/globals';
-import fs from 'fs';
-import path from 'path';
-import os from 'os';
+import { jest } from "@jest/globals";
+import fs from "fs";
+import path from "path";
+import os from "os";
 
 // Mock external modules
-jest.mock('child_process', () => ({
-	execSync: jest.fn()
+jest.mock("child_process", () => ({
+  execSync: jest.fn(),
 }));
 
-jest.mock('readline', () => ({
-	createInterface: jest.fn(() => ({
-		question: jest.fn(),
-		close: jest.fn()
-	}))
+jest.mock("readline", () => ({
+  createInterface: jest.fn(() => ({
+    question: jest.fn(),
+    close: jest.fn(),
+  })),
 }));
 
 // Mock figlet for banner display
-jest.mock('figlet', () => ({
-	default: {
-		textSync: jest.fn(() => 'LM-Tasker')
-	}
+jest.mock("figlet", () => ({
+  default: {
+    textSync: jest.fn(() => "LM-Tasker"),
+  },
 }));
 
 // Mock console methods
-jest.mock('console', () => ({
-	log: jest.fn(),
-	info: jest.fn(),
-	warn: jest.fn(),
-	error: jest.fn(),
-	clear: jest.fn()
+jest.mock("console", () => ({
+  log: jest.fn(),
+  info: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn(),
+  clear: jest.fn(),
 }));
 
-describe('Windsurf Rules File Handling', () => {
-	let tempDir;
+describe("Windsurf Rules File Handling", () => {
+  let tempDir;
 
-	beforeEach(() => {
-		jest.clearAllMocks();
+  beforeEach(() => {
+    jest.clearAllMocks();
 
-		// Create a temporary directory for testing
-		tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'lm-tasker-test-'));
+    // Create a temporary directory for testing
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "lm-tasker-test-"));
 
-		// Spy on fs methods
-		jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
-		jest.spyOn(fs, 'readFileSync').mockImplementation((filePath) => {
-			if (filePath.toString().includes('.windsurfrules')) {
-				return 'Existing windsurf rules content';
-			}
-			return '{}';
-		});
-		jest.spyOn(fs, 'existsSync').mockImplementation((filePath) => {
-			// Mock specific file existence checks
-			if (filePath.toString().includes('package.json')) {
-				return true;
-			}
-			return false;
-		});
-		jest.spyOn(fs, 'mkdirSync').mockImplementation(() => {});
-		jest.spyOn(fs, 'copyFileSync').mockImplementation(() => {});
-	});
+    // Spy on fs methods
+    jest.spyOn(fs, "writeFileSync").mockImplementation(() => {});
+    jest.spyOn(fs, "readFileSync").mockImplementation((filePath) => {
+      if (filePath.toString().includes(".windsurfrules")) {
+        return "Existing windsurf rules content";
+      }
+      return "{}";
+    });
+    jest.spyOn(fs, "existsSync").mockImplementation((filePath) => {
+      // Mock specific file existence checks
+      if (filePath.toString().includes("package.json")) {
+        return true;
+      }
+      return false;
+    });
+    jest.spyOn(fs, "mkdirSync").mockImplementation(() => {});
+    jest.spyOn(fs, "copyFileSync").mockImplementation(() => {});
+  });
 
-	afterEach(() => {
-		// Clean up the temporary directory
-		try {
-			fs.rmSync(tempDir, { recursive: true, force: true });
-		} catch (err) {
-			console.error(`Error cleaning up: ${err.message}`);
-		}
-	});
+  afterEach(() => {
+    // Clean up the temporary directory
+    try {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    } catch (err) {
+      console.error(`Error cleaning up: ${err.message}`);
+    }
+  });
 
-	// Test function that simulates the behavior of .windsurfrules handling
-	function mockCopyTemplateFile(templateName, targetPath) {
-		if (templateName === 'windsurfrules') {
-			const filename = path.basename(targetPath);
+  // Test function that simulates the behavior of .windsurfrules handling
+  function mockCopyTemplateFile(templateName, targetPath) {
+    if (templateName === "windsurfrules") {
+      const filename = path.basename(targetPath);
 
-			if (filename === '.windsurfrules') {
-				if (fs.existsSync(targetPath)) {
-					// Should append content when file exists
-					const existingContent = fs.readFileSync(targetPath, 'utf8');
-					const updatedContent =
-						existingContent.trim() +
-						'\n\n# Added by LM-Tasker - Development Workflow Rules\n\n' +
-						'New content';
-					fs.writeFileSync(targetPath, updatedContent);
-					return;
-				}
-			}
+      if (filename === ".windsurfrules") {
+        if (fs.existsSync(targetPath)) {
+          // Should append content when file exists
+          const existingContent = fs.readFileSync(targetPath, "utf8");
+          const updatedContent =
+            existingContent.trim() +
+            "\n\n# Added by LM-Tasker - Development Workflow Rules\n\n" +
+            "New content";
+          fs.writeFileSync(targetPath, updatedContent);
+          return;
+        }
+      }
 
-			// If file doesn't exist, create it normally
-			fs.writeFileSync(targetPath, 'New content');
-		}
-	}
+      // If file doesn't exist, create it normally
+      fs.writeFileSync(targetPath, "New content");
+    }
+  }
 
-	test('creates .windsurfrules when it does not exist', () => {
-		// Arrange
-		const targetPath = path.join(tempDir, '.windsurfrules');
+  test("creates .windsurfrules when it does not exist", () => {
+    // Arrange
+    const targetPath = path.join(tempDir, ".windsurfrules");
 
-		// Act
-		mockCopyTemplateFile('windsurfrules', targetPath);
+    // Act
+    mockCopyTemplateFile("windsurfrules", targetPath);
 
-		// Assert
-		expect(fs.writeFileSync).toHaveBeenCalledWith(targetPath, 'New content');
-	});
+    // Assert
+    expect(fs.writeFileSync).toHaveBeenCalledWith(targetPath, "New content");
+  });
 
-	test('appends content to existing .windsurfrules', () => {
-		// Arrange
-		const targetPath = path.join(tempDir, '.windsurfrules');
-		const existingContent = 'Existing windsurf rules content';
+  test("appends content to existing .windsurfrules", () => {
+    // Arrange
+    const targetPath = path.join(tempDir, ".windsurfrules");
+    const existingContent = "Existing windsurf rules content";
 
-		// Override the existsSync mock just for this test
-		fs.existsSync.mockReturnValueOnce(true); // Target file exists
-		fs.readFileSync.mockReturnValueOnce(existingContent);
+    // Override the existsSync mock just for this test
+    fs.existsSync.mockReturnValueOnce(true); // Target file exists
+    fs.readFileSync.mockReturnValueOnce(existingContent);
 
-		// Act
-		mockCopyTemplateFile('windsurfrules', targetPath);
+    // Act
+    mockCopyTemplateFile("windsurfrules", targetPath);
 
-		// Assert
-		expect(fs.writeFileSync).toHaveBeenCalledWith(
-			targetPath,
-			expect.stringContaining(existingContent)
-		);
-		expect(fs.writeFileSync).toHaveBeenCalledWith(
-			targetPath,
-			expect.stringContaining('Added by LM-Tasker')
-		);
-	});
+    // Assert
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+      targetPath,
+      expect.stringContaining(existingContent),
+    );
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+      targetPath,
+      expect.stringContaining("Added by LM-Tasker"),
+    );
+  });
 
-	test('includes .windsurfrules in project structure creation', () => {
-		// This test verifies the expected behavior by using a mock implementation
-		// that represents how createProjectStructure should work
+  test("includes .windsurfrules in project structure creation", () => {
+    // This test verifies the expected behavior by using a mock implementation
+    // that represents how createProjectStructure should work
 
-		// Mock implementation of createProjectStructure
-		function mockCreateProjectStructure(projectName) {
-			// Copy template files including .windsurfrules
-			mockCopyTemplateFile(
-				'windsurfrules',
-				path.join(tempDir, '.windsurfrules')
-			);
-		}
+    // Mock implementation of createProjectStructure
+    function mockCreateProjectStructure(projectName) {
+      // Copy template files including .windsurfrules
+      mockCopyTemplateFile(
+        "windsurfrules",
+        path.join(tempDir, ".windsurfrules"),
+      );
+    }
 
-		// Act - call our mock implementation
-		mockCreateProjectStructure('test-project');
+    // Act - call our mock implementation
+    mockCreateProjectStructure("test-project");
 
-		// Assert - verify that .windsurfrules was created
-		expect(fs.writeFileSync).toHaveBeenCalledWith(
-			path.join(tempDir, '.windsurfrules'),
-			expect.any(String)
-		);
-	});
+    // Assert - verify that .windsurfrules was created
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+      path.join(tempDir, ".windsurfrules"),
+      expect.any(String),
+    );
+  });
 });
 
 // New test suite for MCP Configuration Handling
-describe('MCP Configuration Handling', () => {
-	let tempDir;
+describe("MCP Configuration Handling", () => {
+  let tempDir;
 
-	beforeEach(() => {
-		jest.clearAllMocks();
+  beforeEach(() => {
+    jest.clearAllMocks();
 
-		// Create a temporary directory for testing
-		tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'lm-tasker-test-'));
+    // Create a temporary directory for testing
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "lm-tasker-test-"));
 
-		// Spy on fs methods
-		jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
-		jest.spyOn(fs, 'readFileSync').mockImplementation((filePath) => {
-			if (filePath.toString().includes('mcp.json')) {
-				return JSON.stringify({
-					mcpServers: {
-						'existing-server': {
-							command: 'node',
-							args: ['server.js']
-						}
-					}
-				});
-			}
-			return '{}';
-		});
-		jest.spyOn(fs, 'existsSync').mockImplementation((filePath) => {
-			// Return true for specific paths to test different scenarios
-			if (filePath.toString().includes('package.json')) {
-				return true;
-			}
-			// Default to false for other paths
-			return false;
-		});
-		jest.spyOn(fs, 'mkdirSync').mockImplementation(() => {});
-		jest.spyOn(fs, 'copyFileSync').mockImplementation(() => {});
-	});
+    // Spy on fs methods
+    jest.spyOn(fs, "writeFileSync").mockImplementation(() => {});
+    jest.spyOn(fs, "readFileSync").mockImplementation((filePath) => {
+      if (filePath.toString().includes("mcp.json")) {
+        return JSON.stringify({
+          mcpServers: {
+            "existing-server": {
+              command: "node",
+              args: ["server.js"],
+            },
+          },
+        });
+      }
+      return "{}";
+    });
+    jest.spyOn(fs, "existsSync").mockImplementation((filePath) => {
+      // Return true for specific paths to test different scenarios
+      if (filePath.toString().includes("package.json")) {
+        return true;
+      }
+      // Default to false for other paths
+      return false;
+    });
+    jest.spyOn(fs, "mkdirSync").mockImplementation(() => {});
+    jest.spyOn(fs, "copyFileSync").mockImplementation(() => {});
+  });
 
-	afterEach(() => {
-		// Clean up the temporary directory
-		try {
-			fs.rmSync(tempDir, { recursive: true, force: true });
-		} catch (err) {
-			console.error(`Error cleaning up: ${err.message}`);
-		}
-	});
+  afterEach(() => {
+    // Clean up the temporary directory
+    try {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    } catch (err) {
+      console.error(`Error cleaning up: ${err.message}`);
+    }
+  });
 
-	// Test function that simulates the behavior of setupMCPConfiguration
-	function mockSetupMCPConfiguration(targetDir, projectName) {
-		const mcpDirPath = path.join(targetDir, '.cursor');
-		const mcpJsonPath = path.join(mcpDirPath, 'mcp.json');
+  // Test function that simulates the behavior of setupMCPConfiguration
+  function mockSetupMCPConfiguration(targetDir, projectName) {
+    const mcpDirPath = path.join(targetDir, ".cursor");
+    const mcpJsonPath = path.join(mcpDirPath, "mcp.json");
 
-		// Create .cursor directory if it doesn't exist
-		if (!fs.existsSync(mcpDirPath)) {
-			fs.mkdirSync(mcpDirPath, { recursive: true });
-		}
+    // Create .cursor directory if it doesn't exist
+    if (!fs.existsSync(mcpDirPath)) {
+      fs.mkdirSync(mcpDirPath, { recursive: true });
+    }
 
-		// New MCP config to be added - references the installed package
-		const newMCPServer = {
-			'lm-tasker': {
-				command: 'npx',
-				args: ['lm-tasker', 'mcp-server']
-			}
-		};
+    // New MCP config to be added - references the installed package
+    const newMCPServer = {
+      "lm-tasker": {
+        command: "npx",
+        args: ["lm-tasker", "mcp-server"],
+      },
+    };
 
-		// Check if mcp.json already exists
-		if (fs.existsSync(mcpJsonPath)) {
-			try {
-				// Read existing config
-				const mcpConfig = JSON.parse(fs.readFileSync(mcpJsonPath, 'utf8'));
+    // Check if mcp.json already exists
+    if (fs.existsSync(mcpJsonPath)) {
+      try {
+        // Read existing config
+        const mcpConfig = JSON.parse(fs.readFileSync(mcpJsonPath, "utf8"));
 
-				// Initialize mcpServers if it doesn't exist
-				if (!mcpConfig.mcpServers) {
-					mcpConfig.mcpServers = {};
-				}
+        // Initialize mcpServers if it doesn't exist
+        if (!mcpConfig.mcpServers) {
+          mcpConfig.mcpServers = {};
+        }
 
-				// Add the lm-tasker server if it doesn't exist
-				if (!mcpConfig.mcpServers['lm-tasker']) {
-					mcpConfig.mcpServers['lm-tasker'] =
-						newMCPServer['lm-tasker'];
-				}
+        // Add the lm-tasker server if it doesn't exist
+        if (!mcpConfig.mcpServers["lm-tasker"]) {
+          mcpConfig.mcpServers["lm-tasker"] = newMCPServer["lm-tasker"];
+        }
 
-				// Write the updated configuration
-				fs.writeFileSync(mcpJsonPath, JSON.stringify(mcpConfig, null, 4));
-			} catch (error) {
-				// Create new configuration on error
-				const newMCPConfig = {
-					mcpServers: newMCPServer
-				};
+        // Write the updated configuration
+        fs.writeFileSync(mcpJsonPath, JSON.stringify(mcpConfig, null, 4));
+      } catch (error) {
+        // Create new configuration on error
+        const newMCPConfig = {
+          mcpServers: newMCPServer,
+        };
 
-				fs.writeFileSync(mcpJsonPath, JSON.stringify(newMCPConfig, null, 4));
-			}
-		} else {
-			// If mcp.json doesn't exist, create it
-			const newMCPConfig = {
-				mcpServers: newMCPServer
-			};
+        fs.writeFileSync(mcpJsonPath, JSON.stringify(newMCPConfig, null, 4));
+      }
+    } else {
+      // If mcp.json doesn't exist, create it
+      const newMCPConfig = {
+        mcpServers: newMCPServer,
+      };
 
-			fs.writeFileSync(mcpJsonPath, JSON.stringify(newMCPConfig, null, 4));
-		}
-	}
+      fs.writeFileSync(mcpJsonPath, JSON.stringify(newMCPConfig, null, 4));
+    }
+  }
 
-	test('creates mcp.json when it does not exist', () => {
-		// Arrange
-		const mcpJsonPath = path.join(tempDir, '.cursor', 'mcp.json');
+  test("creates mcp.json when it does not exist", () => {
+    // Arrange
+    const mcpJsonPath = path.join(tempDir, ".cursor", "mcp.json");
 
-		// Act
-		mockSetupMCPConfiguration(tempDir, 'test-project');
+    // Act
+    mockSetupMCPConfiguration(tempDir, "test-project");
 
-		// Assert
-		expect(fs.writeFileSync).toHaveBeenCalledWith(
-			mcpJsonPath,
-			expect.stringContaining('lm-tasker')
-		);
+    // Assert
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+      mcpJsonPath,
+      expect.stringContaining("lm-tasker"),
+    );
 
-		// Should create a proper structure with mcpServers key
-		expect(fs.writeFileSync).toHaveBeenCalledWith(
-			mcpJsonPath,
-			expect.stringContaining('mcpServers')
-		);
+    // Should create a proper structure with mcpServers key
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+      mcpJsonPath,
+      expect.stringContaining("mcpServers"),
+    );
 
-		// Should reference npx command
-		expect(fs.writeFileSync).toHaveBeenCalledWith(
-			mcpJsonPath,
-			expect.stringContaining('npx')
-		);
-	});
+    // Should reference npx command
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+      mcpJsonPath,
+      expect.stringContaining("npx"),
+    );
+  });
 
-	test('updates existing mcp.json by adding new server', () => {
-		// Arrange
-		const mcpJsonPath = path.join(tempDir, '.cursor', 'mcp.json');
+  test("updates existing mcp.json by adding new server", () => {
+    // Arrange
+    const mcpJsonPath = path.join(tempDir, ".cursor", "mcp.json");
 
-		// Override the existsSync mock to simulate mcp.json exists
-		fs.existsSync.mockImplementation((filePath) => {
-			if (filePath.toString().includes('mcp.json')) {
-				return true;
-			}
-			return false;
-		});
+    // Override the existsSync mock to simulate mcp.json exists
+    fs.existsSync.mockImplementation((filePath) => {
+      if (filePath.toString().includes("mcp.json")) {
+        return true;
+      }
+      return false;
+    });
 
-		// Act
-		mockSetupMCPConfiguration(tempDir, 'test-project');
+    // Act
+    mockSetupMCPConfiguration(tempDir, "test-project");
 
-		// Assert
-		// Should preserve existing server
-		expect(fs.writeFileSync).toHaveBeenCalledWith(
-			mcpJsonPath,
-			expect.stringContaining('existing-server')
-		);
+    // Assert
+    // Should preserve existing server
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+      mcpJsonPath,
+      expect.stringContaining("existing-server"),
+    );
 
-		// Should add our new server
-		expect(fs.writeFileSync).toHaveBeenCalledWith(
-			mcpJsonPath,
-			expect.stringContaining('lm-tasker')
-		);
-	});
+    // Should add our new server
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+      mcpJsonPath,
+      expect.stringContaining("lm-tasker"),
+    );
+  });
 
-	test('handles JSON parsing errors by creating new mcp.json', () => {
-		// Arrange
-		const mcpJsonPath = path.join(tempDir, '.cursor', 'mcp.json');
+  test("handles JSON parsing errors by creating new mcp.json", () => {
+    // Arrange
+    const mcpJsonPath = path.join(tempDir, ".cursor", "mcp.json");
 
-		// Override existsSync to say mcp.json exists
-		fs.existsSync.mockImplementation((filePath) => {
-			if (filePath.toString().includes('mcp.json')) {
-				return true;
-			}
-			return false;
-		});
+    // Override existsSync to say mcp.json exists
+    fs.existsSync.mockImplementation((filePath) => {
+      if (filePath.toString().includes("mcp.json")) {
+        return true;
+      }
+      return false;
+    });
 
-		// But make readFileSync return invalid JSON
-		fs.readFileSync.mockImplementation((filePath) => {
-			if (filePath.toString().includes('mcp.json')) {
-				return '{invalid json';
-			}
-			return '{}';
-		});
+    // But make readFileSync return invalid JSON
+    fs.readFileSync.mockImplementation((filePath) => {
+      if (filePath.toString().includes("mcp.json")) {
+        return "{invalid json";
+      }
+      return "{}";
+    });
 
-		// Act
-		mockSetupMCPConfiguration(tempDir, 'test-project');
+    // Act
+    mockSetupMCPConfiguration(tempDir, "test-project");
 
-		// Assert
-		// Should create a new valid JSON file with our server
-		expect(fs.writeFileSync).toHaveBeenCalledWith(
-			mcpJsonPath,
-			expect.stringContaining('lm-tasker')
-		);
-	});
+    // Assert
+    // Should create a new valid JSON file with our server
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+      mcpJsonPath,
+      expect.stringContaining("lm-tasker"),
+    );
+  });
 
-	test('does not modify existing server configuration if it already exists', () => {
-		// Arrange
-		const mcpJsonPath = path.join(tempDir, '.cursor', 'mcp.json');
+  test("does not modify existing server configuration if it already exists", () => {
+    // Arrange
+    const mcpJsonPath = path.join(tempDir, ".cursor", "mcp.json");
 
-		// Override existsSync to say mcp.json exists
-		fs.existsSync.mockImplementation((filePath) => {
-			if (filePath.toString().includes('mcp.json')) {
-				return true;
-			}
-			return false;
-		});
+    // Override existsSync to say mcp.json exists
+    fs.existsSync.mockImplementation((filePath) => {
+      if (filePath.toString().includes("mcp.json")) {
+        return true;
+      }
+      return false;
+    });
 
-		// Return JSON that already has lm-tasker
-		fs.readFileSync.mockImplementation((filePath) => {
-			if (filePath.toString().includes('mcp.json')) {
-				return JSON.stringify({
-					mcpServers: {
-						'existing-server': {
-							command: 'node',
-							args: ['server.js']
-						},
-						'lm-tasker': {
-							command: 'custom',
-							args: ['custom-args']
-						}
-					}
-				});
-			}
-			return '{}';
-		});
+    // Return JSON that already has lm-tasker
+    fs.readFileSync.mockImplementation((filePath) => {
+      if (filePath.toString().includes("mcp.json")) {
+        return JSON.stringify({
+          mcpServers: {
+            "existing-server": {
+              command: "node",
+              args: ["server.js"],
+            },
+            "lm-tasker": {
+              command: "custom",
+              args: ["custom-args"],
+            },
+          },
+        });
+      }
+      return "{}";
+    });
 
-		// Spy to check what's written
-		const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync');
+    // Spy to check what's written
+    const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
 
-		// Act
-		mockSetupMCPConfiguration(tempDir, 'test-project');
+    // Act
+    mockSetupMCPConfiguration(tempDir, "test-project");
 
-		// Assert
-		// Verify the written data contains the original lm-tasker configuration
-		const dataWritten = JSON.parse(writeFileSyncSpy.mock.calls[0][1]);
-		expect(dataWritten.mcpServers['lm-tasker'].command).toBe('custom');
-		expect(dataWritten.mcpServers['lm-tasker'].args).toContain(
-			'custom-args'
-		);
-	});
+    // Assert
+    // Verify the written data contains the original lm-tasker configuration
+    const dataWritten = JSON.parse(writeFileSyncSpy.mock.calls[0][1]);
+    expect(dataWritten.mcpServers["lm-tasker"].command).toBe("custom");
+    expect(dataWritten.mcpServers["lm-tasker"].args).toContain("custom-args");
+  });
 
-	test('creates the .cursor directory if it doesnt exist', () => {
-		// Arrange
-		const cursorDirPath = path.join(tempDir, '.cursor');
+  test("creates the .cursor directory if it doesnt exist", () => {
+    // Arrange
+    const cursorDirPath = path.join(tempDir, ".cursor");
 
-		// Make sure it looks like the directory doesn't exist
-		fs.existsSync.mockReturnValue(false);
+    // Make sure it looks like the directory doesn't exist
+    fs.existsSync.mockReturnValue(false);
 
-		// Act
-		mockSetupMCPConfiguration(tempDir, 'test-project');
+    // Act
+    mockSetupMCPConfiguration(tempDir, "test-project");
 
-		// Assert
-		expect(fs.mkdirSync).toHaveBeenCalledWith(cursorDirPath, {
-			recursive: true
-		});
-	});
+    // Assert
+    expect(fs.mkdirSync).toHaveBeenCalledWith(cursorDirPath, {
+      recursive: true,
+    });
+  });
 });

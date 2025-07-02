@@ -1,9 +1,9 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: 'bug: '
+title: "bug: "
 labels: bug
-assignees: ''
+assignees: ""
 ---
 
 ### Description
@@ -29,7 +29,7 @@ Provide screenshots, logs, or error messages if applicable.
 
 ### Environment
 
-- Task Master version:
+- LM-Tasker version:
 - Node.js version:
 - Operating system:
 - IDE (if applicable):

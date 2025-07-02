@@ -8,7 +8,7 @@ Below you will find a variety of important rules spanning:
 
 ## DEV_WORKFLOW
 
-description: Guide for using Task Master MCP server and CLI to manage task-driven development workflows globs: **/\*
+description: Guide for using LM-Tasker MCP server and CLI to manage task-driven development workflows globs: **/\*
 filesToApplyRule: **/\* alwaysApply: true
 
 ---
@@ -19,7 +19,7 @@ filesToApplyRule: **/\* alwaysApply: true
 
     - For AI agents and integrated development environments (like Windsurf), interacting via the **MCP server is the
       preferred method**
-    - The MCP server exposes Task Master functionality through a set of tools (e.g., `get_tasks`, `add_subtask`,
+    - The MCP server exposes LM-Tasker functionality through a set of tools (e.g., `get_tasks`, `add_subtask`,
       `update_task`)
     - This method offers better performance, structured data exchange, and richer error handling compared to CLI parsing
     - **Restart the MCP server** if core logic in `scripts/modules` or MCP tool/direct function definitions change
@@ -77,8 +77,8 @@ filesToApplyRule: **/\* alwaysApply: true
   - When implementation differs significantly from planned approach
   - When future tasks need modification due to current implementation choices
   - When new dependencies or requirements emerge
-  - Use `update` MCP tool / `task-master update --from=<futureTaskId> --prompt="<explanation>"` to update multiple tasks
-  - Use `update_task` MCP tool / `task-master update-task --id=<id> --prompt="<explanation>"` for single task updates
+  - Use `update_task` MCP tool / `task-master update-task --id=<futureTaskId>` (manual updates only) to update tasks
+  - Use `update_task` MCP tool / `task-master update-task --id=<id>` (manual updates only) for single task updates
 
 - **Task Status Management**
 
@@ -121,14 +121,15 @@ filesToApplyRule: **/\* alwaysApply: true
 - **MCP Tool Reference: update**
 
   - MCP Tool: `update`
-  - CLI Equivalent: `task-master update --from=<id> --prompt="<prompt>"`
+  - CLI Equivalent: `task-master update-task --id=<id>` (manual updates only)
   - Description: Updates tasks with ID >= specified ID based on the provided prompt
   - Key Parameters:
     - `from`: Task ID from which to start updating (required)
     - `prompt`: Explanation of changes or new context (required)
     - `research`: Enable research-backed updates
-  - Example MCP: Use `update` tool with from and prompt parameters
-  - Example CLI: `task-master update --from=4 --prompt="Now we are using Express instead of Fastify."`
+  - Example MCP: Use `update_task` tool with id parameter (manual updates only)
+  - Example CLI:
+    `task-master update-task --id=4 --title="Use Express Framework" --description="Switch from Fastify to Express"`
   - Notes: Only updates tasks not marked as 'done'. AI-powered tool that may take time to complete.
 
 - **MCP Tool Reference: generate**
@@ -321,8 +322,9 @@ filesToApplyRule: **/\* alwaysApply: true
     - `dependencies`: Comma-separated list of task IDs this task depends on
     - `priority`: Task priority (high, medium, low) (default: medium)
     - `file`: Path to the tasks file (default: tasks/tasks.json)
-  - Example MCP: Use `add_task` tool with prompt parameter
-  - Example CLI: `task-master add-task --prompt="Create user authentication using Auth0"`
+  - Example MCP: Use `add_task` tool with title and description parameters
+  - Example CLI:
+    `task-master add-task --title="User Authentication" --description="Create user authentication using Auth0"`
   - Notes: Uses AI to convert description into structured task with appropriate details. AI-powered tool that may take
     time to complete.
 
@@ -330,7 +332,7 @@ filesToApplyRule: **/\* alwaysApply: true
 
   - MCP Tool: `initialize_project`
   - CLI Equivalent: `task-master init`
-  - Description: Initialize a new project with Task Master structure
+  - Description: Initialize a new project with LM-Tasker structure
   - Key Parameters:
     - `projectRoot`: The root directory for the project (required)
     - `yes`: Skip prompts and use default values
@@ -342,7 +344,7 @@ filesToApplyRule: **/\* alwaysApply: true
     - Creates initial project structure with required files
     - Prompts for project settings if not provided
     - Merges with existing files when appropriate
-    - Can be used to bootstrap a new Task Master project quickly
+    - Can be used to bootstrap a new LM-Tasker project quickly
 
 - **Code Analysis & Refactoring Techniques**
   - **Top-Level Function Search**

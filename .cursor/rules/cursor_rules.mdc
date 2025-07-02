@@ -46,7 +46,7 @@ This document defines the structure and guidelines for creating Cursor rules in 
 
 ## LM-Tasker Specific Guidelines
 
-- **Branding**: Always use "LM-Tasker" (not "Task Master" or "task-master-ai")
+- **Branding**: Always use "LM-Tasker" (not "LM-Tasker" or "task-master-ai")
 - **Package References**: Use `lm-tasker` for package name and commands
 - **Configuration**: Reference `.lmtaskerconfig` (not `.lmtaskerconfig`)
 - **AI Usage**: AI integration is limited to PRD parsing only

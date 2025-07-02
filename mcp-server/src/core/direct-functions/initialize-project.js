@@ -33,7 +33,7 @@ export async function initializeProjectDirect(args, log, context = {}) {
     targetDirectory === homeDir
   ) {
     log.error(
-      `Invalid target directory received from tool layer: '${targetDirectory}'`
+      `Invalid target directory received from tool layer: '${targetDirectory}'`,
     );
     return {
       success: false,
@@ -55,7 +55,7 @@ export async function initializeProjectDirect(args, log, context = {}) {
   let errorResult = null;
 
   log.info(
-    `Temporarily changing CWD to ${targetDirectory} for initialization.`
+    `Temporarily changing CWD to ${targetDirectory} for initialization.`,
   );
   process.chdir(targetDirectory); // Change CWD to the HOF-provided root
 
@@ -80,7 +80,7 @@ export async function initializeProjectDirect(args, log, context = {}) {
     };
     success = true;
     log.info(
-      `Project initialization completed successfully in ${targetDirectory}.`
+      `Project initialization completed successfully in ${targetDirectory}.`,
     );
   } catch (error) {
     log.error(`Core initializeProject failed: ${error.message}`);

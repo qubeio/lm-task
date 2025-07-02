@@ -54,7 +54,7 @@ Create scripts/modules/task-manager/insert-between.js with insertTaskBetween() f
 ### Dependencies: None
 ### Description: Add CLI commands for insert-task and insert-between operations to the commands.js file.
 ### Details:
-Add to scripts/modules/commands.js: 1) 'insert-task' command with position argument and same options as add-task (--prompt, --title, --description, --details, --dependencies, --priority), 2) 'insert-between' command with after-position argument and same options. Include proper argument validation, error handling, and user feedback. Follow the same patterns as existing commands.
+Add to scripts/modules/commands.js: 1) 'insert-task' command with position argument and same options as add-task (--title, --description, --details, --dependencies, --priority), 2) 'insert-between' command with after-position argument and same options. Include proper argument validation, error handling, and user feedback. Follow the same patterns as existing commands.
 
 ## 7. Phase 3: Implement Reorder Task Functionality [pending]
 ### Dependencies: None
