@@ -10,7 +10,8 @@
       "mcp__lm-tasker__add_subtask",
       "mcp__lm-tasker__get_task",
       "mcp__lm-tasker__set_task_status",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }
