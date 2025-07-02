@@ -4,7 +4,7 @@ LM-Tasker uses two primary methods for configuration:
 
 1.  **`.lmtaskerconfig` File (Project Root - Recommended for most settings)**
 
-    - This JSON file stores most configuration settings, including AI model selections, parameters, logging levels, and project defaults.
+    - This JSON file stores configuration settings for PRD parsing, including AI model selections, parameters, logging levels, and project defaults.
     - **Location:** This file is created in the root directory of your project when you run the `lm-tasker models --setup` interactive setup. You typically do this during the initialization sequence. Do not manually edit this file beyond adjusting Temperature and Max Tokens depending on your model.
     - **Management:** Use the `lm-tasker models --setup` command (or `models` MCP tool) to interactively create and manage this file. You can also set specific models directly using `lm-tasker models --set-main=<model_id>` or `lm-tasker models --set-fallback=<model_id>`. Manual editing is possible but not recommended unless you understand the structure.
     - **Example Structure:**
@@ -46,7 +46,7 @@ LM-Tasker uses two primary methods for configuration:
       - `AZURE_OPENAI_API_KEY`: Your Azure OpenAI API key (required).
       - `AZURE_OPENAI_ENDPOINT`: Your Azure OpenAI endpoint URL (required).
 
-**Important:** Settings like model ID selections (`main`, `fallback`), `maxTokens`, `temperature`, `logLevel`, `defaultSubtasks`, `defaultPriority`, and `projectName` are **managed in `.lmtaskerconfig`**, not environment variables.
+**Important:** Settings like model ID selections (`main`, `fallback`), `maxTokens`, `temperature`, `logLevel`, `defaultSubtasks`, `defaultPriority`, and `projectName` are **managed in `.lmtaskerconfig`**, not environment variables. These models are used exclusively for PRD parsing operations.
 
 ## Example `.env` File (for API Keys)
 

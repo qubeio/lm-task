@@ -249,7 +249,7 @@
       "description": "Confirm the package is live and correct on the registry website.",
       "details": "",
       "testStrategy": "",
-      "status": "pending",
+      "status": "done",
       "dependencies": [],
       "priority": "medium",
       "subtasks": []
@@ -260,7 +260,7 @@
       "description": "Update all documentation files in the docs/ folder to accurately reflect the simplified architecture with AI limited to PRD parsing only, removing references to deprecated AI-powered features and updating examples accordingly.",
       "details": "Based on the PRD.md changes, the documentation needs to be updated to reflect the new simplified architecture where:\n\n1. AI functionality is limited to PRD parsing only\n2. All task operations (add, update, modify) are manual via CLI/MCP\n3. Package has been rebranded from task-master-ai to lm-tasker\n4. Configuration uses .lmtaskerconfig instead of .lmtaskerconfig\n5. Binary commands changed from task-master to lm-tasker\n\nKey files to update:\n- docs/command-reference.md: Remove AI-powered task creation/update references, update command names\n- docs/configuration.md: Update config file names and focus on PRD parsing model configuration\n- docs/examples.md: Update examples to reflect manual task management workflow\n- docs/tutorial.md: Update tutorial to emphasize manual task operations\n- docs/models.md: Clarify that models are only used for PRD parsing\n- docs/task-structure.md: Update to reflect manual task management approach\n\nThe documentation should clearly communicate that:\n- Task creation, updates, and modifications are manual operations\n- AI is only used for initial PRD-to-tasks conversion\n- This provides predictable behavior and lower costs\n- The system focuses on structured task management rather than AI automation",
       "testStrategy": "Review all updated documentation files to ensure:\n1. No references to deprecated AI-powered task operations remain\n2. All command examples use lm-tasker instead of task-master\n3. Configuration examples reference .lmtaskerconfig\n4. Examples and workflows reflect manual task management\n5. AI usage is clearly scoped to PRD parsing only\n6. Documentation is consistent with the PRD.md architecture",
-      "status": "pending",
+      "status": "done",
       "dependencies": [],
       "priority": "high",
       "subtasks": []
@@ -310,6 +310,72 @@
           "status": "done",
           "dependencies": [],
           "parentTaskId": 114
+        }
+      ]
+    },
+    {
+      "id": 115,
+      "title": "Complete NPM Publication to qubeio Org",
+      "description": "Execute the final steps to publish @qubeio/lm-tasker to NPM, including verification of org access, testing, and publication validation",
+      "details": "Complete the NPM publication process for @qubeio/lm-tasker package. The package.json has been updated with the correct scoped name and all publication configuration is in place. Need to execute the final verification and publication steps.",
+      "testStrategy": "",
+      "status": "done",
+      "dependencies": [],
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Verify NPM login and qubeio org access",
+          "description": "Run 'npm whoami' to confirm logged in, then 'npm org ls qubeio' to verify you have publish access to the qubeio organization",
+          "details": "",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 115
+        },
+        {
+          "id": 2,
+          "title": "Run NPM publish dry run",
+          "description": "Execute 'npm publish --dry-run' to verify package contents and ensure no issues before actual publication",
+          "details": "",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 115
+        },
+        {
+          "id": 3,
+          "title": "Publish package to NPM",
+          "description": "Run 'npm publish' to publish @qubeio/lm-tasker to the NPM registry",
+          "details": "",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 115
+        },
+        {
+          "id": 4,
+          "title": "Verify package on npmjs.com",
+          "description": "Visit https://www.npmjs.com/package/@qubeio/lm-tasker to confirm the package is live and displays correctly",
+          "details": "",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 115
+        },
+        {
+          "id": 5,
+          "title": "Test installation from NPM",
+          "description": "Test installing the published package with 'npm install @qubeio/lm-tasker' in a separate directory to verify it works correctly",
+          "details": "",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 115
+        },
+        {
+          "id": 6,
+          "title": "Complete Task 112 - Mark publication verified",
+          "description": "Mark existing Task 112 as done after confirming the package is successfully published and accessible",
+          "details": "",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 115
         }
       ]
     }

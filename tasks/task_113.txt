@@ -1,6 +1,6 @@
 # Task ID: 113
 # Title: Update Documentation to Reflect Reduced AI Features
-# Status: pending
+# Status: done
 # Dependencies: None
 # Priority: high
 # Description: Update all documentation files in the docs/ folder to accurately reflect the simplified architecture with AI limited to PRD parsing only, removing references to deprecated AI-powered features and updating examples accordingly.

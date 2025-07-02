@@ -68,22 +68,26 @@ The `show` command:
 - Provides contextual action suggestions based on the task's state
 - Works with both regular tasks and subtasks (using the format taskId.subtaskId)
 
-## Best Practices for AI-Driven Development
+## Best Practices for Structured Task Management
 
-1. **Start with a detailed PRD**: The more detailed your PRD, the better the generated tasks will be.
+1. **Start with a detailed PRD**: The more detailed your PRD, the better the AI-generated initial tasks will be.
 
 2. **Review generated tasks**: After parsing the PRD, review the tasks to ensure they make sense and have appropriate dependencies.
 
-3. **Manage task complexity**: Use the `add-subtask` command to break down complex tasks into smaller, manageable pieces.
+3. **Manual task management**: All task operations (create, update, modify, status changes) are manual operations for predictable behavior.
 
-4. **Follow the dependency chain**: Always respect task dependencies - the Cursor agent will help with this.
+4. **Manage task complexity**: Use the `add-subtask` command to manually break down complex tasks into smaller, manageable pieces.
 
-5. **Update as you go**: If your implementation diverges from the plan, use the update command to keep future tasks aligned with your current approach.
+5. **Follow the dependency chain**: Always respect task dependencies - the system will help track these relationships.
 
-6. **Break down complex tasks**: Use the `add-subtask` command to break down complex tasks into manageable subtasks.
+6. **Update as you go**: If your implementation diverges from the plan, manually update task details to keep future tasks aligned.
 
-7. **Regenerate task files**: After any updates to tasks.json, regenerate the task files to keep them in sync.
+7. **Break down complex tasks**: Use the `add-subtask` command to break down complex tasks into manageable subtasks.
 
-8. **Communicate context to the agent**: When asking the Cursor agent to help with a task, provide context about what you're trying to achieve.
+8. **Regenerate task files**: After any updates to tasks.json, regenerate the task files to keep them in sync.
 
-9. **Validate dependencies**: Periodically run the validate-dependencies command to check for invalid or circular dependencies.
+9. **Communicate context**: When working with tasks, provide context about what you're trying to achieve.
+
+10. **Validate dependencies**: Periodically run the validate-dependencies command to check for invalid or circular dependencies.
+
+11. **Cost-effective approach**: The manual task management approach ensures predictable costs and behavior compared to AI-automated systems.

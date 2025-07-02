@@ -175,13 +175,9 @@ lm-tasker add-task --title="Task title" --description="Task description" --prior
 
 # Add a task with test strategy
 lm-tasker add-task --title="Task title" --description="Task description" --test-strategy="Testing approach"
-
-# Legacy AI-assisted task creation (limited functionality)
-lm-tasker add-task --title="Task Title" --description="Description of the new task"
 ```
 
-**Note:** Manual task creation is the recommended approach. AI-assisted options have been removed in favor of
-functionality and may be deprecated in future versions.
+**Note:** All task creation is manual. LM-Tasker focuses on structured task management rather than AI automation, providing predictable behavior and lower operational costs.
 
 ## Add a New Subtask
 
@@ -247,8 +243,7 @@ lm-tasker models --set-fallback=gpt-4o-mini
 lm-tasker models --setup
 ```
 
-**AI Usage:** LM-Tasker uses AI primarily for PRD parsing operations. Task management operations (create, update,
-modify) are designed to be manual for predictable and cost-effective project management.
+**AI Usage:** LM-Tasker uses AI exclusively for PRD parsing to convert Product Requirements Documents into structured task lists. All other task management operations (create, update, modify, status changes) are manual operations for predictable and cost-effective project management.
 
 Configuration is stored in `.lmtaskerconfig` in your project root. API keys are managed via `.env` or MCP configuration.
 This version supports multiple AI providers including Azure OpenAI, OpenAI, Anthropic Claude, Google Gemini, Mistral,

@@ -3,7 +3,14 @@
     "allow": [
       "Bash(git remote set-url:*)",
       "Bash(git push:*)",
-      "mcp__lm-tasker__get_tasks"
+      "mcp__lm-tasker__get_tasks",
+      "mcp__lm-tasker__update_subtask",
+      "mcp__lm-tasker__update_task",
+      "mcp__lm-tasker__add_task",
+      "mcp__lm-tasker__add_subtask",
+      "mcp__lm-tasker__get_task",
+      "mcp__lm-tasker__set_task_status",
+      "Bash(git add:*)"
     ],
     "deny": []
   }

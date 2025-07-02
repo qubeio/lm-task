@@ -19,10 +19,10 @@ tools like K9s. The TUI will provide an interactive, keyboard-driven interface f
 ### MVP Requirements
 
 1. Launch with `ui` command
-2. Display task list in same format as `tm list`
+2. Display task list in same format as `lm-tasker list`
 3. Vim navigation keys (j/k for up/down, gg/G for top/bottom)
 4. Forward slash search with highlighting
-5. Enter key to view task details (`tm show <id>`)
+5. Enter key to view task details (`lm-tasker show <id>`)
 6. Quit with 'q' key
 
 ### Future Features (Post-MVP)
@@ -194,17 +194,17 @@ ui/
 ```javascript
 class CliAdapter {
   async getTasks(options = {}) {
-    // Executes: task-master list --json
+    // Executes: lm-tasker list --json
     // Returns parsed JSON task data
   }
 
   async getTask(id) {
-    // Executes: task-master show <id> --json
+    // Executes: lm-tasker show <id> --json
     // Returns parsed task details
   }
 
   async updateTaskStatus(id, status) {
-    // Executes: task-master set-status --id=<id> --status=<status>
+    // Executes: lm-tasker set-status --id=<id> --status=<status>
     // Returns success/error
   }
 
@@ -251,7 +251,7 @@ Existing CLI commands need `--json` flag support to return structured data:
 - Basic Blessed.js setup with `ui` command
 - Task list display matching `tm list` format
 - Basic keyboard navigation (j/k, Enter, q)
-- CLI adapter for `tm list` and `tm show`
+- CLI adapter for `lm-tasker list` and `lm-tasker show`
 
 ### Phase 2: Search & Navigation
 

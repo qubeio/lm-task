@@ -2,10 +2,10 @@
 
 ## Introduction
 
-🚀 **LM-Tasker** is your all-in-one, task management sidekick for software development. Supercharge your
-workflow with the magic of Azure OpenAI and let LM-Tasker turn your requirements into a crystal-clear, actionable
-plan—automatically. Whether you're a solo dev or a whole team, LM-Tasker helps you plan, track, and deliver projects
-with less stress and more fun.
+🚀 **LM-Tasker** is your all-in-one, task management sidekick for software development. Supercharge your workflow with
+the magic of Azure OpenAI and let LM-Tasker turn your requirements into a crystal-clear, actionable plan—automatically.
+Whether you're a solo dev or a whole team, LM-Tasker helps you plan, track, and deliver projects with less stress and
+more fun.
 
 ### ✨ What can LM-Tasker do?
 
@@ -72,7 +72,7 @@ MCP (Model Control Protocol) lets you run LM-Tasker directly from your editor.
   "mcpServers": {
     "lm-tasker": {
       "command": "npx",
-      "args": ["-y", "--package=lm-tasker", "lm-tasker-mcp"],
+      "args": ["-y", "--package=@qubeio/lm-tasker", "lm-tasker-mcp"],
       "env": {
         "AZURE_OPENAI_API_KEY": "YOUR_AZURE_OPENAI_API_KEY_HERE",
         "AZURE_OPENAI_ENDPOINT": "YOUR_AZURE_OPENAI_ENDPOINT_HERE",
@@ -92,7 +92,7 @@ MCP (Model Control Protocol) lets you run LM-Tasker directly from your editor.
   "servers": {
     "lm-tasker": {
       "command": "npx",
-      "args": ["-y", "--package=lm-tasker", "lm-tasker-mcp"],
+      "args": ["-y", "--package=@qubeio/lm-tasker", "lm-tasker-mcp"],
       "env": {
         "AZURE_OPENAI_API_KEY": "YOUR_AZURE_OPENAI_API_KEY_HERE",
         "AZURE_OPENAI_ENDPOINT": "YOUR_AZURE_OPENAI_ENDPOINT_HERE",
@@ -130,8 +130,8 @@ Initialize lm-tasker in my project
 
 #### 5. Make sure you have a PRD in your project root
 
-LM-Tasker will automatically search for PRD files in this order: `PRD.md`, `prd.md`, `PRD.txt`, `prd.txt` in the
-project root, then in the `scripts/` directory for backward compatibility.
+LM-Tasker will automatically search for PRD files in this order: `PRD.md`, `prd.md`, `PRD.txt`, `prd.txt` in the project
+root, then in the `scripts/` directory for backward compatibility.
 
 An example of a PRD is located at `<project_folder>/scripts/example_prd.md` which you can use as a template to create
 your `PRD.md` in the project root. A text version is also available at `<project_folder>/scripts/example_prd.txt`.
@@ -157,10 +157,10 @@ Use your AI assistant to:
 
 ```bash
 # Install globally
-npm install -g lm-tasker
+npm install -g @qubeio/lm-tasker
 
 # OR install locally within your project
-npm install lm-tasker
+npm install @qubeio/lm-tasker
 ```
 
 #### Initialize a new project
@@ -170,7 +170,7 @@ npm install lm-tasker
 lm-tasker init
 
 # If installed locally
-npx lm-tasker init
+npx @qubeio/lm-tasker init
 ```
 
 This will prompt you for project details and set up a new project with the necessary files and structure.

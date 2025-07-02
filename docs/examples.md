@@ -93,3 +93,5 @@ Please add a new task to implement user profile image uploads using Cloudinary.
 
 (Agent runs:
 `lm-tasker add-task --title="User Profile Images" --description="Implement user profile image uploads using Cloudinary"`)
+
+**Note:** All task management operations (add, update, move, delete) are manual operations. LM-Tasker's AI functionality is limited to PRD parsing only, ensuring predictable behavior and cost control.

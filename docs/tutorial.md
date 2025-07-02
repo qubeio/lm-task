@@ -1,6 +1,6 @@
 # LM-Tasker Tutorial
 
-This tutorial will guide you through setting up and using LM-Tasker for AI-driven development with Azure OpenAI.
+This tutorial will guide you through setting up and using LM-Tasker for structured task management with AI-powered PRD parsing.
 
 ## Initial Setup
 
@@ -33,9 +33,9 @@ npm i -g lm-tasker
 }
 ```
 
-**IMPORTANT:** Azure OpenAI API key and endpoint are _required_ for this version of LM-Tasker.
+**IMPORTANT:** AI provider API keys are required only for PRD parsing operations. All other task management operations are manual.
 
-**To use AI commands in CLI** you MUST have API keys in the .env file **To use AI commands in MCP** you MUST have API
+**To use PRD parsing in CLI** you MUST have API keys in the .env file **To use PRD parsing in MCP** you MUST have API
 keys in the .mcp.json file (or MCP config equivalent)
 
 We recommend having keys in both places and adding mcp.json to your gitignore so your API keys aren't checked into git.
@@ -185,9 +185,9 @@ lm-tasker generate
 This creates individual task files in the `tasks/` directory (e.g., `task_001.txt`, `task_002.txt`), making it easier to
 reference specific tasks.
 
-## AI-Driven Development Workflow
+## Structured Task Management Workflow
 
-The Cursor agent is pre-configured (via the rules file) to follow this workflow:
+The Cursor agent is pre-configured (via the rules file) to follow this workflow using manual task operations:
 
 ### 1. Task Discovery and Selection
 
@@ -253,19 +253,16 @@ If during implementation, you discover that:
 Tell the agent:
 
 ```
-We've decided to use MongoDB instead of PostgreSQL. Can you update all future tasks (from ID 4) to reflect this change?
+We've decided to use MongoDB instead of PostgreSQL. Can you update all future tasks to reflect this change?
 ```
 
-The agent will execute:
+The agent will manually update the task details:
 
 ```bash
-lm-tasker update-task --id=4 --title="Use MongoDB Database" --description="Switch from PostgreSQL to MongoDB"
-
-# OR, if research is needed to find best practices for MongoDB:
-lm-tasker update-task --id=4 --title="MongoDB Implementation" --description="Update to use MongoDB with researched best practices"
+lm-tasker update-task --id=4
 ```
 
-This will rewrite or re-scope subsequent tasks in tasks.json while preserving completed work.
+Then manually edit the task details to reflect the new approach. This manual process ensures you have full control over task modifications and maintains predictable behavior.
 
 ### 6. Reorganizing Tasks
 

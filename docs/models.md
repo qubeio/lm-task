@@ -1,6 +1,6 @@
-# Available Azure OpenAI Models
+# Available AI Models for PRD Parsing
 
-This version of LM-Tasker is configured to work exclusively with Azure OpenAI services for corporate deployment.
+LM-Tasker supports multiple AI providers for PRD parsing operations. AI functionality is limited to converting Product Requirements Documents into structured task lists.
 
 ## Main Models
 
@@ -23,23 +23,23 @@ This version of LM-Tasker is configured to work exclusively with Azure OpenAI se
 To configure these models, use:
 
 ```bash
-# Set the main model
-task-master models --set-main=gpt-4o
+# Set the main model for PRD parsing
+lm-tasker models --set-main=gpt-4o
 
-# Set the fallback model
-task-master models --set-fallback=gpt-4o-mini
+# Set the fallback model for PRD parsing
+lm-tasker models --set-fallback=gpt-4o-mini
 ```
 
 Or use the interactive setup:
 
 ```bash
-task-master models --setup
+lm-tasker models --setup
 ```
 
 ## Notes
 
 - **Cost**: Costs are expressed in dollars per million tokens (e.g., 2.5 = $2.50 per million input tokens)
 - **SWE Score**: Software Engineering benchmark score (higher is better)
-- **Azure Endpoint**: You must configure your Azure OpenAI endpoint in the `.lmtaskerconfig` file or via environment
-  variables
-- **API Keys**: Both `AZURE_OPENAI_API_KEY` and `AZURE_OPENAI_ENDPOINT` are required
+- **Limited Usage**: Models are used exclusively for PRD parsing operations, not for task management
+- **API Keys**: Provider-specific API keys are required only for PRD parsing functionality
+- **Manual Operations**: All task management operations (create, update, modify) are manual for cost control and predictability

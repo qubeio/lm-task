@@ -1,5 +1,5 @@
 {
-  "name": "lm-tasker",
+  "name": "@qubeio/lm-tasker",
   "version": "0.15.0",
   "description": "A task management system for ambitious AI-driven development using Azure OpenAI that doesn't overwhelm and confuse AI Agents.",
   "main": "index.js",
