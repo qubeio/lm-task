@@ -20,12 +20,18 @@ export function registerUpdateTaskTool(server) {
   server.addTool({
     name: "update_task",
     description:
-      "Updates a single task by ID with new information or context.",
+      "Updates a single task by ID by appending timestamped details.",
     parameters: z.object({
       id: z
-        .string() // ID can be number or string like "1.2"
+        .string()
         .describe(
-          "ID of the task (e.g., '15') to update. Subtasks are supported using the update-subtask tool.",
+          "ID of the task (e.g., '15') to update. Must be a positive integer.",
+        ),
+
+      details: z
+        .string()
+        .describe(
+          "Additional details or information to append to the task. Will be timestamped and added to existing details.",
         ),
 
       file: z.string().optional().describe("Absolute path to the tasks file"),
@@ -59,6 +65,7 @@ export function registerUpdateTaskTool(server) {
           {
             tasksJsonPath: tasksJsonPath,
             id: args.id,
+            details: args.details,
             projectRoot: args.projectRoot,
           },
           log,

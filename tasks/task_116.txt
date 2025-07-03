@@ -1,0 +1,11 @@
+# Task ID: 116
+# Title: Update Update Checker to Use New NPM Location
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Update the update checker functionality to check for updates from the new NPM package location @qubeio/lm-tasker instead of the old location
+# Details:
+The package has been published to NPM as @qubeio/lm-tasker. The update checker needs to be modified to check for updates from this new location instead of any previous location. This includes updating any hardcoded package names, registry URLs, or version checking logic to point to the correct NPM package.
+
+# Test Strategy:
+

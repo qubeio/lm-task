@@ -27,7 +27,12 @@ export function registerUpdateSubtaskTool(server) {
         .describe(
           'ID of the subtask to update in format "parentId.subtaskId" (e.g., "5.2"). Parent ID is the ID of the task that contains the subtask.',
         ),
-
+      details: z
+        .string()
+        .optional()
+        .describe(
+          "Additional details or information to append to the subtask. Will be timestamped and added to existing details.",
+        ),
       file: z.string().optional().describe("Absolute path to the tasks file"),
       projectRoot: z
         .string()
@@ -59,6 +64,7 @@ export function registerUpdateSubtaskTool(server) {
           {
             tasksJsonPath: tasksJsonPath,
             id: args.id,
+            details: args.details,
             projectRoot: args.projectRoot,
           },
           log,

@@ -11,7 +11,10 @@
       "mcp__lm-tasker__get_task",
       "mcp__lm-tasker__set_task_status",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(find:*)",
+      "Bash(node:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }

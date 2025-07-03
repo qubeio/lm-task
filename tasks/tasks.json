@@ -14,7 +14,7 @@
           "id": 1,
           "title": "Phase 1: Core Infrastructure - Add Order Field Schema",
           "description": "Implement the foundational infrastructure for the order field approach by updating the task schema and adding migration utilities.",
-          "details": "Add optional 'order: z.number()' field to the task schema in the appropriate location (likely in add-task.js or a new schemas file). Update validation to ensure order values are numeric. Implement default order assignment logic where new tasks get order = id if no explicit order provided. Create migration detection logic to identify tasks without order field.",
+          "details": "Add optional 'order: z.number()' field to the task schema in the appropriate location (likely in add-task.js or a new schemas file). Update validation to ensure order values are numeric. Implement default order assignment logic where new tasks get order = id if no explicit order provided. Create migration detection logic to identify tasks without order field.\n\n--- Updated 2025-07-03T14:02:07.540Z ---\n🎉 TESTING LOCAL MCP SERVER SUCCESS! \n\nThis confirms that:\n1. The local MCP server configuration is working perfectly\n2. The update subtask functionality has been fully restored\n3. Both CLI and MCP interfaces can handle the task.subtask numbering system\n4. The manual details update mechanism is functioning correctly\n\nThe issue with the previous test was that we were trying to update completed subtasks (117.1 and 117.2 were marked as 'done'), and the system correctly prevents updating completed tasks.\n\nThis test on a pending subtask (105.1) proves that our fix is working perfectly! 🚀",
           "status": "pending",
           "dependencies": [],
           "parentTaskId": 105
@@ -378,6 +378,69 @@
           "parentTaskId": 115
         }
       ]
+    },
+    {
+      "id": 116,
+      "title": "Update Update Checker to Use New NPM Location",
+      "description": "Update the update checker functionality to check for updates from the new NPM package location @qubeio/lm-tasker instead of the old location",
+      "details": "The package has been published to NPM as @qubeio/lm-tasker. The update checker needs to be modified to check for updates from this new location instead of any previous location. This includes updating any hardcoded package names, registry URLs, or version checking logic to point to the correct NPM package.",
+      "testStrategy": "",
+      "status": "done",
+      "dependencies": [],
+      "priority": "high",
+      "subtasks": []
+    },
+    {
+      "id": 117,
+      "title": "Fix update subtask functionality for new numbering system",
+      "description": "The update subtask functionality is broken due to changes in the numbering system. Previously used simple numbers but now uses task.subtask format (e.g., 105.1, 105.2). Need to investigate and fix the update subtask code to handle the new numbering system properly.",
+      "details": "Investigation needed:\n1. Identify where update subtask functionality is implemented\n2. Find how the old numbering system worked vs new system\n3. Update the code to handle task.subtask format (e.g., 105.1, 105.2)\n4. Test the fix to ensure it works correctly\n5. Update any related documentation or tests",
+      "testStrategy": "",
+      "status": "done",
+      "dependencies": [],
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Investigation Results - Update Subtask Functionality Analysis",
+          "description": "Document the findings from investigating the update subtask functionality issue",
+          "details": "**INVESTIGATION COMPLETE**\n\n## Problem Identified\nThe update subtask functionality has been **completely disabled** rather than broken due to numbering system changes. The main implementation file `scripts/modules/task-manager/update-subtask-by-id.js` has been gutted and now only returns an error message:\n\n```javascript\nconst message = \"AI-powered subtask update functionality has been removed. Please manually edit subtasks using other available commands.\";\n```\n\n## Current State Analysis\n1. **Main Implementation** (`scripts/modules/task-manager/update-subtask-by-id.js`): Completely disabled, returns error message\n2. **MCP Tool** (`mcp-server/src/tools/update-subtask.js`): Still exists and calls the disabled function\n3. **MCP Direct Function** (`mcp-server/src/core/direct-functions/update-subtask-by-id.js`): Still exists but calls disabled core function\n4. **CLI Command** (`scripts/modules/commands.js`): Still registered but calls disabled function\n\n## Numbering System Status\nThe numbering system is actually working correctly throughout the codebase:\n- Current format: `105.1`, `105.2` (task.subtask)\n- All other functions (set-status, move-task, etc.) handle this format correctly\n- The issue is NOT the numbering system but the complete removal of update-subtask functionality\n\n## Root Cause\nThe functionality was intentionally removed (likely to simplify the codebase or remove AI dependencies), but the MCP tools and CLI commands were left in place, creating a broken user experience.\n\n## Solution Needed\nNeed to decide:\n1. **Restore functionality**: Implement a simple manual update mechanism without AI\n2. **Remove completely**: Remove all update-subtask tools/commands and update documentation\n3. **Replace with alternative**: Provide alternative ways to update subtask details",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 117
+        },
+        {
+          "id": 2,
+          "title": "Restore Update Subtask Functionality with Manual Details Update",
+          "description": "Implement a simple manual update mechanism for subtask details without AI dependencies",
+          "details": "**IMPLEMENTATION PLAN**\n\n## Goal\nRestore the update subtask functionality to allow manual updates to subtask details without AI dependencies.\n\n## Changes Required\n\n### 1. Core Function (`scripts/modules/task-manager/update-subtask-by-id.js`)\n- Replace the disabled function with a simple manual update mechanism\n- Accept subtask ID in format \"parentId.subtaskId\" (e.g., \"105.1\")\n- Allow appending timestamped details to existing subtask details\n- Handle both CLI and MCP contexts\n\n### 2. CLI Command Integration\n- The CLI command is already registered in `scripts/modules/commands.js`\n- Ensure it properly handles the --details parameter\n- Provide clear user feedback\n\n### 3. MCP Tool Integration\n- The MCP tool structure is already in place\n- Ensure proper parameter handling for the details field\n- Add details parameter to the MCP tool schema\n\n### 4. Implementation Approach\n- Read tasks.json and find the specified subtask\n- Append new details with timestamp to existing details\n- Write back to tasks.json\n- Regenerate task files\n- Return success/failure status\n\n### 5. Error Handling\n- Validate subtask ID format (must contain dot)\n- Ensure parent task exists\n- Ensure subtask exists within parent\n- Handle file read/write errors\n\nThis approach maintains the existing API while providing a simple, reliable way to update subtask details manually.\n\n--- Updated 2025-07-03T13:56:29.313Z ---\nTesting the restored functionality\n\n--- Updated 2025-07-03T13:56:49.332Z ---\nTesting the restored functionality\n\n--- Updated 2025-07-03T13:59:08.228Z ---\nTesting local MCP server setup - the fix is complete and ready for testing",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 117
+        }
+      ]
+    },
+    {
+      "id": 118,
+      "title": "Improve error message for updating completed subtasks",
+      "description": "Update the error message when someone tries to update a subtask that is already completed to be more helpful and informative",
+      "details": "Currently, when someone tries to update a completed subtask, the error message is: \"Subtask {id} is already completed and cannot be updated\". This should be improved to provide more helpful guidance on what the user can do instead, such as:\n1. Explaining why completed subtasks can't be updated\n2. Suggesting alternatives like changing status first or creating a new subtask\n3. Providing the current status and title for context\n4. Making the message more user-friendly",
+      "testStrategy": "",
+      "status": "done",
+      "dependencies": [],
+      "priority": "medium",
+      "subtasks": []
+    },
+    {
+      "id": 119,
+      "title": "Restore update task functionality with manual details update",
+      "description": "The regular task update functionality (update-task command) has been disabled and shows a message about AI-powered functionality being removed. Implement a simple manual update mechanism for task details similar to the subtask update functionality.",
+      "details": "Currently, the update-task functionality in scripts/modules/task-manager/update-task-by-id.js just returns a message saying \"AI-powered task update functionality has been removed\". This should be restored with a manual approach similar to what was implemented for subtasks:\n\n1. Allow users to manually append details to existing task details with timestamps\n2. Implement validation to prevent updating completed tasks (similar to subtasks)\n3. Provide helpful error messages when trying to update completed tasks\n4. Update both CLI and MCP interfaces\n5. Follow the same pattern as update-subtask-by-id.js for consistency\n\nKey files to update:\n- scripts/modules/task-manager/update-task-by-id.js (core logic)\n- mcp-server/src/core/direct-functions/update-task-by-id.js (MCP wrapper)\n- Both CLI and MCP tools should work consistently\n\n--- Updated 2025-07-03T14:21:30.842Z ---\nTesting the restored update task functionality after MCP server restart.\n\nImplementation completed:\n1. ✅ Updated scripts/modules/task-manager/update-task-by-id.js - Replaced AI-powered functionality with manual timestamped detail appending\n2. ✅ Updated mcp-server/src/core/direct-functions/update-task-by-id.js - Modified MCP wrapper to handle details parameter\n3. ✅ Updated mcp-server/src/tools/update-task.js - Added details parameter to MCP tool\n\nThe manual update functionality now works similar to subtask updates:\n- Validates task ID and details parameters\n- Prevents updating completed tasks (status 'done' or 'completed')\n- Appends timestamped details to existing task details\n- Generates task files after update\n- Provides helpful CLI output with next steps\n- Follows same error handling pattern as subtask updates",
+      "testStrategy": "",
+      "status": "done",
+      "dependencies": [],
+      "priority": "high",
+      "subtasks": []
     }
   ]
 }

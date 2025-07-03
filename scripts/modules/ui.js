@@ -461,8 +461,8 @@ function displayHelp() {
         },
         {
           name: "update-task",
-          args: '--id=<id> (manual updates only)',
-          desc: "Update a single specific task with new information",
+          args: '--id=<id> --details="<details>"',
+          desc: "Update a single specific task by appending timestamped details",
         },
         {
           name: "update-subtask",

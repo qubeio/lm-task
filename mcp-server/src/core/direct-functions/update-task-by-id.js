@@ -14,10 +14,10 @@ import { createLogWrapper } from "../../tools/utils.js";
 /**
  * Direct function wrapper for updateTaskById with error handling.
  *
- * @param {Object} args - Command arguments containing id, useResearch, tasksJsonPath, and projectRoot.
+ * @param {Object} args - Command arguments containing id, details, tasksJsonPath, and projectRoot.
  * @param {string} args.tasksJsonPath - Explicit path to the tasks.json file.
- * @param {string} args.id - Task ID (or subtask ID like "1.2").
- * @param {boolean} [args.research] - Whether to use research role.
+ * @param {string} args.id - Task ID.
+ * @param {string} args.details - Additional details to append to the task.
  * @param {string} [args.projectRoot] - Project root path.
  * @param {Object} log - Logger object.
  * @param {Object} context - Context object containing session data.
@@ -26,7 +26,7 @@ import { createLogWrapper } from "../../tools/utils.js";
 export async function updateTaskByIdDirect(args, log, context = {}) {
   const { session } = context;
   // Destructure expected args, including projectRoot
-  const { tasksJsonPath, id, research, projectRoot } = args;
+  const { tasksJsonPath, id, details, projectRoot } = args;
 
   const logWrapper = createLogWrapper(log);
 
@@ -58,24 +58,31 @@ export async function updateTaskByIdDirect(args, log, context = {}) {
       };
     }
 
+    // Check required parameters (details)
+    if (!details || typeof details !== "string" || details.trim() === "") {
+      const errorMessage =
+        "Details parameter is required and cannot be empty.";
+      logWrapper.error(errorMessage);
+      return {
+        success: false,
+        error: { code: "MISSING_DETAILS", message: errorMessage },
+        fromCache: false,
+      };
+    }
+
     // Parse taskId - handle both string and number values
     let taskId;
     if (typeof id === "string") {
-      // Handle subtask IDs (e.g., "5.2")
-      if (id.includes(".")) {
-        taskId = id; // Keep as string for subtask IDs
-      } else {
-        // Parse as integer for main task IDs
-        taskId = parseInt(id, 10);
-        if (isNaN(taskId)) {
-          const errorMessage = `Invalid task ID: ${id}. Task ID must be a positive integer or subtask ID (e.g., "5.2").`;
-          logWrapper.error(errorMessage);
-          return {
-            success: false,
-            error: { code: "INVALID_TASK_ID", message: errorMessage },
-            fromCache: false,
-          };
-        }
+      // Parse as integer for main task IDs
+      taskId = parseInt(id, 10);
+      if (isNaN(taskId)) {
+        const errorMessage = `Invalid task ID: ${id}. Task ID must be a positive integer.`;
+        logWrapper.error(errorMessage);
+        return {
+          success: false,
+          error: { code: "INVALID_TASK_ID", message: errorMessage },
+          fromCache: false,
+        };
       }
     } else {
       taskId = id;
@@ -84,11 +91,8 @@ export async function updateTaskByIdDirect(args, log, context = {}) {
     // Use the provided path
     const tasksPath = tasksJsonPath;
 
-    // Get research flag
-    const useResearch = research === true;
-
     logWrapper.info(
-      `Updating task with ID ${taskId} and research: ${useResearch}`,
+      `Updating task with ID ${taskId} with details: ${details.substring(0, 100)}${details.length > 100 ? "..." : ""}`,
     );
 
     const wasSilent = isSilentMode();
@@ -101,7 +105,7 @@ export async function updateTaskByIdDirect(args, log, context = {}) {
       const coreResult = await updateTaskById(
         tasksPath,
         taskId,
-        useResearch,
+        details,
         {
           mcpLog: logWrapper,
           session,
@@ -113,12 +117,12 @@ export async function updateTaskByIdDirect(args, log, context = {}) {
       );
 
       // Check if the core function returned null or an object without success
-      if (!coreResult || coreResult.updatedTask === null) {
-        // Core function logs the reason, just return success with info
-        const message = `Task ${taskId} was not updated (likely already completed).`;
+      if (!coreResult || !coreResult.success) {
+        // Core function logs the reason, just return the result
+        const message = coreResult?.message || `Task ${taskId} was not updated.`;
         logWrapper.info(message);
         return {
-          success: true,
+          success: false,
           data: {
             message: message,
             taskId: taskId,
@@ -138,7 +142,6 @@ export async function updateTaskByIdDirect(args, log, context = {}) {
           message: successMessage,
           taskId: taskId,
           tasksPath: tasksPath,
-          useResearch: useResearch,
           updated: true,
           updatedTask: coreResult.updatedTask,
           telemetryData: coreResult.telemetryData,

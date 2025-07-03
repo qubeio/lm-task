@@ -14,9 +14,10 @@ import { createLogWrapper } from "../../tools/utils.js";
 /**
  * Direct function wrapper for updateSubtaskById with error handling.
  *
- * @param {Object} args - Command arguments containing id, tasksJsonPath, and projectRoot.
+ * @param {Object} args - Command arguments containing id, details, tasksJsonPath, and projectRoot.
  * @param {string} args.tasksJsonPath - Explicit path to the tasks.json file.
  * @param {string} args.id - Subtask ID in format "parentId.subtaskId" (e.g., "5.2").
+ * @param {string} [args.details] - Additional details to append to the subtask.
  * @param {string} [args.projectRoot] - Project root path.
  * @param {Object} log - Logger object.
  * @param {Object} context - Context object containing session data.
@@ -24,8 +25,8 @@ import { createLogWrapper } from "../../tools/utils.js";
  */
 export async function updateSubtaskByIdDirect(args, log, context = {}) {
   const { session } = context;
-  // Destructure expected args, including projectRoot
-  const { tasksJsonPath, id, projectRoot } = args;
+  // Destructure expected args, including projectRoot and details
+  const { tasksJsonPath, id, details, projectRoot } = args;
 
   const logWrapper = createLogWrapper(log);
 
@@ -83,6 +84,7 @@ export async function updateSubtaskByIdDirect(args, log, context = {}) {
       const coreResult = await updateSubtaskById(
         tasksPath,
         id,
+        details,
         {
           mcpLog: logWrapper,
           session,
@@ -95,8 +97,8 @@ export async function updateSubtaskByIdDirect(args, log, context = {}) {
 
       // Check if the core function returned null or an object without success
       if (!coreResult || coreResult.updatedSubtask === null) {
-        // Core function logs the reason, just return success with info
-        const message = `Subtask ${id} was not updated.`;
+        // Core function logs the reason, use the detailed message from core function
+        const message = coreResult?.message || `Subtask ${id} was not updated.`;
         logWrapper.info(message);
         return {
           success: true,

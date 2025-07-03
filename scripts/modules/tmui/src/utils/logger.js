@@ -12,6 +12,11 @@ export const logger = {
     const logMessage = `[${timestamp}] LOG: ${message}\n`;
     fs.appendFileSync(logFilePath, logMessage);
   },
+  warn: (message) => {
+    const timestamp = new Date().toISOString();
+    const logMessage = `[${timestamp}] WARN: ${message}\n`;
+    fs.appendFileSync(logFilePath, logMessage);
+  },
   error: (message, errorObj) => {
     const timestamp = new Date().toISOString();
     let logMessage = `[${timestamp}] ERROR: ${message}\n`;

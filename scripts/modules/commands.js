@@ -940,10 +940,14 @@ function registerCommands(programInstance) {
   programInstance
     .command("update-task")
     .description(
-      "Update a single specific task by ID with new information (use --id parameter)",
+      "Update a single specific task by ID by appending timestamped details",
     )
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
     .option("-i, --id <id>", "Task ID to update (required)")
+    .option(
+      "-d, --details <details>",
+      "Additional details to append to the task (required)",
+    )
     .action(async (options) => {
       try {
         const tasksPath = options.file;
@@ -953,7 +957,17 @@ function registerCommands(programInstance) {
           console.error(chalk.red("Error: --id parameter is required"));
           console.log(
             chalk.yellow(
-              'Usage example: lm-tasker update-task --id=23',
+              'Usage example: lm-tasker update-task --id=23 --details="Implementation notes"',
+            ),
+          );
+          process.exit(1);
+        }
+
+        if (!options.details) {
+          console.error(chalk.red("Error: --details parameter is required"));
+          console.log(
+            chalk.yellow(
+              'Usage example: lm-tasker update-task --id=23 --details="Implementation notes"',
             ),
           );
           process.exit(1);
@@ -969,7 +983,7 @@ function registerCommands(programInstance) {
           );
           console.log(
             chalk.yellow(
-              'Usage example: lm-tasker update-task --id=23',
+              'Usage example: lm-tasker update-task --id=23 --details="Implementation notes"',
             ),
           );
           process.exit(1);
@@ -983,7 +997,7 @@ function registerCommands(programInstance) {
           if (tasksPath === "tasks/tasks.json") {
             console.log(
               chalk.yellow(
-                "Hint: Run task-master init or task-master parse-prd to create tasks.json first",
+                "Hint: Run lm-tasker init or lm-tasker parse-prd to create tasks.json first",
               ),
             );
           } else {
@@ -1001,10 +1015,10 @@ function registerCommands(programInstance) {
         );
         console.log(chalk.blue(`Tasks file: ${tasksPath}`));
 
-        const result = await updateTaskById(tasksPath, taskId, false);
+        const result = await updateTaskById(tasksPath, taskId, options.details);
 
         // If the task wasn't updated (e.g., if it was already marked as done)
-        if (!result) {
+        if (!result || !result.success) {
           console.log(
             chalk.yellow(
               "\nTask update was not completed. Review the messages above for details.",
@@ -1031,6 +1045,10 @@ function registerCommands(programInstance) {
       "-i, --id <id>",
       "Subtask ID in format parentId.subtaskId (e.g., 5.2)",
     )
+    .option(
+      "-d, --details <details>",
+      "Additional details to append to the subtask",
+    )
     .action(async (options) => {
       try {
         const tasksPath = options.file;
@@ -1042,7 +1060,19 @@ function registerCommands(programInstance) {
           );
           console.log(
             chalk.yellow(
-              'Usage example: task-master update-subtask --id=5.2',
+              'Usage example: lm-tasker update-subtask --id=5.2 --details="Implementation notes"',
+            ),
+          );
+          process.exit(1);
+        }
+
+        if (!options.details) {
+          console.error(
+            chalk.red("Error: --details parameter is required"),
+          );
+          console.log(
+            chalk.yellow(
+              'Usage example: lm-tasker update-subtask --id=5.2 --details="Implementation notes"',
             ),
           );
           process.exit(1);
@@ -1058,7 +1088,7 @@ function registerCommands(programInstance) {
           );
           console.log(
             chalk.yellow(
-              'Usage example: task-master update-subtask --id=5.2',
+              'Usage example: lm-tasker update-subtask --id=5.2 --details="Implementation notes"',
             ),
           );
           process.exit(1);
@@ -1072,7 +1102,7 @@ function registerCommands(programInstance) {
           if (tasksPath === "tasks/tasks.json") {
             console.log(
               chalk.yellow(
-                "Hint: Run task-master init or task-master parse-prd to create tasks.json first",
+                "Hint: Run lm-tasker init or lm-tasker parse-prd to create tasks.json first",
               ),
             );
           } else {
@@ -1090,10 +1120,10 @@ function registerCommands(programInstance) {
         );
         console.log(chalk.blue(`Tasks file: ${tasksPath}`));
 
-        const result = await updateSubtaskById(tasksPath, subtaskId);
+        const result = await updateSubtaskById(tasksPath, subtaskId, options.details);
 
         // If the subtask wasn't updated
-        if (!result) {
+        if (!result || !result.success) {
           console.log(
             chalk.yellow(
               "\nSubtask update was not completed. Review the messages above for details.",
@@ -2441,7 +2471,7 @@ function setupCLI() {
 }
 
 /**
- * Check for newer version of task-master-ai
+ * Check for newer version of @qubeio/lm-tasker
  * @returns {Promise<{currentVersion: string, latestVersion: string, needsUpdate: boolean}>}
  */
 async function checkForUpdate() {
@@ -2452,7 +2482,7 @@ async function checkForUpdate() {
     // Get the latest version from npm registry
     const options = {
       hostname: "registry.npmjs.org",
-      path: "/task-master-ai",
+      path: "/@qubeio%2Flm-tasker",
       method: "GET",
       headers: {
         Accept: "application/vnd.npm.install-v1+json", // Lightweight response
@@ -2544,7 +2574,7 @@ function compareVersions(v1, v2) {
 function displayUpgradeNotification(currentVersion, latestVersion) {
   const message = boxen(
     `${chalk.blue.bold("Update Available!")} ${chalk.dim(currentVersion)} → ${chalk.green(latestVersion)}\n\n` +
-      `Run ${chalk.cyan("npm i lm-tasker@latest -g")} to update to the latest version with new features and bug fixes.`,
+      `Run ${chalk.cyan("npm i @qubeio/lm-tasker@latest -g")} to update to the latest version with new features and bug fixes.`,
     {
       padding: 1,
       margin: { top: 1, bottom: 1 },
