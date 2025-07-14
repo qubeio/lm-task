@@ -30,9 +30,16 @@ class LMTaskerMCPServer {
     this.server = new FastMCP(this.options);
     this.initialized = false;
 
+    // Add empty resources (these respond to resources/list)
     this.server.addResource({});
-
     this.server.addResourceTemplate({});
+    
+    // Store reference for adding tool-based resources after initialization
+    this.toolResourcesAdded = false;
+
+    // Enhanced logging for debugging client requests
+    logger.info(`[MCP INIT] Starting LM-Tasker MCP Server v${packageJson.version}`);
+    logger.info(`[MCP INIT] Server will expose tools via tools/list and resources via resources/list`);
 
     // Bind methods
     this.init = this.init.bind(this);
@@ -44,13 +51,56 @@ class LMTaskerMCPServer {
   }
 
   /**
+   * Workaround: Add tools as resources for clients that only check resources/list
+   */
+  addToolsAsResources() {
+    // Add a resource that lists all available tools
+    this.server.addResource({
+      uri: "lm-tasker://tools/available",
+      name: "Available LM-Tasker Tools",
+      description: "List of all available LM-Tasker MCP tools",
+      mimeType: "application/json"
+    });
+
+    // Add individual tool documentation as resources
+    const toolNames = [
+      "initialize_project", "models", "parse_prd", "migrate_prd",
+      "get_tasks", "get_task", "next_task", 
+      "set_task_status", "add_task", "add_subtask", "remove_task", "remove_subtask",
+      "clear_subtasks", "move_task", "update_task", "update_subtask",
+      "add_dependency", "remove_dependency", "validate_dependencies", "fix_dependencies",
+      "generate"
+    ];
+
+    toolNames.forEach(toolName => {
+      this.server.addResource({
+        uri: `lm-tasker://tool/${toolName}`,
+        name: `LM-Tasker Tool: ${toolName}`,
+        description: `Documentation and usage for the ${toolName} tool`,
+        mimeType: "text/plain"
+      });
+    });
+
+    logger.info(`[MCP WORKAROUND] Added ${toolNames.length} tools as resources for Warp compatibility`);
+  }
+
+  /**
    * Initialize the MCP server with necessary tools and routes
    */
   async init() {
     if (this.initialized) return;
 
-    // Pass the manager instance to the tool registration function
+    // Register all LM-Tasker tools - this makes them available via tools/list
     registerLMTaskerTools(this.server, this.asyncManager);
+
+    // Workaround for Warp: Add tools as resources too
+    if (!this.toolResourcesAdded) {
+      this.addToolsAsResources();
+      this.toolResourcesAdded = true;
+    }
+
+    // Log how many tools were registered
+    logger.info(`[MCP INIT] Registered LM-Tasker tools successfully`);
 
     this.initialized = true;
 
