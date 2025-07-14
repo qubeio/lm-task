@@ -851,14 +851,12 @@ describe("Commands Module", () => {
         options = options || {}; // Ensure options is not undefined
 
         const isManualCreation = options.title && options.description;
+        const hasPrompt = options.prompt || options.p;
 
-        // Get prompt directly or from p shorthand
-        const prompt = options.prompt || options.p;
-
-        // Validate that title+description are provided (manual creation only)
-        if (!isManualCreation) {
+        // Validate that either manual or prompt-based creation is used
+        if (!isManualCreation && !hasPrompt) {
           throw new Error(
-            "Both --title and --description must be provided",
+            "Either --title and --description (manual) or --prompt/-p (prompt-based) must be provided",
           );
         }
 
@@ -870,6 +868,8 @@ describe("Commands Module", () => {
 
         // Create manual task data if title and description are provided
         let manualTaskData = null;
+        let prompt = undefined;
+        let useResearch = false;
         if (isManualCreation) {
           manualTaskData = {
             title: options.title,
@@ -877,6 +877,9 @@ describe("Commands Module", () => {
             details: options.details || "",
             testStrategy: options.testStrategy || "",
           };
+        } else if (hasPrompt) {
+          prompt = options.prompt || options.p;
+          useResearch = options.research || options.r || false;
         }
 
         // Call addTask with the right parameters
@@ -886,7 +889,7 @@ describe("Commands Module", () => {
           dependencies,
           options.priority || "medium",
           { session: process.env },
-          options.research || options.r || false,
+          useResearch,
           null,
           manualTaskData,
         );
@@ -900,7 +903,7 @@ describe("Commands Module", () => {
       await expect(async () => {
         await addTaskAction(undefined, options);
       }).rejects.toThrow(
-        "Both --title and --description must be provided",
+        "Either --title and --description (manual) or --prompt/-p (prompt-based) must be provided",
       );
     });
 

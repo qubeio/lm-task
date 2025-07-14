@@ -1274,12 +1274,12 @@ function registerCommands(programInstance) {
   // add-task command
   programInstance
     .command("add-task")
-    .description("Add a new task manually with specified details")
+    .description("Add a new task manually with specified details or via prompt")
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
-    .option("-t, --title <title>", "Task title (required)")
+    .option("-t, --title <title>", "Task title (required for manual)")
     .option(
       "-d, --description <description>",
-      "Task description (required)",
+      "Task description (required for manual)",
     )
     .option(
       "--details <details>",
@@ -1294,70 +1294,118 @@ function registerCommands(programInstance) {
       "Task priority (high, medium, low)",
       "medium",
     )
+    .option("--prompt <prompt>", "Prompt for AI-based task creation")
+    .option("-p <prompt>", "Prompt for AI-based task creation (shorthand)")
+    .option("--research", "Use research model for prompt-based creation")
+    .option("-r", "Use research model for prompt-based creation (shorthand)")
     .action(async (options) => {
-      // Validate that both title and description are provided
-      if (!options.title || !options.description) {
+      // Determine if this is manual or prompt-based creation
+      const hasPrompt = options.prompt || options.p;
+      const isManual = options.title && options.description;
+
+      if (!isManual && !hasPrompt) {
         console.error(
           chalk.red(
-            "Error: Both --title and --description are required for manual task creation",
+            "Error: Either --title and --description (manual) or --prompt/-p (prompt-based) must be provided",
           ),
         );
-        console.log(chalk.yellow("\nUsage example:"));
-        console.log("  lm-tasker add-task --title=\"Setup Database\" --description=\"Configure PostgreSQL database for the application\"");
+        console.log(chalk.yellow("\nUsage examples:"));
+        console.log(
+          "  lm-tasker add-task --title=\"Setup Database\" --description=\"Configure PostgreSQL database for the application\"",
+        );
+        console.log(
+          "  lm-tasker add-task --prompt=\"Create a login component\"",
+        );
         process.exit(1);
       }
 
       const tasksPath =
         options.file ||
-        path.join(findProjectRoot() || ".", "tasks", "tasks.json") || // Ensure tasksPath is also relative to a found root or current dir
+        path.join(findProjectRoot() || ".", "tasks", "tasks.json") ||
         "tasks/tasks.json";
 
       // Correctly determine projectRoot
       const projectRoot = findProjectRoot();
 
-      const manualTaskData = {
-        title: options.title,
-        description: options.description,
-        details: options.details || "",
-        testStrategy: options.testStrategy || "",
-      };
-
-      console.log(
-        chalk.blue(`Creating task manually with title: "${options.title}"`),
-      );
-
-      // Log dependencies and priority if provided
+      // Parse dependencies
       const dependenciesArray = options.dependencies
         ? options.dependencies.split(",").map((id) => id.trim())
         : [];
-      if (dependenciesArray.length > 0) {
-        console.log(
-          chalk.blue(`Dependencies: [${dependenciesArray.join(", ")}]`),
-        );
-      }
-      if (options.priority) {
-        console.log(chalk.blue(`Priority: ${options.priority}`));
-      }
 
       const context = {
         projectRoot,
         commandName: "add-task",
         outputType: "cli",
+        session: process.env,
       };
 
       try {
-        const { newTaskId, telemetryData } = await addTask(
-          tasksPath,
-          null, // No prompt for manual creation
-          dependenciesArray,
-          options.priority,
-          context,
-          "text",
-          manualTaskData,
-          false, // research disabled
-        );
+        if (isManual) {
+          // Manual task creation
+          const manualTaskData = {
+            title: options.title,
+            description: options.description,
+            details: options.details || "",
+            testStrategy: options.testStrategy || "",
+          };
 
-        console.log(chalk.green(`Successfully created task ${newTaskId}`));
+          console.log(
+            chalk.blue(`Creating task manually with title: \"${options.title}\"`),
+          );
+
+          if (dependenciesArray.length > 0) {
+            console.log(
+              chalk.blue(`Dependencies: [${dependenciesArray.join(", ")}]`),
+            );
+          }
+          if (options.priority) {
+            console.log(chalk.blue(`Priority: ${options.priority}`));
+          }
+
+          const { newTaskId, telemetryData } = await addTask(
+            tasksPath,
+            null, // No prompt for manual creation
+            dependenciesArray,
+            options.priority,
+            context,
+            false, // research disabled
+            null, // generateFiles param
+            manualTaskData,
+          );
+
+          console.log(chalk.green(`Successfully created task ${newTaskId}`));
+        } else {
+          // Prompt-based task creation
+          const prompt = options.prompt || options.p;
+          const useResearch = options.research || options.r || false;
+
+          console.log(
+            chalk.blue(
+              `Creating task from prompt: \"${prompt}\"${useResearch ? " (research model)" : ""}`,
+            ),
+          );
+          if (dependenciesArray.length > 0) {
+            console.log(
+              chalk.blue(`Dependencies: [${dependenciesArray.join(", ")}]`),
+            );
+          }
+          if (options.priority) {
+            console.log(chalk.blue(`Priority: ${options.priority}`));
+          }
+
+          const { newTaskId, telemetryData } = await addTask(
+            tasksPath,
+            prompt,
+            dependenciesArray,
+            options.priority,
+            context,
+            useResearch,
+            null, // generateFiles param
+            null, // manualTaskData
+          );
+
+          console.log(chalk.green(`Successfully created task ${newTaskId}`));
+        }
       } catch (error) {
         console.error(chalk.red(`Error adding task: ${error.message}`));
         if (error.details) {
