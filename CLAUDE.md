@@ -4,9 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-LM-Tasker is a task management system for AI-driven development that converts Product Requirements Documents (PRDs) into structured, actionable task lists. It uses a simplified architecture where **AI is only used for PRD parsing** - all other task operations are manual.
+LM-Tasker is a task management system for AI-driven development that converts Product Requirements Documents (PRDs) into
+structured, actionable task lists. It uses a simplified architecture where **AI is only used for PRD parsing** - all
+other task operations are manual.
 
 **Key Characteristics:**
+
 - **Package Name**: `lm-tasker` (formerly `task-master-ai`)
 - **Branding**: Always use "LM-Tasker" (not variations)
 - **AI Scope**: Limited to PRD parsing only (Azure OpenAI, OpenAI, Anthropic, Google, Mistral, Perplexity, XAI, Ollama)
@@ -20,6 +23,7 @@ LM-Tasker is a task management system for AI-driven development that converts Pr
 ### Primary Interaction Methods
 
 1. **MCP Server (Recommended for AI Agents/Editors)**:
+
    - Use MCP tools like `get_tasks`, `add_subtask`, `set_task_status`
    - Better performance and structured data exchange
    - Refer to [mcp.mdc](.cursor/rules/mcp.mdc) for architecture details
@@ -56,11 +60,13 @@ For detailed subtask implementation, follow this workflow:
 ## Configuration Management
 
 ### Primary Configuration (`.lmtaskerconfig`)
+
 - Managed via `lm-tasker models --setup` command
 - Contains AI model selections for PRD parsing
 - Stores parameters (max tokens, temperature), logging level, project settings
 
 ### Environment Variables
+
 - **Purpose**: API keys for PRD parsing only
 - **CLI**: Place in `.env` file in project root
 - **MCP**: Configure in `env` section of `.cursor/mcp.json`
@@ -72,7 +78,7 @@ For detailed subtask implementation, follow this workflow:
 {
   "id": 1,
   "title": "Task Title",
-  "description": "Brief task description", 
+  "description": "Brief task description",
   "status": "pending|done|deferred|in-progress|review|cancelled",
   "dependencies": [0],
   "priority": "high|medium|low",
@@ -85,18 +91,21 @@ For detailed subtask implementation, follow this workflow:
 ## Key Architecture Principles
 
 ### AI Integration (Limited Scope)
+
 - **PRD Parsing Only**: AI converts PRDs to structured task lists
 - **Manual Everything Else**: Task creation, updates, status changes are manual
 - **No AI Assistance**: For task management operations beyond PRD parsing
 - **Cost Control**: Minimal AI usage reduces operational costs
 
 ### Task Management Patterns
+
 - **Manual Task Updates**: Direct editing of task properties
 - **Dependency Management**: Manual setup using `add_dependency`/`remove_dependency`
 - **Task Reorganization**: Use `move_task` to restructure hierarchy
 - **Status Tracking**: Simple status changes without AI analysis
 
 ### Implementation Drift Handling
+
 - **Manual Updates**: Edit task details when implementation differs from plan
 - **Dependency Adjustments**: Update task dependencies as requirements change
 - **New Task Creation**: Add discovered tasks manually during implementation
@@ -123,6 +132,7 @@ When working with specific aspects of the codebase, refer to these rule files:
 ## Common Commands
 
 ### Testing
+
 ```bash
 npm test                 # Run all tests
 npm run test:watch       # Watch mode
@@ -131,6 +141,7 @@ npm run test:e2e         # End-to-end tests
 ```
 
 ### Development
+
 ```bash
 npm run format-check     # Check formatting
 npm run format           # Format code
@@ -139,9 +150,9 @@ npm run inspector        # MCP inspector
 ```
 
 ### Task Management (Examples)
+
 ```bash
 lm-tasker init                               # Initialize project
-lm-tasker parse-prd --input='PRD.md'        # Parse PRD to tasks
 lm-tasker list                               # List all tasks
 lm-tasker next                               # Show next task
 lm-tasker show 1.2                          # Show specific task/subtask

@@ -181,9 +181,6 @@ This will prompt you for project details and set up a new project with the neces
 # Initialize a new project
 lm-tasker init
 
-# Parse a PRD and generate tasks
-lm-tasker parse-prd
-
 # List all tasks
 lm-tasker list
 

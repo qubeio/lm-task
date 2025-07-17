@@ -392,52 +392,6 @@ function displayHelp() {
           args: "[--name=<name>] [--description=<desc>] [-y]",
           desc: "Initialize a new project with LM-Tasker structure",
         },
-        {
-          name: "models",
-          args: "",
-          desc: "View current AI model configuration and available models",
-        },
-        {
-          name: "models --setup",
-          args: "",
-          desc: "Run interactive setup to configure AI models",
-        },
-        {
-          name: "models --set-main",
-          args: "<model_id>",
-          desc: "Set the primary model for task generation",
-        },
-        {
-          name: "models --set-research",
-          args: "<model_id>",
-          desc: "Set the model for research operations",
-        },
-        {
-          name: "models --set-fallback",
-          args: "<model_id>",
-          desc: "Set the fallback model (optional)",
-        },
-      ],
-    },
-    {
-      title: "Task Generation",
-      color: "cyan",
-      commands: [
-        {
-          name: "parse-prd",
-          args: "--input=<file.txt> [--num-tasks=10]",
-          desc: "Generate tasks from a PRD document",
-        },
-        {
-          name: "migrate-prd",
-          args: "[source] [--target=<file>] [--force] [--analyze]",
-          desc: "Migrate old PRD format files to new PRD.md format",
-        },
-        {
-          name: "generate",
-          args: "",
-          desc: "Create individual task files from tasks.json",
-        },
       ],
     },
     {
@@ -471,8 +425,8 @@ function displayHelp() {
         },
         {
           name: "add-task",
-          args: '--title="<title>" --description="<text>" [--dependencies=<ids>] [--priority=<priority>]',
-          desc: "Add a new task using AI",
+          args: '--title="<title>" --description="<text>" [--dependencies=<ids>] [--priority=<priority>] ',
+          desc: "Add a new task",
         },
         {
           name: "remove-task",
@@ -512,7 +466,6 @@ function displayHelp() {
         },
       ],
     },
-
     {
       title: "Task Navigation & Viewing",
       color: "cyan",
@@ -526,6 +479,11 @@ function displayHelp() {
           name: "show",
           args: "<id>",
           desc: "Display detailed information about a specific task",
+        },
+        {
+          name: "generate",
+          args: "",
+          desc: "Create individual task files from tasks.json",
         },
       ],
     },
@@ -608,70 +566,7 @@ function displayHelp() {
     console.log("");
   });
 
-  // Display configuration section
-  console.log(
-    boxen(chalk.cyan.bold("Configuration"), {
-      padding: { left: 2, right: 2, top: 0, bottom: 0 },
-      margin: { top: 1, bottom: 0 },
-      borderColor: "cyan",
-      borderStyle: "round",
-    }),
-  );
-
-  // Get terminal width if not already defined
-  const configTerminalWidth = terminalWidth || process.stdout.columns || 100;
-
-  // Calculate dynamic column widths for config table
-  const configKeyWidth = Math.max(30, Math.floor(configTerminalWidth * 0.25));
-  const configDescWidth = Math.max(50, Math.floor(configTerminalWidth * 0.45));
-  const configValueWidth = Math.max(
-    30,
-    Math.floor(configTerminalWidth * 0.3) - 10,
-  );
-
-  const configTable = new Table({
-    colWidths: [configKeyWidth, configDescWidth, configValueWidth],
-    chars: {
-      top: "",
-      "top-mid": "",
-      "top-left": "",
-      "top-right": "",
-      bottom: "",
-      "bottom-mid": "",
-      "bottom-left": "",
-      "bottom-right": "",
-      left: "",
-      "left-mid": "",
-      mid: "",
-      "mid-mid": "",
-      right: "",
-      "right-mid": "",
-      middle: " ",
-    },
-    style: { border: [], "padding-left": 4 },
-    wordWrap: true,
-  });
-
-  configTable.push(
-    [
-      `${chalk.yellow(".lmtaskerconfig")}${chalk.reset("")}`,
-      `${chalk.white("AI model configuration file (project root)")}${chalk.reset("")}`,
-      `${chalk.dim("Managed by models cmd")}${chalk.reset("")}`,
-    ],
-    [
-      `${chalk.yellow("API Keys (.env)")}${chalk.reset("")}`,
-      `${chalk.white("API keys for AI providers (ANTHROPIC_API_KEY, etc.)")}${chalk.reset("")}`,
-      `${chalk.dim("Required in .env file")}${chalk.reset("")}`,
-    ],
-    [
-      `${chalk.yellow("MCP Keys (mcp.json)")}${chalk.reset("")}`,
-      `${chalk.white("API keys for Cursor integration")}${chalk.reset("")}`,
-      `${chalk.dim("Required in .cursor/")}${chalk.reset("")}`,
-    ],
-  );
-
-  console.log(configTable.toString());
-  console.log("");
+  // Configuration section removed - no longer needed for core task management
 
   // Show helpful hints
   console.log(
@@ -681,23 +576,20 @@ function displayHelp() {
         chalk.cyan("1. Create Project: ") +
         chalk.white("lm-tasker init") +
         "\n" +
-        chalk.cyan("2. Setup Models: ") +
-        chalk.white("lm-tasker models --setup") +
+        chalk.cyan("2. Add Tasks: ") +
+        chalk.white("lm-tasker add-task --title='Task Name' --description='Description'") +
         "\n" +
-        chalk.cyan("3. Parse PRD: ") +
-        chalk.white("lm-tasker parse-prd --input=<prd-file>") +
-        "\n" +
-        chalk.cyan("4. List Tasks: ") +
+        chalk.cyan("3. List Tasks: ") +
         chalk.white("lm-tasker list") +
         "\n" +
-        chalk.cyan("5. Find Next Task: ") +
+        chalk.cyan("4. Find Next Task: ") +
         chalk.white("lm-tasker next"),
       {
         padding: 1,
         borderColor: "yellow",
         borderStyle: "round",
         margin: { top: 1 },
-        width: Math.min(configTerminalWidth - 10, 100), // Limit width to terminal width minus padding, max 100
+        width: Math.min(100, process.stdout.columns - 10 || 100), // Limit width to terminal width minus padding, max 100
       },
     ),
   );
