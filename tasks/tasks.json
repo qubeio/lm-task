@@ -441,6 +441,90 @@
       "dependencies": [],
       "priority": "high",
       "subtasks": []
+    },
+    {
+      "id": 120,
+      "title": "Remove All AI Functionality",
+      "description": "Remove all remaining AI functionality from LM-Tasker, including PRD parsing, model selection, AI provider integrations, and any AI-related configuration. The goal is to make LM-Tasker a purely manual task management system.",
+      "details": "This task involves removing all AI-related code and functionality from LM-Tasker to make it a purely manual task management system. The scope includes:\n\n**AI Functionality to Remove:**\n1. PRD parsing commands and functionality (parse-prd, migrate-prd)\n2. Model selection and configuration (models command, .lmtaskerconfig AI settings)\n3. All AI provider integrations (Azure, OpenAI, Anthropic, Google, Mistral, Perplexity, XAI, Ollama)\n4. AI services layer (ai-services-unified.js and related modules)\n5. AI-related configuration management\n6. AI provider-specific code in src/ai-providers/\n7. supported-models.json and model management\n8. All AI-related environment variables and API key handling\n9. AI-related documentation and examples\n\n**Key Areas to Clean Up:**\n- Remove parse-prd and migrate-prd commands from CLI and MCP\n- Remove models command and model configuration\n- Remove AI services layer (ai-services-unified.js)\n- Remove AI provider implementations (src/ai-providers/)\n- Remove supported-models.json and model management code\n- Clean up configuration files (.lmtaskerconfig) to remove AI settings\n- Update documentation to reflect manual-only operation\n- Remove AI-related dependencies from package.json\n- Clean up environment variable handling for API keys\n- Remove AI-related tests and fixtures\n\n**Files/Directories to Review:**\n- scripts/modules/commands.js (remove parse-prd, migrate-prd, models commands)\n- scripts/modules/ai-services-unified.js (entire file)\n- scripts/modules/task-manager/parse-prd.js (entire file)\n- scripts/modules/task-manager/migrate-prd.js (entire file)\n- scripts/modules/task-manager/models.js (entire file)\n- scripts/modules/config-manager.js (remove AI configuration)\n- scripts/modules/supported-models.json (entire file)\n- src/ai-providers/ (entire directory)\n- mcp-server/src/tools/parse-prd.js (entire file)\n- mcp-server/src/tools/migrate-prd.js (entire file)\n- mcp-server/src/tools/models.js (entire file)\n- mcp-server/src/core/direct-functions/parse-prd.js (entire file)\n- mcp-server/src/core/direct-functions/migrate-prd.js (entire file)\n- mcp-server/src/core/direct-functions/models.js (entire file)\n- All documentation files referencing AI functionality\n- Package.json dependencies related to AI providers\n- Test files for AI functionality\n\n**Approach:**\n1. Remove AI-related CLI commands (parse-prd, migrate-prd, models)\n2. Remove AI-related MCP tools\n3. Remove AI service layer and provider implementations\n4. Clean up configuration management\n5. Update documentation and examples\n6. Remove AI-related dependencies\n7. Clean up tests and remove AI-related test files\n8. Update README and user guides to reflect manual-only operation",
+      "testStrategy": "",
+      "status": "in-progress",
+      "dependencies": [],
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Phase 1: Remove CLI Commands for AI Functionality",
+          "description": "Remove parse-prd, migrate-prd, and models commands from the CLI interface in commands.js",
+          "details": "Remove the following commands from scripts/modules/commands.js:\n- parse-prd command and its action handler\n- migrate-prd command and its action handler  \n- models command and its action handler\n- Any helper functions specific to these commands (like runInteractiveSetup)\n- Remove related imports that are no longer needed\n- Test that CLI still works without these commands",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 120
+        },
+        {
+          "id": 2,
+          "title": "Phase 2: Remove MCP Tools for AI Functionality",
+          "description": "Remove AI-related MCP tools and direct functions from the MCP server",
+          "details": "Remove the following MCP components:\n- mcp-server/src/tools/parse-prd.js\n- mcp-server/src/tools/migrate-prd.js\n- mcp-server/src/tools/models.js\n- mcp-server/src/core/direct-functions/parse-prd.js\n- mcp-server/src/core/direct-functions/migrate-prd.js\n- mcp-server/src/core/direct-functions/models.js\n- Remove these tool registrations from mcp-server/src/tools/index.js\n- Remove these imports from mcp-server/src/core/task-master-core.js\n- Test MCP server functionality without AI tools",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 120
+        },
+        {
+          "id": 3,
+          "title": "Phase 3: Remove AI Service Layer and Provider Implementations",
+          "description": "Remove the unified AI service layer and all AI provider implementations",
+          "details": "Remove the following files and directories:\n- scripts/modules/ai-services-unified.js (entire file)\n- src/ai-providers/ (entire directory and all provider implementations)\n- scripts/modules/task-manager/parse-prd.js\n- scripts/modules/task-manager/migrate-prd.js\n- scripts/modules/task-manager/models.js\n- Remove AI service imports from any remaining files\n- Update task-manager index.js to remove AI-related exports",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 120
+        },
+        {
+          "id": 4,
+          "title": "Phase 4: Remove AI Configuration and Model Management",
+          "description": "Remove AI-related configuration files and settings from the configuration management system",
+          "details": "Clean up configuration-related files:\n- Remove scripts/modules/supported-models.json\n- Update scripts/modules/config-manager.js to remove AI model configuration logic\n- Update .lmtaskerconfig structure to remove models section\n- Remove AI-related functions from config-manager.js (getAvailableModels, setModel, etc.)\n- Update configuration validation to not require AI settings\n- Remove API key handling for AI providers",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 120
+        },
+        {
+          "id": 5,
+          "title": "Phase 5: Clean Up Dependencies and Package Configuration",
+          "description": "Remove AI-related npm dependencies and clean up package.json",
+          "details": "Review and remove AI-related dependencies:\n- Remove Vercel AI SDK and related packages\n- Remove AI provider SDK dependencies (anthropic, openai, @google/generative-ai, etc.)\n- Remove any other AI-related dependencies that are no longer needed\n- Update package.json scripts if any reference AI functionality\n- Run npm audit to ensure no broken dependency chains",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 120
+        },
+        {
+          "id": 6,
+          "title": "Phase 6: Update Documentation and Examples",
+          "description": "Update all documentation to remove AI functionality references and reflect manual-only operation",
+          "details": "Update documentation files:\n- README.md: Remove AI functionality descriptions, model setup instructions\n- docs/command-reference.md: Remove parse-prd, migrate-prd, models commands\n- docs/configuration.md: Remove AI model configuration sections\n- docs/tutorial.md: Update setup instructions to remove AI setup\n- CLAUDE.md: Update project overview to reflect manual-only system\n- assets/AGENTS.md: Remove AI-related setup and model configuration\n- Remove or update example PRD files since they can't be parsed\n- Update .cursor/rules/ files to remove AI functionality references\n- Update any other documentation mentioning AI features",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 120
+        },
+        {
+          "id": 7,
+          "title": "Phase 7: Remove AI-Related Tests and Fixtures",
+          "description": "Clean up test files and fixtures that test AI functionality",
+          "details": "Remove AI-related test files:\n- Tests for parse-prd functionality\n- Tests for migrate-prd functionality\n- Tests for models command and configuration\n- Tests for AI service layer and providers\n- Remove AI-related test fixtures and sample data\n- Update integration tests to not use AI commands\n- Update e2e tests to remove AI functionality testing\n- Fix any remaining tests that may have dependencies on removed AI code",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 120
+        },
+        {
+          "id": 8,
+          "title": "Phase 8: Final Cleanup and Validation",
+          "description": "Perform final cleanup, validation, and testing to ensure LM-Tasker works as a manual-only system",
+          "details": "Final validation steps:\n- Run all remaining tests to ensure nothing is broken\n- Test core manual functionality (list, show, add-task, set-status, etc.)\n- Test MCP server with remaining tools\n- Verify CLI help and documentation reflects current functionality\n- Remove any remaining references to AI functionality in code comments\n- Update version and changelog to reflect major change\n- Verify installation and setup works without AI dependencies\n- Test with a fresh project initialization to ensure clean experience",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 120
+        }
+      ]
     }
   ]
 }

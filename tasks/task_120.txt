@@ -1,0 +1,171 @@
+# Task ID: 120
+# Title: Remove All AI Functionality
+# Status: in-progress
+# Dependencies: None
+# Priority: high
+# Description: Remove all remaining AI functionality from LM-Tasker, including PRD parsing, model selection, AI provider integrations, and any AI-related configuration. The goal is to make LM-Tasker a purely manual task management system.
+# Details:
+This task involves removing all AI-related code and functionality from LM-Tasker to make it a purely manual task management system. The scope includes:
+
+**AI Functionality to Remove:**
+1. PRD parsing commands and functionality (parse-prd, migrate-prd)
+2. Model selection and configuration (models command, .lmtaskerconfig AI settings)
+3. All AI provider integrations (Azure, OpenAI, Anthropic, Google, Mistral, Perplexity, XAI, Ollama)
+4. AI services layer (ai-services-unified.js and related modules)
+5. AI-related configuration management
+6. AI provider-specific code in src/ai-providers/
+7. supported-models.json and model management
+8. All AI-related environment variables and API key handling
+9. AI-related documentation and examples
+
+**Key Areas to Clean Up:**
+- Remove parse-prd and migrate-prd commands from CLI and MCP
+- Remove models command and model configuration
+- Remove AI services layer (ai-services-unified.js)
+- Remove AI provider implementations (src/ai-providers/)
+- Remove supported-models.json and model management code
+- Clean up configuration files (.lmtaskerconfig) to remove AI settings
+- Update documentation to reflect manual-only operation
+- Remove AI-related dependencies from package.json
+- Clean up environment variable handling for API keys
+- Remove AI-related tests and fixtures
+
+**Files/Directories to Review:**
+- scripts/modules/commands.js (remove parse-prd, migrate-prd, models commands)
+- scripts/modules/ai-services-unified.js (entire file)
+- scripts/modules/task-manager/parse-prd.js (entire file)
+- scripts/modules/task-manager/migrate-prd.js (entire file)
+- scripts/modules/task-manager/models.js (entire file)
+- scripts/modules/config-manager.js (remove AI configuration)
+- scripts/modules/supported-models.json (entire file)
+- src/ai-providers/ (entire directory)
+- mcp-server/src/tools/parse-prd.js (entire file)
+- mcp-server/src/tools/migrate-prd.js (entire file)
+- mcp-server/src/tools/models.js (entire file)
+- mcp-server/src/core/direct-functions/parse-prd.js (entire file)
+- mcp-server/src/core/direct-functions/migrate-prd.js (entire file)
+- mcp-server/src/core/direct-functions/models.js (entire file)
+- All documentation files referencing AI functionality
+- Package.json dependencies related to AI providers
+- Test files for AI functionality
+
+**Approach:**
+1. Remove AI-related CLI commands (parse-prd, migrate-prd, models)
+2. Remove AI-related MCP tools
+3. Remove AI service layer and provider implementations
+4. Clean up configuration management
+5. Update documentation and examples
+6. Remove AI-related dependencies
+7. Clean up tests and remove AI-related test files
+8. Update README and user guides to reflect manual-only operation
+
+# Test Strategy:
+
+
+# Subtasks:
+## 1. Phase 1: Remove CLI Commands for AI Functionality [pending]
+### Dependencies: None
+### Description: Remove parse-prd, migrate-prd, and models commands from the CLI interface in commands.js
+### Details:
+Remove the following commands from scripts/modules/commands.js:
+- parse-prd command and its action handler
+- migrate-prd command and its action handler  
+- models command and its action handler
+- Any helper functions specific to these commands (like runInteractiveSetup)
+- Remove related imports that are no longer needed
+- Test that CLI still works without these commands
+
+## 2. Phase 2: Remove MCP Tools for AI Functionality [pending]
+### Dependencies: None
+### Description: Remove AI-related MCP tools and direct functions from the MCP server
+### Details:
+Remove the following MCP components:
+- mcp-server/src/tools/parse-prd.js
+- mcp-server/src/tools/migrate-prd.js
+- mcp-server/src/tools/models.js
+- mcp-server/src/core/direct-functions/parse-prd.js
+- mcp-server/src/core/direct-functions/migrate-prd.js
+- mcp-server/src/core/direct-functions/models.js
+- Remove these tool registrations from mcp-server/src/tools/index.js
+- Remove these imports from mcp-server/src/core/task-master-core.js
+- Test MCP server functionality without AI tools
+
+## 3. Phase 3: Remove AI Service Layer and Provider Implementations [pending]
+### Dependencies: None
+### Description: Remove the unified AI service layer and all AI provider implementations
+### Details:
+Remove the following files and directories:
+- scripts/modules/ai-services-unified.js (entire file)
+- src/ai-providers/ (entire directory and all provider implementations)
+- scripts/modules/task-manager/parse-prd.js
+- scripts/modules/task-manager/migrate-prd.js
+- scripts/modules/task-manager/models.js
+- Remove AI service imports from any remaining files
+- Update task-manager index.js to remove AI-related exports
+
+## 4. Phase 4: Remove AI Configuration and Model Management [pending]
+### Dependencies: None
+### Description: Remove AI-related configuration files and settings from the configuration management system
+### Details:
+Clean up configuration-related files:
+- Remove scripts/modules/supported-models.json
+- Update scripts/modules/config-manager.js to remove AI model configuration logic
+- Update .lmtaskerconfig structure to remove models section
+- Remove AI-related functions from config-manager.js (getAvailableModels, setModel, etc.)
+- Update configuration validation to not require AI settings
+- Remove API key handling for AI providers
+
+## 5. Phase 5: Clean Up Dependencies and Package Configuration [pending]
+### Dependencies: None
+### Description: Remove AI-related npm dependencies and clean up package.json
+### Details:
+Review and remove AI-related dependencies:
+- Remove Vercel AI SDK and related packages
+- Remove AI provider SDK dependencies (anthropic, openai, @google/generative-ai, etc.)
+- Remove any other AI-related dependencies that are no longer needed
+- Update package.json scripts if any reference AI functionality
+- Run npm audit to ensure no broken dependency chains
+
+## 6. Phase 6: Update Documentation and Examples [pending]
+### Dependencies: None
+### Description: Update all documentation to remove AI functionality references and reflect manual-only operation
+### Details:
+Update documentation files:
+- README.md: Remove AI functionality descriptions, model setup instructions
+- docs/command-reference.md: Remove parse-prd, migrate-prd, models commands
+- docs/configuration.md: Remove AI model configuration sections
+- docs/tutorial.md: Update setup instructions to remove AI setup
+- CLAUDE.md: Update project overview to reflect manual-only system
+- assets/AGENTS.md: Remove AI-related setup and model configuration
+- Remove or update example PRD files since they can't be parsed
+- Update .cursor/rules/ files to remove AI functionality references
+- Update any other documentation mentioning AI features
+
+## 7. Phase 7: Remove AI-Related Tests and Fixtures [pending]
+### Dependencies: None
+### Description: Clean up test files and fixtures that test AI functionality
+### Details:
+Remove AI-related test files:
+- Tests for parse-prd functionality
+- Tests for migrate-prd functionality
+- Tests for models command and configuration
+- Tests for AI service layer and providers
+- Remove AI-related test fixtures and sample data
+- Update integration tests to not use AI commands
+- Update e2e tests to remove AI functionality testing
+- Fix any remaining tests that may have dependencies on removed AI code
+
+## 8. Phase 8: Final Cleanup and Validation [pending]
+### Dependencies: None
+### Description: Perform final cleanup, validation, and testing to ensure LM-Tasker works as a manual-only system
+### Details:
+Final validation steps:
+- Run all remaining tests to ensure nothing is broken
+- Test core manual functionality (list, show, add-task, set-status, etc.)
+- Test MCP server with remaining tools
+- Verify CLI help and documentation reflects current functionality
+- Remove any remaining references to AI functionality in code comments
+- Update version and changelog to reflect major change
+- Verify installation and setup works without AI dependencies
+- Test with a fresh project initialization to ensure clean experience
+
