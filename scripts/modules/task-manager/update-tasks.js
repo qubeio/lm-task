@@ -21,8 +21,6 @@ import {
 
 import { getDebugFlag } from "../config-manager.js";
 import generateTaskFiles from "./generate-task-files.js";
-import { generateTextService } from "../ai-services-unified.js";
-import { getModelConfiguration } from "./models.js";
 
 // Zod schema for validating the structure of tasks AFTER parsing
 const updatedTaskSchema = z

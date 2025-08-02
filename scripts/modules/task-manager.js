@@ -4,7 +4,6 @@
  */
 
 import { findTaskById } from "./utils.js";
-import parsePRD from "./task-manager/parse-prd.js";
 import updateTasks from "./task-manager/update-tasks.js";
 import updateTaskById from "./task-manager/update-task-by-id.js";
 import generateTaskFiles from "./task-manager/generate-task-files.js";
@@ -26,7 +25,6 @@ import moveTask from "./task-manager/move-task.js";
 
 // Export task manager functions
 export {
-  parsePRD,
   updateTasks,
   updateTaskById,
   updateSubtaskById,

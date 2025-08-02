@@ -1695,32 +1695,30 @@ async function runCLI(argv = process.argv) {
             chalk.white("LM-Tasker now uses the ") +
             chalk.yellow.bold(".lmtaskerconfig") +
             chalk.white(
-              " file in your project root for AI model choices and settings.\n\n" +
+              " file in your project root for project settings.\n\n" +
                 "This file appears to be ",
             ) +
             chalk.red.bold("missing") +
             chalk.white(". No worries though.\n\n") +
             chalk.cyan.bold("To create this file, run the interactive setup:") +
             "\n" +
-            chalk.green("   lm-tasker models --setup") +
+            chalk.green("   lm-tasker init") +
             "\n\n" +
             chalk.white.bold("Key Points:") +
             "\n" +
             chalk.white("*   ") +
             chalk.yellow.bold(".lmtaskerconfig") +
             chalk.white(
-              ": Stores your AI model settings (do not manually edit)\n",
+              ": Stores your project settings (do not manually edit)\n",
             ) +
             chalk.white("*   ") +
             chalk.yellow.bold(".env & .mcp.json") +
-            chalk.white(": Still used ") +
-            chalk.red.bold("only") +
-            chalk.white(" for your AI provider API keys.\n\n") +
+            chalk.white(": Used for any external service API keys if needed.\n\n") +
             chalk.cyan(
-              "`lm-tasker models` to check your config & available models\n",
+              "`lm-tasker init` to initialize a new project\n",
             ) +
             chalk.cyan(
-              "`lm-tasker models --setup` to adjust the AI models used by LM-Tasker",
+              "`lm-tasker list` to see your tasks",
             ),
           {
             padding: 1,
