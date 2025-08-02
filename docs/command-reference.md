@@ -2,22 +2,6 @@
 
 Here's a comprehensive reference of all available commands:
 
-## Parse PRD
-
-```bash
-# Parse a PRD file and generate tasks (auto-detects PRD.md, prd.md, PRD.txt, prd.txt in project root)
-lm-tasker parse-prd
-
-# Parse a specific PRD file
-lm-tasker parse-prd <prd-file.md>
-
-# Limit the number of tasks generated
-lm-tasker parse-prd --num-tasks=10
-
-# Parse a specific file with custom task count
-lm-tasker parse-prd <prd-file.md> --num-tasks=10
-```
-
 ## List Tasks
 
 ```bash
@@ -53,18 +37,11 @@ lm-tasker show --id=<id>
 lm-tasker show 1.2
 ```
 
-## Update Tasks
-
-```bash
-# Update tasks from a specific ID and provide context
-lm-tasker update-task --id=<id> (manual updates only)
-```
-
 ## Update a Specific Task
 
 ```bash
 # Update a single task by ID with new information
-lm-tasker update-task --id=<id> (manual updates only)
+lm-tasker update-task --id=<id> --title="New title" --description="New description" --details="New details"
 ```
 
 ## Update a Subtask
@@ -177,7 +154,7 @@ lm-tasker add-task --title="Task title" --description="Task description" --prior
 lm-tasker add-task --title="Task title" --description="Task description" --test-strategy="Testing approach"
 ```
 
-**Note:** All task creation is manual. LM-Tasker focuses on structured task management rather than AI automation, providing predictable behavior and lower operational costs.
+**Note:** All task creation is manual. LM-Tasker focuses on structured task management, providing predictable behavior and full control over your task organization.
 
 ## Add a New Subtask
 
@@ -227,24 +204,4 @@ lm-tasker init --name="Project Name" --description="Project description" --versi
 lm-tasker init --yes
 ```
 
-## Configure AI Models
 
-```bash
-# View current AI model configuration and API key status
-lm-tasker models
-
-# Set the primary model for PRD parsing
-lm-tasker models --set-main=gpt-4o
-
-# Set the fallback model for PRD parsing
-lm-tasker models --set-fallback=gpt-4o-mini
-
-# Run interactive setup to configure models
-lm-tasker models --setup
-```
-
-**AI Usage:** LM-Tasker uses AI exclusively for PRD parsing to convert Product Requirements Documents into structured task lists. All other task management operations (create, update, modify, status changes) are manual operations for predictable and cost-effective project management.
-
-Configuration is stored in `.lmtaskerconfig` in your project root. API keys are managed via `.env` or MCP configuration.
-This version supports multiple AI providers including Azure OpenAI, OpenAI, Anthropic Claude, Google Gemini, Mistral,
-Perplexity, XAI, and Ollama.

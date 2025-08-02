@@ -7,8 +7,7 @@
 ```bash
 # Project Setup
 lm-tasker init                                    # Initialize LM-Tasker in current project
-lm-tasker parse-prd                           # Generate tasks from PRD document (auto-detects PRD.md)
-lm-tasker models --setup                        # Configure AI models interactively
+```
 
 # Daily Development Workflow
 lm-tasker list                                   # Show all tasks with status
@@ -19,7 +18,6 @@ lm-tasker set-status --id=<id> --status=done    # Mark task complete
 # Task Management
 lm-tasker add-task --title="title" --description="description"  # Add new task manually
 lm-tasker add-subtask --parent=<id> --title="subtask"      # Add subtask to existing task
-# Note: AI-powered update commands have been removed - use manual editing instead
 
 
 
@@ -35,10 +33,9 @@ lm-tasker generate                                         # Update task markdow
 ### Core Files
 
 - `tasks/tasks.json` - Main task data file (auto-managed)
-- `.lmtaskerconfig` - AI model configuration (use `lm-tasker models` to modify)
-- `PRD.md` - Product Requirements Document in project root (or `scripts/prd.txt` for backward compatibility)
+- `.lmtaskerconfig` - Project configuration (use `lm-tasker init` to modify)
 - `tasks/*.txt` - Individual task files (auto-generated from tasks.json)
-- `.env` - API keys for CLI usage
+- `.env` - Optional environment variables for logging and debugging
 
 ### Claude Code Integration Files
 
@@ -56,13 +53,13 @@ project/
 │   ├── task-1.md           # Individual task files
 │   └── task-2.md
 ├── scripts/
-│   ├── example_prd.txt     # Example PRD template
+│   └── ...                 # Project scripts
 
 ├── .claude/
 │   ├── settings.json        # Claude Code configuration
 │   └── commands/           # Custom slash commands
-├── .lmtaskerconfig       # AI models & settings
-├── .env                    # API keys
+├── .lmtaskerconfig       # Project settings
+├── .env                    # Optional environment variables
 ├── .mcp.json              # MCP configuration
 └── CLAUDE.md              # This file - auto-loaded by Claude Code
 ```
@@ -77,17 +74,7 @@ LM-Tasker provides an MCP server that Claude Code can connect to. Configure in `
     "lm-tasker": {
       "command": "npx",
       "args": ["-y", "--package=lm-tasker", "lm-tasker-mcp"],
-      "env": {
-        "ANTHROPIC_API_KEY": "your_key_here",
-        "PERPLEXITY_API_KEY": "your_key_here",
-        "OPENAI_API_KEY": "OPENAI_API_KEY_HERE",
-        "GOOGLE_API_KEY": "GOOGLE_API_KEY_HERE",
-        "XAI_API_KEY": "XAI_API_KEY_HERE",
-        "OPENROUTER_API_KEY": "OPENROUTER_API_KEY_HERE",
-        "MISTRAL_API_KEY": "MISTRAL_API_KEY_HERE",
-        "AZURE_OPENAI_API_KEY": "AZURE_OPENAI_API_KEY_HERE",
-        "OLLAMA_API_KEY": "OLLAMA_API_KEY_HERE"
-      }
+      "env": {}
     }
   }
 }
@@ -99,7 +86,6 @@ LM-Tasker provides an MCP server that Claude Code can connect to. Configure in `
 help; // = shows available lm-tasker commands
 // Project setup
 initialize_project; // = lm-tasker init
-parse_prd; // = lm-tasker parse-prd
 
 // Daily workflow
 get_tasks; // = lm-tasker list
@@ -125,17 +111,12 @@ update; // = lm-tasker update
 # Initialize LM-Tasker
 lm-tasker init
 
-# Create or obtain PRD, then parse it
-lm-tasker parse-prd
+# Create tasks manually
+lm-tasker add-task --title="Task title" --description="Task description"
 
 # Add subtasks to break down complex tasks
 lm-tasker add-subtask --parent=<id> --title="subtask name" --description="subtask description"
-
-
 ```
-
-If tasks already exist, another PRD can be parsed (with new information only!) using parse-prd with --append flag. This
-will add the generated tasks to the existing list of tasks..
 
 #### 2. Daily Development Loop
 
@@ -145,7 +126,6 @@ lm-tasker next                           # Find next available task
 lm-tasker show <id>                     # Review task details
 
 # During implementation, manually edit tasks.json or use other commands as needed
-# Note: AI-powered update functionality has been removed
 
 # Complete tasks
 lm-tasker set-status --id=<id> --status=done

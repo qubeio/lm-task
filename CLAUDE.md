@@ -4,15 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-LM-Tasker is a task management system for AI-driven development that converts Product Requirements Documents (PRDs) into
-structured, actionable task lists. It uses a simplified architecture where **AI is only used for PRD parsing** - all
-other task operations are manual.
+LM-Tasker is a task management system for development that provides structured, actionable task lists. It uses a simplified architecture where **all task operations are manual** - no AI functionality is included.
 
 **Key Characteristics:**
 
 - **Package Name**: `lm-tasker` (formerly `task-master-ai`)
 - **Branding**: Always use "LM-Tasker" (not variations)
-- **AI Scope**: Limited to PRD parsing only (Azure OpenAI, OpenAI, Anthropic, Google, Mistral, Perplexity, XAI, Ollama)
 - **Manual Operations**: All task management (create, update, status changes) is manual
 - **Dual Interface**: CLI (`lm-tasker`) and MCP server for editor integration
 
@@ -36,7 +33,7 @@ other task operations are manual.
 
 ### Standard Development Process
 
-1. **Start Projects**: Use `initialize_project` or `parse_prd` to generate initial tasks.json
+1. **Start Projects**: Use `initialize_project` to create initial tasks.json
 2. **Begin Sessions**: Run `get_tasks` / `lm-tasker list` to see current tasks
 3. **Find Next Work**: Use `next_task` / `lm-tasker next` to identify next task
 4. **View Details**: Use `get_task` / `lm-tasker show <id>` for specific task information
@@ -61,16 +58,16 @@ For detailed subtask implementation, follow this workflow:
 
 ### Primary Configuration (`.lmtaskerconfig`)
 
-- Managed via `lm-tasker models --setup` command
-- Contains AI model selections for PRD parsing
-- Stores parameters (max tokens, temperature), logging level, project settings
+- Managed via `lm-tasker init` command
+- Contains project settings, logging level, and default values
+- No AI model configuration required
 
 ### Environment Variables
 
-- **Purpose**: API keys for PRD parsing only
+- **Purpose**: Optional configuration for logging and debugging
 - **CLI**: Place in `.env` file in project root
 - **MCP**: Configure in `env` section of `.cursor/mcp.json`
-- **Available providers**: Azure OpenAI, OpenAI, Anthropic, Google, Mistral, Perplexity, XAI, Ollama
+- **Available variables**: `LMTASKER_LOG_LEVEL`, `DEBUG`
 
 ## Task Structure
 
@@ -90,19 +87,19 @@ For detailed subtask implementation, follow this workflow:
 
 ## Key Architecture Principles
 
-### AI Integration (Limited Scope)
+### Manual Task Management
 
-- **PRD Parsing Only**: AI converts PRDs to structured task lists
-- **Manual Everything Else**: Task creation, updates, status changes are manual
-- **No AI Assistance**: For task management operations beyond PRD parsing
-- **Cost Control**: Minimal AI usage reduces operational costs
+- **Manual Task Creation**: All tasks are created manually with detailed descriptions
+- **Manual Updates**: Task creation, updates, status changes are all manual
+- **No AI Dependencies**: No external AI services or API keys required
+- **Full Control**: Complete control over task organization and management
 
 ### Task Management Patterns
 
 - **Manual Task Updates**: Direct editing of task properties
 - **Dependency Management**: Manual setup using `add_dependency`/`remove_dependency`
 - **Task Reorganization**: Use `move_task` to restructure hierarchy
-- **Status Tracking**: Simple status changes without AI analysis
+- **Status Tracking**: Simple status changes for progress tracking
 
 ### Implementation Drift Handling
 
@@ -118,13 +115,12 @@ When working with specific aspects of the codebase, refer to these rule files:
 - **[commands.mdc](.cursor/rules/commands.mdc)**: CLI command implementation patterns
 - **[mcp.mdc](.cursor/rules/mcp.mdc)**: MCP server architecture and tool development
 - **[lmtasker.mdc](.cursor/rules/lmtasker.mdc)**: Complete command and tool reference
-- **[ai_services.mdc](.cursor/rules/ai_services.mdc)**: AI service integration patterns
 - **[tests.mdc](.cursor/rules/tests.mdc)**: Testing architecture and patterns
 - **[tasks.mdc](.cursor/rules/tasks.mdc)**: Task data structure and file format
 - **[dependencies.mdc](.cursor/rules/dependencies.mdc)**: Dependency management patterns
 - **[utilities.mdc](.cursor/rules/utilities.mdc)**: Core utility functions and conventions
 - **[ui.mdc](.cursor/rules/ui.mdc)**: User interface and output formatting
-- **[telemetry.mdc](.cursor/rules/telemetry.mdc)**: Usage tracking and cost monitoring
+- **[telemetry.mdc](.cursor/rules/telemetry.mdc)**: Usage tracking and monitoring
 - **[changeset.mdc](.cursor/rules/changeset.mdc)**: Versioning and release patterns
 - **[new_features.mdc](.cursor/rules/new_features.mdc)**: Feature development guidelines
 - **[self_improve.mdc](.cursor/rules/self_improve.mdc)**: Rule maintenance and updates

@@ -1,12 +1,12 @@
-# Example Cursor AI Interactions
+# Example Cursor Interactions
 
-Here are some common interactions with Cursor AI when using LM-Tasker:
+Here are some common interactions with Cursor when using LM-Tasker:
 
 ## Starting a new project
 
 ```
-I've just initialized a new project with LM-Tasker. I have a PRD.md file in the project root.
-Can you help me parse it and set up the initial tasks?
+I've just initialized a new project with LM-Tasker.
+Can you help me create some initial tasks for my project?
 ```
 
 ## Working on tasks
@@ -94,4 +94,4 @@ Please add a new task to implement user profile image uploads using Cloudinary.
 (Agent runs:
 `lm-tasker add-task --title="User Profile Images" --description="Implement user profile image uploads using Cloudinary"`)
 
-**Note:** All task management operations (add, update, move, delete) are manual operations. LM-Tasker's AI functionality is limited to PRD parsing only, ensuring predictable behavior and cost control.
+**Note:** All task management operations (add, update, move, delete) are manual operations, ensuring predictable behavior and full control over your task organization.

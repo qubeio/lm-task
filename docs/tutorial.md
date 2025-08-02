@@ -1,6 +1,6 @@
 # LM-Tasker Tutorial
 
-This tutorial will guide you through setting up and using LM-Tasker for structured task management with AI-powered PRD parsing.
+This tutorial will guide you through setting up and using LM-Tasker for structured task management.
 
 ## Initial Setup
 
@@ -24,42 +24,32 @@ npm i -g lm-tasker
     "lm-tasker": {
       "command": "npx",
       "args": ["-y", "--package=lm-tasker", "lm-tasker-mcp"],
-      "env": {
-        "AZURE_OPENAI_API_KEY": "YOUR_AZURE_OPENAI_API_KEY_HERE",
-        "AZURE_OPENAI_ENDPOINT": "YOUR_AZURE_OPENAI_ENDPOINT_HERE"
-      }
+      "env": {}
     }
   }
 }
 ```
 
-**IMPORTANT:** AI provider API keys are required only for PRD parsing operations. All other task management operations are manual.
-
-**To use PRD parsing in CLI** you MUST have API keys in the .env file **To use PRD parsing in MCP** you MUST have API
-keys in the .mcp.json file (or MCP config equivalent)
-
-We recommend having keys in both places and adding mcp.json to your gitignore so your API keys aren't checked into git.
-
 3. **Enable the MCP** in your editor settings
 
-4. **Prompt the AI** to initialize LM-Tasker:
+4. **Initialize LM-Tasker** in your project:
 
 ```
 Can you please initialize lm-tasker into my project?
 ```
 
-The AI will:
+This will:
 
 - Create necessary project structure
 - Set up initial configuration files
 - Guide you through the rest of the process
 
-5. Create your PRD document as `PRD.md` in the project root (LM-Tasker will automatically find it)
+5. **Create your tasks manually** using the MCP tools or CLI commands
 
 6. **Use natural language commands** to interact with LM-Tasker:
 
 ```
-Can you parse my PRD?
+Can you create a new task for implementing user authentication?
 What's the next task I should work on?
 Can you help me implement task 3?
 ```
@@ -93,8 +83,8 @@ This will prompt you for project details and set up a new project with the neces
 After setting up LM-Tasker, you can use these commands (either via AI prompts or CLI):
 
 ```bash
-# Parse a PRD and generate tasks
-lm-tasker parse-prd
+# Create a new task
+lm-tasker add-task --title="Task title" --description="Task description"
 
 # List all tasks
 lm-tasker list
@@ -106,10 +96,10 @@ lm-tasker next
 lm-tasker generate
 ```
 
-## Setting up Cursor AI Integration
+## Setting up Cursor Integration
 
-LM-Tasker is designed to work seamlessly with [Cursor AI](https://www.cursor.so/), providing a structured workflow for
-AI-driven development.
+LM-Tasker is designed to work seamlessly with [Cursor](https://www.cursor.so/), providing a structured workflow for
+development.
 
 ### Using Cursor with MCP (Recommended)
 
@@ -129,7 +119,7 @@ If you're not using MCP, you can still set up Cursor integration:
 1. After initializing your project, open it in Cursor
 2. The `.cursor/rules/dev_workflow.mdc` file is automatically loaded by Cursor, providing the AI with knowledge about
    the task management system
-3. Create your PRD document as `PRD.md` in the project root (LM-Tasker will automatically find it)
+3. Create your tasks manually using the MCP tools or CLI commands
 4. Open Cursor's AI chat and switch to Agent mode
 
 ### Alternative MCP Setup in Cursor
@@ -148,24 +138,19 @@ You can also set up the MCP server in Cursor settings:
 Once configured, you can interact with LM-Tasker's task management commands directly through Cursor's interface,
 providing a more integrated experience.
 
-## Initial Task Generation
+## Initial Task Creation
 
-In Cursor's AI chat, instruct the agent to generate tasks from your PRD:
+In Cursor's AI chat, instruct the agent to create tasks manually:
 
 ```
-Please use the lm-tasker parse-prd command to generate tasks from my PRD.
+Please create some initial tasks for my project.
 ```
 
-The agent will execute:
+The agent will use the MCP tools to:
 
-```bash
-lm-tasker parse-prd
-```
-
-This will:
-
-- Parse your PRD document
-- Generate a structured `tasks.json` file with tasks, dependencies, priorities, and test strategies
+- Create tasks with appropriate titles and descriptions
+- Set up dependencies between tasks
+- Organize tasks with proper priorities
 - The agent will understand this process due to the Cursor rules
 
 ### Generate Individual Task Files
@@ -349,13 +334,13 @@ The agent will execute:
 lm-tasker add-subtask --parent=5 --title="Integration testing" --description="Test integration with completed components" --dependencies="3"
 ```
 
-## Example Cursor AI Interactions
+## Example Cursor Interactions
 
 ### Starting a new project
 
 ```
-I've just initialized a new project with LM-Tasker. I have a PRD.md file in the project root.
-Can you help me parse it and set up the initial tasks?
+I've just initialized a new project with LM-Tasker.
+Can you help me create some initial tasks for my project?
 ```
 
 ### Working on tasks

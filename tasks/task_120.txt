@@ -253,7 +253,7 @@ Review and remove AI-related dependencies:
 - Update package.json scripts if any reference AI functionality
 - Run npm audit to ensure no broken dependency chains
 
-## 6. Phase 6: Update Documentation and Examples [pending]
+## 6. Phase 6: Update Documentation and Examples [done]
 ### Dependencies: None
 ### Description: Update all documentation to remove AI functionality references and reflect manual-only operation
 ### Details:
@@ -295,4 +295,23 @@ Final validation steps:
 - Update version and changelog to reflect major change
 - Verify installation and setup works without AI dependencies
 - Test with a fresh project initialization to ensure clean experience
+
+## 9. Modify Initialize Functionality to Only Create Task JSON [pending]
+### Dependencies: None
+### Description: Update the initialize functionality to only create a basic tasks.json file without any configuration setup, MCP configuration, or AI-related functionality.
+### Details:
+The current initialize functionality creates:
+- Project structure with various directories
+- MCP configuration for Cursor integration
+- Environment variable setup
+- Shell aliases
+- Various configuration files
+
+This subtask should simplify it to only:
+- Create a basic tasks.json file with empty tasks array
+- Optionally create the tasks/ directory if it doesn't exist
+- Remove all configuration, MCP setup, and AI-related functionality
+- Keep the core task management functionality intact
+
+This aligns with the goal of removing all AI functionality and simplifying the tool to focus purely on task management.
 

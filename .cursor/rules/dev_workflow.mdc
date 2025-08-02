@@ -28,7 +28,7 @@ LM-Tasker offers two primary ways to interact:
 
 ## Standard Development Workflow Process
 
--   Start new projects by running `initialize_project` tool / `lm-tasker init` or `parse_prd` / `lm-tasker parse-prd --input='<prd-file.txt>'` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)) to generate initial tasks.json
+-   Start new projects by running `initialize_project` tool / `lm-tasker init` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)) to create initial tasks.json
 -   Begin coding sessions with `get_tasks` / `lm-tasker list` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)) to see current tasks, status, and IDs
 -   Determine the next task to work on using `next_task` / `lm-tasker next` (see [`lmtasker.mdc`](mdc:.cursor/rules/lmtasker.mdc)).
 -   Select tasks based on dependencies (all marked 'done'), priority level, and ID order
@@ -50,7 +50,7 @@ LM-Tasker offers two primary ways to interact:
 
 ## Manual Task Management (Simplified Architecture)
 
-LM-Tasker uses a simplified architecture where **AI is only used for PRD parsing**. All other task operations are manual:
+LM-Tasker uses a simplified architecture where **all task operations are manual**:
 
 -   **Task Creation**: Manually create tasks with specific titles, descriptions, and details
 -   **Task Updates**: Directly edit task properties without AI interpretation

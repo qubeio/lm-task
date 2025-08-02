@@ -502,7 +502,7 @@
           "title": "Phase 6: Update Documentation and Examples",
           "description": "Update all documentation to remove AI functionality references and reflect manual-only operation",
           "details": "Update documentation files:\n- README.md: Remove AI functionality descriptions, model setup instructions\n- docs/command-reference.md: Remove parse-prd, migrate-prd, models commands\n- docs/configuration.md: Remove AI model configuration sections\n- docs/tutorial.md: Update setup instructions to remove AI setup\n- CLAUDE.md: Update project overview to reflect manual-only system\n- assets/AGENTS.md: Remove AI-related setup and model configuration\n- Remove or update example PRD files since they can't be parsed\n- Update .cursor/rules/ files to remove AI functionality references\n- Update any other documentation mentioning AI features",
-          "status": "pending",
+          "status": "done",
           "dependencies": [],
           "parentTaskId": 120
         },
@@ -520,6 +520,15 @@
           "title": "Phase 8: Final Cleanup and Validation",
           "description": "Perform final cleanup, validation, and testing to ensure LM-Tasker works as a manual-only system",
           "details": "Final validation steps:\n- Run all remaining tests to ensure nothing is broken\n- Test core manual functionality (list, show, add-task, set-status, etc.)\n- Test MCP server with remaining tools\n- Verify CLI help and documentation reflects current functionality\n- Remove any remaining references to AI functionality in code comments\n- Update version and changelog to reflect major change\n- Verify installation and setup works without AI dependencies\n- Test with a fresh project initialization to ensure clean experience",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 120
+        },
+        {
+          "id": 9,
+          "title": "Modify Initialize Functionality to Only Create Task JSON",
+          "description": "Update the initialize functionality to only create a basic tasks.json file without any configuration setup, MCP configuration, or AI-related functionality.",
+          "details": "The current initialize functionality creates:\n- Project structure with various directories\n- MCP configuration for Cursor integration\n- Environment variable setup\n- Shell aliases\n- Various configuration files\n\nThis subtask should simplify it to only:\n- Create a basic tasks.json file with empty tasks array\n- Optionally create the tasks/ directory if it doesn't exist\n- Remove all configuration, MCP setup, and AI-related functionality\n- Keep the core task management functionality intact\n\nThis aligns with the goal of removing all AI functionality and simplifying the tool to focus purely on task management.",
           "status": "pending",
           "dependencies": [],
           "parentTaskId": 120

@@ -2,39 +2,31 @@
 
 ## Introduction
 
-🚀 **LM-Tasker** is your all-in-one, task management sidekick for software development. Supercharge your workflow with
-the magic of Azure OpenAI and let LM-Tasker turn your requirements into a crystal-clear, actionable plan—automatically.
-Whether you're a solo dev or a whole team, LM-Tasker helps you plan, track, and deliver projects with less stress and
-more fun.
+🚀 **LM-Tasker** is your all-in-one, task management sidekick for software development. Create, organize, and track your tasks with a powerful, manual task management system. Whether you're a solo dev or a whole team, LM-Tasker helps you plan, track, and deliver projects with less stress and more fun.
 
 ### ✨ What can LM-Tasker do?
 
-- 🤖 **AI-Driven Task Generation**: Instantly convert your Product Requirements Document (PRD) into a structured,
-  prioritized task list with smart dependencies.
-- 🧠 **Intelligent Task Updates**: Use AI to update, split, or clarify tasks as your project evolves—no more manual
-  busywork!
-- 🔗 **Automatic Dependency Management**: Visualize, validate, and fix task dependencies with a click.
+- 📝 **Manual Task Management**: Create, organize, and track tasks with a powerful, structured approach.
+- 🔗 **Dependency Management**: Visualize, validate, and fix task dependencies with a click.
 - 🗂️ **Task File Generation**: Generate individual, human-readable task files for every task and subtask.
 - 🛠️ **Batch Operations**: Update statuses, reorganize, or move multiple tasks at once for maximum efficiency.
 - 🖥️ **Seamless Editor & CLI Integration**: Use the Model Control Protocol (MCP) server for direct editor (Cursor, VS
   Code, Windsurf) integration, or manage everything from the command line.
-- 📝 **Comprehensive Documentation**: Auto-generate docs, get help, and see example workflows right in your project.
-- 🔒 **Enterprise-Ready**: Built for corporate environments—uses only Azure OpenAI, supports secure config, and tracks
-  AI usage/costs.
-- 📊 **Telemetry & Cost Tracking**: Monitor AI usage, token counts, and costs to stay in control.
-- 🧩 **Extensible & Modular**: Designed for easy customization, future AI providers, and community contributions.
+- 📝 **Comprehensive Documentation**: Get help and see example workflows right in your project.
+- 🔒 **Enterprise-Ready**: Built for corporate environments with secure configuration and modular design.
+- 🧩 **Extensible & Modular**: Designed for easy customization and community contributions.
 
 ### 🏆 Core Features at a Glance
 
 - **Project Initialization**: Scaffold your project with a single command
-- **PRD Parsing**: Turn requirements into tasks in seconds
+- **Manual Task Creation**: Create tasks and subtasks with detailed descriptions
 - **Task CRUD**: Create, read, update, and delete tasks and subtasks
 - **Status & Priority**: Track progress and focus on what matters
 - **Dependency Tools**: Add, remove, validate, and auto-fix dependencies
 - **Batch & Move**: Reorganize your task hierarchy anytime
-- **AI-Powered Updates**: Let the AI rewrite or expand tasks as your project changes
+- **Manual Task Updates**: Update and expand tasks as your project changes
 - **File Generation**: Keep your task files in sync with your plan
-- **Config Management**: Easy model and API key setup
+- **Config Management**: Easy setup and configuration
 - **Editor Integration**: Use directly from Cursor, VS Code, or Windsurf
 
 🎯 **LM-Tasker is here to help you ship faster, smarter, and with less hassle.**
@@ -43,12 +35,12 @@ more fun.
 
 ## Requirements
 
-LM-Tasker utilizes Azure OpenAI for AI-powered task management operations. You will need:
+LM-Tasker is a manual task management system with no external dependencies. You will need:
 
-- **Azure OpenAI API key** (Required)
-- **Azure OpenAI endpoint** (Required)
+- **Node.js** (v14 or higher)
+- **npm** or **yarn** for package management
 
-This version is specifically configured for corporate environments using Azure OpenAI services.
+LM-Tasker works offline and doesn't require any API keys or external services.
 
 ## Quick Start
 
@@ -73,17 +65,11 @@ MCP (Model Control Protocol) lets you run LM-Tasker directly from your editor.
     "lm-tasker": {
       "command": "npx",
       "args": ["-y", "--package=@qubeio/lm-tasker", "lm-tasker-mcp"],
-      "env": {
-        "AZURE_OPENAI_API_KEY": "YOUR_AZURE_OPENAI_API_KEY_HERE",
-        "AZURE_OPENAI_ENDPOINT": "YOUR_AZURE_OPENAI_ENDPOINT_HERE",
-      },
+      "env": {},
     },
   },
 }
 ```
-
-> 🔑 Replace `YOUR_AZURE_OPENAI_API_KEY_HERE` and `YOUR_AZURE_OPENAI_ENDPOINT_HERE` with your actual Azure OpenAI
-> credentials.
 
 ##### VS Code (`servers` + `type`)
 
@@ -93,34 +79,18 @@ MCP (Model Control Protocol) lets you run LM-Tasker directly from your editor.
     "lm-tasker": {
       "command": "npx",
       "args": ["-y", "--package=@qubeio/lm-tasker", "lm-tasker-mcp"],
-      "env": {
-        "AZURE_OPENAI_API_KEY": "YOUR_AZURE_OPENAI_API_KEY_HERE",
-        "AZURE_OPENAI_ENDPOINT": "YOUR_AZURE_OPENAI_ENDPOINT_HERE",
-      },
+      "env": {},
       "type": "stdio",
     },
   },
 }
 ```
 
-> 🔑 Replace `YOUR_AZURE_OPENAI_API_KEY_HERE` and `YOUR_AZURE_OPENAI_ENDPOINT_HERE` with your actual Azure OpenAI
-> credentials.
-
 #### 2. (Cursor-only) Enable LM-Tasker MCP
 
 Open Cursor Settings (Ctrl+Shift+J) ➡ Click on MCP tab on the left ➡ Enable lm-tasker with the toggle
 
-#### 3. (Optional) Configure the Azure OpenAI models you want to use
-
-In your editor's AI chat pane, say:
-
-```txt
-Configure the main and fallback models to use Azure OpenAI models like gpt-4o and gpt-4o-mini.
-```
-
-Available Azure OpenAI models include: `gpt-4o`, `gpt-4o-mini`, `o3-mini`
-
-#### 4. Initialize LM-Tasker
+#### 3. Initialize LM-Tasker
 
 In your editor's AI chat pane, say:
 
@@ -128,23 +98,15 @@ In your editor's AI chat pane, say:
 Initialize lm-tasker in my project
 ```
 
-#### 5. Make sure you have a PRD in your project root
+#### 4. Create Your Tasks
 
-LM-Tasker will automatically search for PRD files in this order: `PRD.md`, `prd.md`, `PRD.txt`, `prd.txt` in the project
-root, then in the `scripts/` directory for backward compatibility.
+LM-Tasker uses manual task creation. You can create tasks using the MCP tools or CLI commands.
 
-An example of a PRD is located at `<project_folder>/scripts/example_prd.md` which you can use as a template to create
-your `PRD.md` in the project root. A text version is also available at `<project_folder>/scripts/example_prd.txt`.
-
-**Always start with a detailed PRD.**
-
-The more detailed your PRD, the better the generated tasks will be.
-
-#### 6. Common Commands
+#### 5. Common Commands
 
 Use your AI assistant to:
 
-- Parse requirements: `Can you parse my PRD?` (LM-Tasker will automatically find your PRD file)
+- Create tasks: `Can you create a new task for implementing user authentication?`
 - Plan next step: `What's the next task I should work on?`
 - Implement a task: `Can you help me implement task 3?`
 - Add subtasks to a task: `Can you help me add subtasks to task 4?`
