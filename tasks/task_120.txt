@@ -102,7 +102,7 @@ Next: Proceed to code removal and validation.
 --- Updated 2025-07-17T09:42:02.280Z ---
 Subtask 120.1 implementation is complete. All CLI commands for AI functionality (parse-prd, migrate-prd, models) have been removed from scripts/modules/commands.js, along with their handlers, related imports, and helper functions. CLI usage in test scripts has been updated, and the CLI works for all other commands. The only remaining step is to update the CLI help info page to remove references to these commands. Once the help info is updated, this subtask can be marked as done.
 
-## 2. Phase 2: Remove MCP Tools for AI Functionality [pending]
+## 2. Phase 2: Remove MCP Tools for AI Functionality [done]
 ### Dependencies: None
 ### Description: Remove AI-related MCP tools and direct functions from the MCP server
 ### Details:
@@ -116,6 +116,30 @@ Remove the following MCP components:
 - Remove these tool registrations from mcp-server/src/tools/index.js
 - Remove these imports from mcp-server/src/core/task-master-core.js
 - Test MCP server functionality without AI tools
+
+--- Updated 2025-08-02T04:37:36.705Z ---
+Successfully completed Phase 2: Remove MCP Tools for AI Functionality
+
+**Files Removed:**
+- mcp-server/src/tools/parse-prd.js
+- mcp-server/src/tools/migrate-prd.js  
+- mcp-server/src/tools/models.js
+- mcp-server/src/core/direct-functions/parse-prd.js
+- mcp-server/src/core/direct-functions/migrate-prd.js
+- mcp-server/src/core/direct-functions/models.js
+
+**Files Updated:**
+- mcp-server/src/tools/index.js: Removed imports and registrations for AI tools
+- mcp-server/src/core/task-master-core.js: Removed AI-related imports, Map entries, and exports
+- mcp-server/src/index.js: Updated toolNames array to remove AI tools (now shows 18 tools instead of previous count)
+- mcp-server/src/core/direct-functions/initialize-project.js: Updated next_step description to remove parse-prd references
+
+**Testing:**
+- MCP server starts successfully and registers 18 tools (down from previous count)
+- Basic functionality tested with get_tasks tool - works correctly
+- No broken imports or references remaining
+
+All AI-related MCP tools and direct functions have been successfully removed from the MCP server. The server continues to function properly with the remaining manual task management tools.
 
 ## 3. Phase 3: Remove AI Service Layer and Provider Implementations [pending]
 ### Dependencies: None

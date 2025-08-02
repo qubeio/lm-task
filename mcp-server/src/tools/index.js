@@ -6,7 +6,6 @@
 import { registerListTasksTool } from "./get-tasks.js";
 import logger from "../logger.js";
 import { registerSetTaskStatusTool } from "./set-task-status.js";
-import { registerParsePRDTool } from "./parse-prd.js";
 import { registerUpdateTool } from "./update.js";
 import { registerUpdateTaskTool } from "./update-task.js";
 import { registerUpdateSubtaskTool } from "./update-subtask.js";
@@ -23,9 +22,7 @@ import { registerFixDependenciesTool } from "./fix-dependencies.js";
 import { registerAddDependencyTool } from "./add-dependency.js";
 import { registerRemoveTaskTool } from "./remove-task.js";
 import { registerInitializeProjectTool } from "./initialize-project.js";
-import { registerModelsTool } from "./models.js";
 import { registerMoveTaskTool } from "./move-task.js";
-import { registerMigratePRDTool } from "./migrate-prd.js";
 
 /**
  * Register all LMTasker tools with the MCP server
@@ -37,9 +34,6 @@ export function registerLMTaskerTools(server) {
 
     // Group 1: Initialization & Setup
     registerInitializeProjectTool(server);
-    registerModelsTool(server);
-    registerParsePRDTool(server);
-    registerMigratePRDTool(server);
 
     // Group 2: Task Listing & Viewing
     registerListTasksTool(server);

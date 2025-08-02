@@ -75,7 +75,7 @@ export async function initializeProjectDirect(args, log, context = {}) {
     resultData = {
       message: "Project initialized successfully.",
       next_step:
-        "Now that the project is initialized, the next step is to create the tasks by parsing a PRD. This will create the tasks folder and the initial task files (tasks folder will be created when parse-prd is run). The parse-prd tool will automatically search for PRD files (PRD.md, prd.md, PRD.txt, prd.txt) in the project root and scripts/ directory. You can create a PRD.md file by asking the user about their idea, and then using the scripts/example_prd.txt file as a template to generate a PRD.md file in the project root. You may skip all of this if the user already has a PRD file. You can THEN use the parse-prd tool to create the tasks. So: step 1 after initialization is to create a PRD.md file in the project root or confirm the user already has one. Step 2 is to use the parse-prd tool to create the tasks. Do not bother looking for tasks after initialization, just use the parse-prd tool to create the tasks after creating a PRD from which to parse the tasks. You do NOT need to reinitialize the project to parse-prd.",
+        "Now that the project is initialized, you can start creating tasks manually. Use the add-task tool to create your first task, or use the list-tasks tool to see if there are any existing tasks in the project.",
       ...result,
     };
     success = true;

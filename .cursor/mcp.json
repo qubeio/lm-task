@@ -3,10 +3,9 @@
     "lm-tasker-local": {
       "command": "node",
       "args": [
-        "/Users/andreasfrangopoulos/source/repos/andreas/lm-task/mcp-server/server.js"
+        "/Users/andreas/source/repos/qubeio/lm-task/mcp-server/server.js"
       ],
       "env": {
-        "PERPLEXITY_API_KEY": "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"
       }
     }
   }

@@ -7,7 +7,6 @@
 // Import direct function implementations
 import { listTasksDirect } from "./direct-functions/list-tasks.js";
 import { getCacheStatsDirect } from "./direct-functions/cache-stats.js";
-import { parsePRDDirect } from "./direct-functions/parse-prd.js";
 import { updateTasksDirect } from "./direct-functions/update-tasks.js";
 import { updateTaskByIdDirect } from "./direct-functions/update-task-by-id.js";
 import { updateSubtaskByIdDirect } from "./direct-functions/update-subtask-by-id.js";
@@ -29,12 +28,7 @@ import { fixDependenciesDirect } from "./direct-functions/fix-dependencies.js";
 import { addDependencyDirect } from "./direct-functions/add-dependency.js";
 import { removeTaskDirect } from "./direct-functions/remove-task.js";
 import { initializeProjectDirect } from "./direct-functions/initialize-project.js";
-import { modelsDirect } from "./direct-functions/models.js";
 import { moveTaskDirect } from "./direct-functions/move-task.js";
-import {
-  migratePRDDirect,
-  analyzePRDFilesDirect,
-} from "./direct-functions/migrate-prd.js";
 
 // Re-export utility functions
 export { findTasksJsonPath } from "./utils/path-utils.js";
@@ -43,7 +37,6 @@ export { findTasksJsonPath } from "./utils/path-utils.js";
 export const directFunctions = new Map([
   ["listTasksDirect", listTasksDirect],
   ["getCacheStatsDirect", getCacheStatsDirect],
-  ["parsePRDDirect", parsePRDDirect],
   ["updateTasksDirect", updateTasksDirect],
   ["updateTaskByIdDirect", updateTaskByIdDirect],
   ["updateSubtaskByIdDirect", updateSubtaskByIdDirect],
@@ -65,17 +58,13 @@ export const directFunctions = new Map([
   ["addDependencyDirect", addDependencyDirect],
   ["removeTaskDirect", removeTaskDirect],
   ["initializeProjectDirect", initializeProjectDirect],
-  ["modelsDirect", modelsDirect],
   ["moveTaskDirect", moveTaskDirect],
-  ["migratePRDDirect", migratePRDDirect],
-  ["analyzePRDFilesDirect", analyzePRDFilesDirect],
 ]);
 
 // Re-export all direct function implementations
 export {
   listTasksDirect,
   getCacheStatsDirect,
-  parsePRDDirect,
   updateTasksDirect,
   updateTaskByIdDirect,
   updateSubtaskByIdDirect,
@@ -93,6 +82,5 @@ export {
   addDependencyDirect,
   removeTaskDirect,
   initializeProjectDirect,
-  modelsDirect,
   moveTaskDirect,
 };
