@@ -589,7 +589,7 @@ describe("Commands Module", () => {
               ),
             );
             console.log(
-              chalk.yellow("Falling back to Claude AI for task update."),
+              chalk.yellow("Research-backed updates will not be available."),
             );
           } else {
             console.log(

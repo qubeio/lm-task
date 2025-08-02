@@ -1,13 +1,12 @@
 {
   "name": "@qubeio/lm-tasker",
   "version": "0.17.0",
-  "description": "A task management system for ambitious AI-driven development using Azure OpenAI that doesn't overwhelm and confuse AI Agents.",
+  "description": "A task management system for ambitious development that doesn't overwhelm and confuse developers.",
   "main": "index.js",
   "type": "module",
   "bin": {
     "lm-tasker": "bin/lm-tasker.js",
-    "lm-tasker-mcp": "mcp-server/server.js",
-    "lm-tasker-ai": "mcp-server/server.js"
+    "lm-tasker-mcp": "mcp-server/server.js"
   },
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/.bin/jest",
@@ -32,15 +31,10 @@
     "format": "prettier --write ."
   },
   "keywords": [
-    "claude",
     "task",
     "management",
-    "ai",
     "development",
     "cursor",
-    "azure",
-    "openai",
-    "llm",
     "mcp",
     "context",
     "lm-tasker"
@@ -48,8 +42,6 @@
   "author": "Andreas Frangopoulos",
   "license": "MIT",
   "dependencies": {
-    "@ai-sdk/azure": "^1.3.17",
-    "ai": "^4.3.10",
     "blessed": "^0.1.81",
     "boxen": "^8.0.1",
     "chalk": "^5.4.1",

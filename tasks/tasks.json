@@ -493,7 +493,7 @@
           "title": "Phase 5: Clean Up Dependencies and Package Configuration",
           "description": "Remove AI-related npm dependencies and clean up package.json",
           "details": "Review and remove AI-related dependencies:\n- Remove Vercel AI SDK and related packages\n- Remove AI provider SDK dependencies (anthropic, openai, @google/generative-ai, etc.)\n- Remove any other AI-related dependencies that are no longer needed\n- Update package.json scripts if any reference AI functionality\n- Run npm audit to ensure no broken dependency chains",
-          "status": "pending",
+          "status": "done",
           "dependencies": [],
           "parentTaskId": 120
         },

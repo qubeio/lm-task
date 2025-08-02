@@ -686,10 +686,7 @@ function setupMCPConfiguration(targetDir) {
     "lm-tasker": {
       command: "npx",
       args: ["-y", "--package=lm-tasker", "lm-tasker"],
-      env: {
-        AZURE_OPENAI_ENDPOINT: "Your Azure OpenAI Endpoint",
-        AZURE_OPENAI_API_KEY: "Your Azure OpenAI API Key",
-      },
+      env: {},
     },
   };
 
