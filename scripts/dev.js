@@ -2,7 +2,7 @@
 
 /**
  * dev.js
- * LM-Tasker CLI - AI-driven development task management
+ * LM-Tasker CLI - Manual development task management
  *
  * This is the refactored entry point that uses the modular architecture.
  * It imports functionality from the modules directory and provides a CLI.

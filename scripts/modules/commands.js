@@ -39,7 +39,6 @@ import {
 } from "./dependency-manager.js";
 
 import {
-  isApiKeySet,
   getDebugFlag,
   getConfig,
   writeConfig,

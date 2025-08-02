@@ -6,7 +6,7 @@ set -u
 set -o pipefail
 
 # --- Default Settings ---
-run_verification_test=true
+# run_verification_test=true  # No longer needed since AI functionality removed
 
 # --- Argument Parsing ---
 # Simple loop to check for the skip flag
@@ -17,8 +17,8 @@ processed_args=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --skip-verification)
-      run_verification_test=false
-      echo "[INFO] Argument '--skip-verification' detected. Fallback verification will be skipped."
+      # run_verification_test=false  # No longer needed since AI functionality removed
+      echo "[INFO] Argument '--skip-verification' detected. Fallback verification is no longer available (AI removed)."
       shift # Consume the flag
       ;;
     --analyze-log)
@@ -55,8 +55,8 @@ BASE_TEST_DIR="$TASKMASTER_SOURCE_DIR/tests/e2e/_runs"
 LOG_DIR="$TASKMASTER_SOURCE_DIR/tests/e2e/log"
 # Path to the sample PRD, relative to project root
 SAMPLE_PRD_SOURCE="$TASKMASTER_SOURCE_DIR/tests/fixtures/sample-prd.txt"
-# Path to the main .env file in the source directory
-MAIN_ENV_FILE="$TASKMASTER_SOURCE_DIR/.env"
+# Path to the main .env file in the source directory (no longer needed since AI removed)
+# MAIN_ENV_FILE="$TASKMASTER_SOURCE_DIR/.env"
 # ---
 
 # <<< Source the helper script >>>
@@ -256,12 +256,8 @@ log_step() {
   # called *inside* this block depend on it. If not, it can be removed.
   start_time_for_helpers=$(date +%s) # Keep if needed by helpers called inside this block
 
-  # Log the verification decision
-  if [ "$run_verification_test" = true ]; then
-      log_info "Fallback verification test will be run as part of this E2E test."
-  else
-      log_info "Fallback verification test will be SKIPPED (--skip-verification flag detected)."
-  fi
+  # Log the verification decision (AI functionality removed)
+  log_info "AI functionality has been removed from LM-Tasker. No verification tests needed."
 
   # --- Dependency Checks ---
   log_step "Checking for dependencies (jq, bc)"
@@ -290,12 +286,12 @@ log_step() {
 
   log_info "Using test run directory (created earlier): $TEST_RUN_DIR"
 
-  # Check if source .env file exists
-  if [ ! -f "$MAIN_ENV_FILE" ]; then
-      log_error "Source .env file not found at $MAIN_ENV_FILE. Cannot proceed with API-dependent tests."
-      exit 1
-  fi
-  log_info "Source .env file found at $MAIN_ENV_FILE."
+  # Check if source .env file exists (no longer needed since AI removed)
+  # if [ ! -f "$MAIN_ENV_FILE" ]; then
+  #     log_error "Source .env file not found at $MAIN_ENV_FILE. Cannot proceed with API-dependent tests."
+  #     exit 1
+  # fi
+  # log_info "Source .env file found at $MAIN_ENV_FILE."
 
   # Check if sample PRD exists
   if [ ! -f "$SAMPLE_PRD_SOURCE" ]; then
@@ -315,21 +311,21 @@ log_step() {
   cd "$TEST_RUN_DIR"
   log_info "Changed directory to $(pwd)"
 
-  # === Copy .env file BEFORE init ===
-  log_step "Copying source .env file for API keys"
-  if cp "$ORIGINAL_DIR/.env" ".env"; then
-    log_success ".env file copied successfully."
-  else
-    log_error "Failed to copy .env file from $ORIGINAL_DIR/.env"
-    exit 1
-  fi
+  # === Copy .env file BEFORE init === (no longer needed since AI removed)
+  # log_step "Copying source .env file for API keys"
+  # if cp "$ORIGINAL_DIR/.env" ".env"; then
+  #   log_success ".env file copied successfully."
+  # else
+  #   log_error "Failed to copy .env file from $ORIGINAL_DIR/.env"
+  #   exit 1
+  # fi
   # ========================================
 
   # --- Test Execution (Output to tee) ---
 
   log_step "Linking lm-tasker package locally"
-  npm link lm-tasker
-  log_success "Package linked locally."
+  # Skip npm link since we're testing the local development version
+  log_success "Using local development version (npm link skipped)."
 
   log_step "Initializing LM-Tasker project (non-interactive)"
   lm-tasker init -y --name="E2E Test $TIMESTAMP" --description="Automated E2E test run"
@@ -339,17 +335,43 @@ log_step() {
   fi
   log_success "Project initialized."
 
-  log_step "Parsing PRD"
-  cmd_output_prd=$(lm-tasker parse-prd --force 2>&1)
-  exit_status_prd=$?
-  echo "$cmd_output_prd"
-  extract_and_sum_cost "$cmd_output_prd"
-  if [ $exit_status_prd -ne 0 ] || [ ! -s "tasks/tasks.json" ]; then
-    log_error "Parsing PRD failed: tasks/tasks.json not found or is empty. Exit status: $exit_status_prd"
-    exit 1
-  else
-    log_success "PRD parsed successfully."
-  fi
+  log_step "Creating sample tasks manually (PRD parsing removed)"
+  # Since AI functionality has been removed, we'll create sample tasks manually
+  mkdir -p tasks
+  cat > tasks/tasks.json << 'EOF'
+{
+  "meta": {
+    "name": "E2E Test Project",
+    "version": "0.1.0",
+    "description": "Automated E2E test run"
+  },
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Setup Project Structure",
+      "description": "Initialize the basic project structure and configuration",
+      "status": "pending",
+      "priority": "high",
+      "dependencies": [],
+      "details": "Create the basic folder structure and configuration files",
+      "testStrategy": "Verify all required files and folders exist",
+      "subtasks": []
+    },
+    {
+      "id": 2,
+      "title": "Implement Core Features",
+      "description": "Build the main functionality of the application",
+      "status": "pending",
+      "priority": "medium",
+      "dependencies": [1],
+      "details": "Implement the core business logic and features",
+      "testStrategy": "Run unit tests and integration tests",
+      "subtasks": []
+    }
+  ]
+}
+EOF
+  log_success "Sample tasks created manually."
 
   log_step "Ensuring Task 1 has subtasks for testing"
   # Add a simple subtask to Task 1 for testing purposes
@@ -364,146 +386,18 @@ log_step() {
   lm-tasker list --with-subtasks > task_list_after_changes.log
   log_success "Task list after changes saved to task_list_after_changes.log"
 
-  # === Test Model Commands ===
-  log_step "Checking initial model configuration"
-  lm-tasker models > models_initial_config.log
-  log_success "Initial model config saved to models_initial_config.log"
+  # === AI/Model Testing Removed ===
+  # All AI functionality has been removed from LM-Tasker, so model configuration tests are no longer needed
+  log_info "AI functionality has been removed from LM-Tasker. Skipping model configuration tests."
 
-  log_step "Setting main model"
-  lm-tasker models --set-main o3-mini
-  log_success "Set main model."
-
-  log_step "Setting fallback model"
-  lm-tasker models --set-fallback gpt-4o-mini
-  log_success "Set fallback model."
-
-  log_step "Checking final model configuration"
-  lm-tasker models > models_final_config.log
-  log_success "Final model config saved to models_final_config.log"
-
-  log_step "Resetting main model to default before provider tests"
-  lm-tasker models --set-main o3-mini
-  log_success "Main model reset to o3-mini."
-
-  # === End Model Commands Test ===
-
-  # === Fallback Model generateObjectService Verification ===
-  if [ "$run_verification_test" = true ]; then
-    log_step "Starting Fallback Model (generateObjectService) Verification (Calls separate script)"
-    verification_script_path="$ORIGINAL_DIR/tests/e2e/run_fallback_verification.sh"
-
-    if [ -x "$verification_script_path" ]; then
-        log_info "--- Executing Fallback Verification Script: $verification_script_path ---"
-        verification_output=$("$verification_script_path" "$(pwd)" 2>&1)
-        verification_exit_code=$?
-        echo "$verification_output"
-        extract_and_sum_cost "$verification_output"
-
-        log_info "--- Finished Fallback Verification Script Execution (Exit Code: $verification_exit_code) ---"
-
-        # Log success/failure based on captured exit code
-        if [ $verification_exit_code -eq 0 ]; then
-            log_success "Fallback verification script reported success."
-        else
-            log_error "Fallback verification script reported FAILURE (Exit Code: $verification_exit_code)."
-        fi
-    else
-        log_error "Fallback verification script not found or not executable at $verification_script_path. Skipping verification."
-    fi
-  else
-      log_info "Skipping Fallback Verification test as requested by flag."
-  fi
-  # === END Verification Section ===
+  # === Fallback Verification Removed ===
+  # AI functionality has been removed from LM-Tasker, so fallback verification is no longer needed
+  log_info "AI functionality has been removed from LM-Tasker. Skipping fallback verification tests."
 
 
-  # === Azure Models Add-Task Test ===
-  log_step "Starting Azure Models Add-Task Test Sequence"
-
-  # Define Azure models to test
-  # Testing main Azure models only
-  declare -a providers=("azure" "azure" "azure" "azure")
-  declare -a models=(
-    "o3-mini"
-    "gpt-4o"
-    "gpt-4o-mini"
-    "gpt-35-turbo"
-  )
-  # No provider-specific flags needed for Azure
-  declare -a flags=("" "" "" "")
-
-  # Consistent prompt for all providers
-  add_task_prompt="Create a task to implement user authentication using OAuth 2.0 with Google as the provider. Include steps for registering the app, handling the callback, and storing user sessions."
-  log_info "Using consistent prompt for add-task tests: \"$add_task_prompt\""
-  echo "--- Multi-Provider Add Task Summary ---" > provider_add_task_summary.log # Initialize summary log
-
-  for i in "${!providers[@]}"; do
-    provider="${providers[$i]}"
-    model="${models[$i]}"
-    flag="${flags[$i]}"
-
-    log_step "Testing Add-Task with Provider: $provider (Model: $model)"
-
-    # 1. Set the main model for this provider
-    log_info "Setting main model to $model for $provider ${flag:+using flag $flag}..."
-    set_model_cmd="lm-tasker models --set-main \"$model\" $flag"
-    echo "Executing: $set_model_cmd"
-    if eval $set_model_cmd; then
-      log_success "Successfully set main model for $provider."
-    else
-      log_error "Failed to set main model for $provider. Skipping add-task for this provider."
-      # Optionally save failure info here if needed for LLM analysis
-      echo "Provider $provider set-main FAILED" >> provider_add_task_summary.log
-      continue # Skip to the next provider
-    fi
-
-    # 2. Run add-task
-    log_info "Running add-task with prompt..."
-    add_task_output_file="add_task_raw_output_${provider}_${model//\//_}.log" # Sanitize ID
-    # Run add-task and capture ALL output (stdout & stderr) to a file AND a variable
-    add_task_cmd_output=$(lm-tasker add-task --title="E2E Test Task" --description="$add_task_prompt" 2>&1 | tee "$add_task_output_file")
-    add_task_exit_code=${PIPESTATUS[0]}
-
-    # 3. Check for success and extract task ID
-    new_task_id=""
-    extract_and_sum_cost "$add_task_cmd_output"
-    if [ $add_task_exit_code -eq 0 ] && (echo "$add_task_cmd_output" | grep -q "✓ Added new task #" || echo "$add_task_cmd_output" | grep -q "✅ New task created successfully:" || echo "$add_task_cmd_output" | grep -q "Task [0-9]\+ Created Successfully"); then
-      new_task_id=$(echo "$add_task_cmd_output" | grep -o -E "(Task |#)[0-9.]+" | grep -o -E "[0-9.]+" | head -n 1)
-      if [ -n "$new_task_id" ]; then
-        log_success "Add-task succeeded for $provider. New task ID: $new_task_id"
-        echo "Provider $provider add-task SUCCESS (ID: $new_task_id)" >> provider_add_task_summary.log
-      else
-        # Succeeded but couldn't parse ID - treat as warning/anomaly
-        log_error "Add-task command succeeded for $provider, but failed to extract task ID from output."
-        echo "Provider $provider add-task SUCCESS (ID extraction FAILED)" >> provider_add_task_summary.log
-        new_task_id="UNKNOWN_ID_EXTRACTION_FAILED"
-      fi
-    else
-      log_error "Add-task command failed for $provider (Exit Code: $add_task_exit_code). See $add_task_output_file for details."
-      echo "Provider $provider add-task FAILED (Exit Code: $add_task_exit_code)" >> provider_add_task_summary.log
-      new_task_id="FAILED"
-    fi
-
-    # 4. Run task show if ID was obtained (even if extraction failed, use placeholder)
-    if [ "$new_task_id" != "FAILED" ] && [ "$new_task_id" != "UNKNOWN_ID_EXTRACTION_FAILED" ]; then
-      log_info "Running task show for new task ID: $new_task_id"
-      show_output_file="add_task_show_output_${provider}_id_${new_task_id}.log"
-      if lm-tasker show "$new_task_id" > "$show_output_file"; then
-        log_success "Task show output saved to $show_output_file"
-      else
-        log_error "task show command failed for ID $new_task_id. Check log."
-        # Still keep the file, it might contain error output
-      fi
-    elif [ "$new_task_id" == "UNKNOWN_ID_EXTRACTION_FAILED" ]; then
-       log_info "Skipping task show for $provider due to ID extraction failure."
-    else
-       log_info "Skipping task show for $provider due to add-task failure."
-    fi
-
-  done # End of provider loop
-
-  log_step "Finished Multi-Provider Add-Task Test Sequence"
-  echo "Provider add-task summary log available at: provider_add_task_summary.log"
-  # === End Multi-Provider Add-Task Test ===
+  # === Azure Models Add-Task Test Removed ===
+  # AI functionality has been removed from LM-Tasker, so multi-provider add-task tests are no longer needed
+  log_info "AI functionality has been removed from LM-Tasker. Skipping multi-provider add-task tests."
 
   log_step "Listing tasks again (after multi-add)"
   lm-tasker list --with-subtasks > task_list_after_multi_add.log
@@ -610,7 +504,7 @@ log_step() {
   cmd_output_add_ai=$(lm-tasker add-task --title="UI Styling" --description="Implement basic UI styling using CSS variables for colors and spacing" --priority=medium --dependencies=1 2>&1)
   exit_status_add_ai=$?
   echo "$cmd_output_add_ai"
-  extract_and_sum_cost "$cmd_output_add_ai"
+  # extract_and_sum_cost "$cmd_output_add_ai"  # AI cost tracking removed
   if [ $exit_status_add_ai -ne 0 ]; then
     log_error "Adding AI Task $ai_task_id failed. Exit status: $exit_status_add_ai"
   else
@@ -796,7 +690,8 @@ else
 fi
 
 # Final cost formatting
-formatted_total_e2e_cost=$(printf "%.6f" "$total_e2e_cost")
-echo "Total E2E AI Cost: $formatted_total_e2e_cost USD"
+# AI cost tracking removed since AI functionality has been removed
+# formatted_total_e2e_cost=$(printf "%.6f" "$total_e2e_cost")
+# echo "Total E2E AI Cost: $formatted_total_e2e_cost USD"
 
 exit $EXIT_CODE
