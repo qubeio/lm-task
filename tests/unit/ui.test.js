@@ -56,10 +56,6 @@ jest.mock("cli-table3", () =>
 jest.mock("gradient-string", () => jest.fn(() => jest.fn((text) => text)));
 
 jest.mock("../../scripts/modules/utils.js", () => ({
-  CONFIG: {
-    projectName: "Test Project",
-    projectVersion: "1.0.0",
-  },
   log: jest.fn(),
   findTaskById: jest.fn(),
   readJSON: jest.fn(),

@@ -503,11 +503,6 @@ function createProjectStructure(addAliases, dryRun) {
     replacements,
   );
 
-  // Copy .lmtaskerconfig with project name
-  copyTemplateFile(".lmtaskerconfig", path.join(targetDir, ".lmtaskerconfig"), {
-    ...replacements,
-  });
-
   // Copy .gitignore
   copyTemplateFile("gitignore", path.join(targetDir, ".gitignore"));
 
@@ -589,40 +584,7 @@ function createProjectStructure(addAliases, dryRun) {
     );
   }
 
-  // === Add Model Configuration Step ===
-  if (!isSilentMode() && !dryRun) {
-    console.log(
-      boxen(chalk.cyan("Configuring AI Models..."), {
-        padding: 0.5,
-        margin: { top: 1, bottom: 0.5 },
-        borderStyle: "round",
-        borderColor: "blue",
-      }),
-    );
-    log(
-      "info",
-      "Running interactive model setup. Please select your preferred AI models.",
-    );
-    try {
-      execSync("npx lm-tasker models --setup", {
-        stdio: "inherit",
-        cwd: targetDir,
-      });
-      log("success", "AI Models configured.");
-    } catch (error) {
-      log("error", "Failed to configure AI models:", error.message);
-      log("warn", 'You may need to run "lm-tasker models --setup" manually.');
-    }
-  } else if (isSilentMode() && !dryRun) {
-    log("info", "Skipping interactive model setup in silent (MCP) mode.");
-    log(
-      "warn",
-      'Please configure AI models using "lm-tasker models --set-..." or the "models" MCP tool.',
-    );
-  } else if (dryRun) {
-    log("info", "DRY RUN: Skipping interactive model setup.");
-  }
-  // ====================================
+
 
   // Display success message
   if (!isSilentMode()) {
@@ -651,41 +613,30 @@ function createProjectStructure(addAliases, dryRun) {
           "\n\n" +
           chalk.white("1. ") +
           chalk.yellow(
-            "Configure AI models (if needed) and add API keys to `.env`",
+            "Create a PRD (Product Requirements Document) for your project",
           ) +
-          "\n" +
-          chalk.white("   ├─ ") +
-          chalk.dim("Models: Use `lm-tasker models` commands") +
           "\n" +
           chalk.white("   └─ ") +
-          chalk.dim(
-            "Keys: Add provider API keys to .env (or inside the MCP config file i.e. .cursor/mcp.json)",
-          ) +
+          chalk.dim("Use scripts/example_prd.txt as a template and save as PRD.md in the project root") +
           "\n" +
           chalk.white("2. ") +
           chalk.yellow(
-            "Discuss your idea with AI and ask for a PRD using scripts/example_prd.txt as a template, and save it as PRD.md in the project root",
-          ) +
-          "\n" +
-          chalk.white("3. ") +
-          chalk.yellow(
-            "Ask Cursor Agent (or run CLI) to parse your PRD and generate initial tasks:",
+            "Manually create your initial tasks using LM-Tasker:",
           ) +
           "\n" +
           chalk.white("   └─ ") +
           chalk.dim("MCP Tool: ") +
-          chalk.cyan("parse_prd") +
+          chalk.cyan("add_task") +
           chalk.dim(" | CLI: ") +
-          chalk.cyan("lm-tasker parse-prd") +
-          chalk.dim(" (auto-detects PRD.md)") +
+          chalk.cyan("lm-tasker add-task") +
           "\n" +
-          chalk.white("4. ") +
+          chalk.white("3. ") +
           chalk.yellow(
-            "Ask Cursor to break down complex tasks into subtasks manually",
+            "Break down complex tasks into subtasks manually",
           ) +
           "\n" +
-          chalk.white("5. ") +
-          chalk.yellow("Ask Cursor to begin working on the next task") +
+          chalk.white("4. ") +
+          chalk.yellow("Begin working on the next task") +
           "\n" +
           chalk.white("6. ") +
           chalk.yellow(

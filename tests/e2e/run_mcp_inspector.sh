@@ -76,8 +76,8 @@ assert_json_has_key "$b" "resources"
 
 c="$(run_and_capture prompts_list --method prompts/list || true)"  # prompts/list is optional
 
-# Call a real tool – default to 'models', fallback to first listed tool
-PRIMARY_TOOL="models"
+# Call a real tool – default to 'get_tasks', fallback to first listed tool
+PRIMARY_TOOL="get_tasks"
 if ! ${INSPECTOR_CMD[@]} "$MCP_SERVER" --method tools/call --tool-name "$PRIMARY_TOOL" > /dev/null 2>&1; then
   PRIMARY_TOOL="$(jq -r '.tools[0].name' "$a")"
 fi

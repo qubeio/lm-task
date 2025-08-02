@@ -53,8 +53,7 @@ TASKMASTER_SOURCE_DIR="." # Current directory is the source
 BASE_TEST_DIR="$TASKMASTER_SOURCE_DIR/tests/e2e/_runs"
 # Log directory, relative to project root
 LOG_DIR="$TASKMASTER_SOURCE_DIR/tests/e2e/log"
-# Path to the sample PRD, relative to project root
-SAMPLE_PRD_SOURCE="$TASKMASTER_SOURCE_DIR/tests/fixtures/sample-prd.txt"
+
 # Path to the main .env file in the source directory (no longer needed since AI removed)
 # MAIN_ENV_FILE="$TASKMASTER_SOURCE_DIR/.env"
 # ---
@@ -293,19 +292,8 @@ log_step() {
   # fi
   # log_info "Source .env file found at $MAIN_ENV_FILE."
 
-  # Check if sample PRD exists
-  if [ ! -f "$SAMPLE_PRD_SOURCE" ]; then
-    log_error "Sample PRD not found at $SAMPLE_PRD_SOURCE. Please check path."
-    exit 1
-  fi
-
-  log_info "Copying sample PRD to test directory as PRD.md..."
-  cp "$SAMPLE_PRD_SOURCE" "$TEST_RUN_DIR/PRD.md"
-  if [ ! -f "$TEST_RUN_DIR/PRD.md" ]; then
-    log_error "Failed to copy sample PRD to $TEST_RUN_DIR."
-    exit 1
-  fi
-  log_success "Sample PRD copied as PRD.md."
+  # PRD functionality removed - no longer needed since AI parsing has been removed
+  log_info "PRD functionality has been removed from LM-Tasker. Skipping PRD setup."
 
   # ORIGINAL_DIR=$(pwd) # Save original dir # <<< REMOVED FROM HERE
   cd "$TEST_RUN_DIR"
@@ -329,10 +317,6 @@ log_step() {
 
   log_step "Initializing LM-Tasker project (non-interactive)"
   lm-tasker init -y --name="E2E Test $TIMESTAMP" --description="Automated E2E test run"
-  if [ ! -f ".lmtaskerconfig" ]; then
-    log_error "Initialization failed: .lmtaskerconfig not found."
-    exit 1
-  fi
   log_success "Project initialized."
 
   log_step "Creating sample tasks manually (PRD parsing removed)"

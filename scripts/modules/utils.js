@@ -68,7 +68,7 @@ function resolveEnvVariable(key, session = null, projectRoot = null) {
  */
 function findProjectRoot(
   startPath = process.cwd(),
-  markers = ["package.json", ".git", ".lmtaskerconfig"],
+  markers = ["package.json", ".git"],
 ) {
   // Special handling for MCP server execution context
   // Check if we're running from the MCP server and can derive the project root

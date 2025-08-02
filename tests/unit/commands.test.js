@@ -100,9 +100,6 @@ function detectCamelCaseFlags(args) {
 
 // Then update the utils.js mock to include these functions
 jest.mock("../../scripts/modules/utils.js", () => ({
-  CONFIG: {
-    projectVersion: "1.5.0",
-  },
   log: mockLog,
   toKebabCase: toKebabCase,
 }));

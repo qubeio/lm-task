@@ -19,10 +19,12 @@ import {
   toKebabCase,
 } from "../../scripts/modules/utils.js";
 
-// Mock config-manager to provide config values
+// Mock config-manager to provide config values (simplified since config is now hardcoded)
 const mockGetLogLevel = jest.fn(() => "info"); // Default log level for tests
+const mockGetDebugFlag = jest.fn(() => false); // Default debug flag for tests
 jest.mock("../../scripts/modules/config-manager.js", () => ({
   getLogLevel: mockGetLogLevel,
+  getDebugFlag: mockGetDebugFlag,
   // Mock other getters if needed by utils.js functions under test
 }));
 
@@ -132,8 +134,8 @@ describe("Utils Module", () => {
       // console.log = originalConsoleLog; // REMOVE console.log restore
     });
 
-    test("should log messages according to log level from config-manager", () => {
-      // Test with info level (default from mock)
+    test("should log messages according to hardcoded log level", () => {
+      // Test with info level (hardcoded default)
       mockGetLogLevel.mockReturnValue("info");
 
       // Spy on console.log JUST for this test to verify calls
@@ -180,7 +182,7 @@ describe("Utils Module", () => {
       consoleSpy.mockRestore();
     });
 
-    test("should not log messages below the configured log level", () => {
+    test("should not log messages below the hardcoded log level", () => {
       // Set log level to error via mock
       mockGetLogLevel.mockReturnValue("error");
 
