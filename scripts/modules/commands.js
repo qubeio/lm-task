@@ -476,7 +476,7 @@ function registerCommands(programInstance) {
   // add-task command
   programInstance
     .command("add-task")
-    .description("Add a new task manually with specified details or via prompt")
+    .description("Add a new task manually (auto-initializes project if tasks.json doesn't exist)")
     .option("-f, --file <file>", "Path to the tasks file", "tasks/tasks.json")
     .option("-t, --title <title>", "Task title (required for manual)")
     .option(

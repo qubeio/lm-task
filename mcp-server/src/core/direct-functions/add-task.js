@@ -160,11 +160,18 @@ export async function addTaskDirect(args, log, context = {}) {
     // Restore normal logging
     disableSilentMode();
 
+    // Build response message
+    let message = `Successfully added new task #${newTaskId}`;
+    if (wasAutoInitialized) {
+      message += ` (Project auto-initialized - created tasks.json and tasks/ directory)`;
+    }
+
     return {
       success: true,
       data: {
         taskId: newTaskId,
-        message: `Successfully added new task #${newTaskId}`,
+        message: message,
+        wasAutoInitialized: wasAutoInitialized,
         telemetryData: telemetryData,
       },
     };

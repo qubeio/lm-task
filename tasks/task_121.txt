@@ -246,11 +246,63 @@ This aligns with the goal of making `add-task` the single entry point for new pr
 ### Result:
 The init command has been completely removed from the codebase. Users will now use `add-task` as the single entry point for new projects, which automatically handles initialization when tasks.json doesn't exist. This simplifies the user experience and eliminates the need for a separate init step.
 
-## 6. Update command help and UX messages [pending]
+## 6. Update command help and UX messages [done]
 ### Dependencies: None
 ### Description: Revise help text for add-task and init to reflect new behavior. Add explicit user messages when auto-initialization occurs.
 ### Details:
 
+
+--- Updated 2025-09-08T19:57:16.678Z ---
+## Analysis of Current Help Text and UX Messages
+
+**Current State Analysis:**
+
+### Help Text Issues Found:
+1. **UI Help Text (scripts/modules/ui.js lines 576-580)**: Still references `lm-tasker init` in Quick Start section
+2. **Add-task Command Description (scripts/modules/commands.js line 479)**: Generic description doesn't mention auto-initialization
+3. **Add-task Help Entry (scripts/modules/ui.js line 428)**: Basic description without auto-init context
+
+### Auto-initialization Messages Found:
+1. **CLI Messages (scripts/modules/task-manager/add-task.js lines 201-203)**: Good auto-init message exists
+2. **MCP Messages**: Need to check if similar messages exist in MCP implementation
+
+### Implementation Plan:
+1. **Update UI help text** to remove init references and emphasize add-task auto-initialization
+2. **Update add-task command description** to mention auto-initialization capability
+3. **Update help command entries** to reflect new workflow
+4. **Verify MCP auto-init messages** are consistent with CLI
+5. **Add clear messaging** about the simplified workflow
+
+--- Updated 2025-09-08T19:58:02.013Z ---
+## Implementation Complete ✅
+
+**Successfully updated all help text and UX messages:**
+
+### Changes Made:
+
+#### 1. UI Help Text Updates (scripts/modules/ui.js)
+- ✅ **Updated Quick Start section** to remove `lm-tasker init` references
+- ✅ **New workflow**: Start with `add-task` command as first step
+- ✅ **Added clarification**: "(Auto-creates tasks.json and project structure)"
+- ✅ **Updated help command entry** for add-task to mention auto-initialization
+
+#### 2. Command Description Updates (scripts/modules/commands.js)
+- ✅ **Updated add-task command description** to mention auto-initialization capability
+- ✅ **Clear messaging**: "Add a new task manually (auto-initializes project if tasks.json doesn't exist)"
+
+#### 3. MCP Response Enhancement (mcp-server/src/core/direct-functions/add-task.js)
+- ✅ **Enhanced MCP response** to include auto-initialization information
+- ✅ **User-facing message** now indicates when project was auto-initialized
+- ✅ **Added wasAutoInitialized flag** to response data for programmatic access
+
+### Updated Messages:
+1. **CLI Help**: Now shows add-task as the starting point with auto-init explanation
+2. **Command Description**: Clearly states auto-initialization capability
+3. **MCP Response**: Includes auto-init status in success messages
+4. **Help Entries**: Updated to reflect new simplified workflow
+
+### Result:
+All help text and UX messages now accurately reflect the new workflow where `add-task` is the single entry point for new projects, with clear messaging about auto-initialization capabilities in both CLI and MCP implementations.
 
 ## 7. Unit tests: add-task auto-init behavior [pending]
 ### Dependencies: None

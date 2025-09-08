@@ -426,7 +426,7 @@ function displayHelp() {
         {
           name: "add-task",
           args: '--title="<title>" --description="<text>" [--dependencies=<ids>] [--priority=<priority>] ',
-          desc: "Add a new task",
+          desc: "Add a new task (auto-initializes project if needed)",
         },
         {
           name: "remove-task",
@@ -573,17 +573,19 @@ function displayHelp() {
     boxen(
       chalk.white.bold("Quick Start:") +
         "\n\n" +
-        chalk.cyan("1. Create Project: ") +
-        chalk.white("lm-tasker init") +
+        chalk.cyan("1. Start Your Project: ") +
+        chalk.white("lm-tasker add-task --title='First Task' --description='Description'") +
         "\n" +
-        chalk.cyan("2. Add Tasks: ") +
-        chalk.white("lm-tasker add-task --title='Task Name' --description='Description'") +
+        chalk.dim("   (Auto-creates tasks.json and project structure)") +
         "\n" +
-        chalk.cyan("3. List Tasks: ") +
+        chalk.cyan("2. List Tasks: ") +
         chalk.white("lm-tasker list") +
         "\n" +
-        chalk.cyan("4. Find Next Task: ") +
-        chalk.white("lm-tasker next"),
+        chalk.cyan("3. Find Next Task: ") +
+        chalk.white("lm-tasker next") +
+        "\n" +
+        chalk.cyan("4. Add More Tasks: ") +
+        chalk.white("lm-tasker add-task --title='Another Task' --description='Description'"),
       {
         padding: 1,
         borderColor: "yellow",
