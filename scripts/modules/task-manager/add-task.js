@@ -6,12 +6,14 @@
 import { z } from "zod";
 import chalk from "chalk";
 import boxen from "boxen";
+import fs from "fs";
+import path from "path";
 import {
   getStatusWithColor,
   startLoadingIndicator,
   stopLoadingIndicator,
 } from "../ui.js";
-import { readJSON, writeJSON, log as consoleLog, truncate } from "../utils.js";
+import { readJSON, writeJSON, log as consoleLog, truncate, createMinimalTasksJson } from "../utils.js";
 import { getDefaultPriority } from "../config-manager.js";
 import generateTaskFiles from "./generate-task-files.js";
 
@@ -107,8 +109,29 @@ async function addTask(
 
   const taskData = validationResult.data;
 
-  // Read existing tasks
-  const data = readJSON(tasksPath);
+  // Check if tasks.json exists, if not create it
+  let data;
+  let wasInitialized = false;
+  
+  if (!fs.existsSync(tasksPath)) {
+    logFn.info(`Tasks file not found at ${tasksPath}, auto-initializing...`);
+    
+    // Create the tasks directory if it doesn't exist
+    const tasksDir = path.dirname(tasksPath);
+    if (!fs.existsSync(tasksDir)) {
+      fs.mkdirSync(tasksDir, { recursive: true });
+      logFn.info(`Created tasks directory: ${tasksDir}`);
+    }
+    
+    // Create minimal tasks.json structure
+    data = createMinimalTasksJson();
+    wasInitialized = true;
+    
+    logFn.success(`Auto-initialized tasks.json at ${tasksPath}`);
+  } else {
+    // Read existing tasks
+    data = readJSON(tasksPath);
+  }
 
   // Find the next available task ID
   const existingIds = data.tasks.map((t) => t.id);
@@ -150,7 +173,8 @@ async function addTask(
 
   // Generate task files
   try {
-    await generateTaskFiles(tasksPath);
+    const outputDir = path.dirname(tasksPath);
+    await generateTaskFiles(tasksPath, outputDir);
     logFn.info("Task files generated successfully");
   } catch (error) {
     logFn.warn(`Failed to generate task files: ${error.message}`);
@@ -171,11 +195,19 @@ async function addTask(
       dependencyDisplay = chalk.white("Dependencies: None") + "\n";
     }
 
+    // Build initialization message if applicable
+    let initMessage = "";
+    if (wasInitialized) {
+      initMessage = "\n" + chalk.green("🎉 Project auto-initialized!") + "\n" +
+        chalk.dim("Created tasks.json and tasks/ directory automatically.") + "\n";
+    }
+
     // Show success message box
     console.log(
       boxen(
         chalk.white.bold(`Task ${newTaskId} Created Successfully`) +
-          "\n\n" +
+          initMessage +
+          "\n" +
           chalk.white(`Title: ${newTask.title}`) +
           "\n" +
           chalk.white(`Status: ${getStatusWithColor(newTask.status)}`) +

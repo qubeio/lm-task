@@ -37,6 +37,7 @@ export async function addTaskDirect(args, log, context = {}) {
     priority,
     research,
     projectRoot,
+    wasAutoInitialized,
   } = args;
   const { session } = context; // Destructure session from context
 

@@ -593,6 +593,26 @@ function aggregateTelemetry(telemetryArray, overallCommandName) {
   return aggregated;
 }
 
+/**
+ * Creates a minimal tasks.json structure for auto-initialization
+ * @param {string} [projectName="lm-tasker-project"] - The project name
+ * @param {string} [projectVersion="0.1.0"] - The project version
+ * @param {string} [projectDescription="A project managed with LM-Tasker"] - The project description
+ * @returns {Object} The minimal tasks.json structure
+ */
+function createMinimalTasksJson(projectName = "lm-tasker-project", projectVersion = "0.1.0", projectDescription = "A project managed with LM-Tasker") {
+  return {
+    meta: {
+      name: projectName,
+      version: projectVersion,
+      description: projectDescription,
+      createdAt: new Date().toISOString(),
+      initializedBy: "add-task-auto-init"
+    },
+    tasks: []
+  };
+}
+
 // Export all utility functions and configuration
 export {
   LOG_LEVELS,
@@ -608,6 +628,7 @@ export {
   toKebabCase,
   detectCamelCaseFlags,
   aggregateTelemetry,
+  createMinimalTasksJson,
   resolveEnvVariable, // Added missing export
   findProjectRoot, // Added missing export
   preprocessMarkdownPRD, // Added missing export

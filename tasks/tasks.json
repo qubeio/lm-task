@@ -534,6 +534,128 @@
           "parentTaskId": 120
         }
       ]
+    },
+    {
+      "id": 121,
+      "title": "Integrate Initialize Functionality into Add Task Command",
+      "description": "Modify the add-task functionality to automatically create a tasks.json file if one doesn't exist, eliminating the need for a separate init command and simplifying the user experience.",
+      "details": "The goal is to streamline the user experience by making the first task creation automatically handle project initialization. When a user runs 'lm-tasker add-task' and no tasks.json file exists, the system should:\n\n1. Create a basic tasks.json file with the standard structure\n2. Add the new task as the first task in the file\n3. Set up the basic metadata (project name, version, timestamps)\n4. Provide user feedback about the initialization\n\nThis eliminates the need for users to run 'lm-tasker init' before adding their first task, making the workflow more intuitive and reducing the number of commands users need to remember.\n\nImplementation should:\n- Check for existing tasks.json file in add-task command\n- If no file exists, create one with proper structure\n- Add the new task to the newly created file\n- Maintain backward compatibility with existing projects\n- Update both CLI and MCP implementations\n- Update documentation to reflect the simplified workflow",
+      "testStrategy": "Test the functionality by:\n1. Creating a new directory without tasks.json\n2. Running add-task command and verifying tasks.json is created\n3. Verifying the task is properly added to the new file\n4. Testing with existing projects to ensure no regression\n5. Testing both CLI and MCP implementations\n6. Verifying proper error handling for file creation failures",
+      "status": "in-progress",
+      "dependencies": [
+        120
+      ],
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement auto-initialize in add-task (CLI)",
+          "description": "Update CLI add-task flow to create tasks.json (and tasks/ dir) when missing, initialize meta, then add the first task. Provide clear success output.",
+          "details": "",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 121
+        },
+        {
+          "id": 2,
+          "title": "Implement auto-initialize in add-task (MCP tool)",
+          "description": "Mirror CLI behavior in MCP add-task direct function/tool so it initializes tasks.json if missing before adding the task.",
+          "details": "",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 121
+        },
+        {
+          "id": 3,
+          "title": "Create helper to generate minimal tasks.json",
+          "description": "Add a shared utility to generate a minimal tasks.json structure with meta and empty tasks array, including timestamps.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 121
+        },
+        {
+          "id": 4,
+          "title": "Ensure tasks directory creation",
+          "description": "When initializing, ensure the tasks/ directory is created if missing and is used for future task files.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 121
+        },
+        {
+          "id": 5,
+          "title": "Deprecate or alias init command",
+          "description": "Decide deprecation path: either keep init as a thin alias that only creates tasks.json, or mark deprecated with guidance to use add-task. Implement accordingly in CLI.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 121
+        },
+        {
+          "id": 6,
+          "title": "Update command help and UX messages",
+          "description": "Revise help text for add-task and init to reflect new behavior. Add explicit user messages when auto-initialization occurs.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 121
+        },
+        {
+          "id": 7,
+          "title": "Unit tests: add-task auto-init behavior",
+          "description": "Add unit tests covering: no tasks.json -> creates file and adds task; existing file no-op init; file write failure path.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 121
+        },
+        {
+          "id": 8,
+          "title": "Refactor or remove init tests",
+          "description": "Remove or adapt tests that assume init must be run before add-task. Keep a minimal test if init remains as alias.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 121
+        },
+        {
+          "id": 9,
+          "title": "E2E tests: first run with add-task only",
+          "description": "Update e2e flows to create a fresh project and run only add-task to bootstrap. Verify tasks.json and first task exist.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 121
+        },
+        {
+          "id": 10,
+          "title": "Documentation: update README and command-reference",
+          "description": "Document the new behavior: add-task auto-initializes. Update examples, tutorials, and remove init-first steps.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 121
+        },
+        {
+          "id": 11,
+          "title": "MCP docs: update tool descriptions",
+          "description": "Update docs to clarify MCP add-task initializes when tasks.json is absent. Adjust any references to initialize_project.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 121
+        },
+        {
+          "id": 12,
+          "title": "Changelog and changeset entry",
+          "description": "Add a changeset and update CHANGELOG to note the UX improvement and any deprecation notes for init.",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 121
+        }
+      ]
     }
   ]
 }

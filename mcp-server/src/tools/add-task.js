@@ -4,6 +4,8 @@
  */
 
 import { z } from "zod";
+import fs from "fs";
+import path from "path";
 import {
   createErrorResponse,
   handleApiResult,
@@ -11,6 +13,7 @@ import {
 } from "./utils.js";
 import { addTaskDirect } from "../core/task-master-core.js";
 import { findTasksJsonPath } from "../core/utils/path-utils.js";
+import { createMinimalTasksJson, writeJSON } from "../../../../scripts/modules/utils.js";
 
 /**
  * Register the addTask tool with the MCP server
@@ -57,16 +60,41 @@ export function registerAddTaskTool(server) {
 
         // Use args.projectRoot directly (guaranteed by withNormalizedProjectRoot)
         let tasksJsonPath;
+        let wasAutoInitialized = false;
+        
         try {
           tasksJsonPath = findTasksJsonPath(
             { projectRoot: args.projectRoot, file: args.file },
             log,
           );
         } catch (error) {
-          log.error(`Error finding tasks.json: ${error.message}`);
-          return createErrorResponse(
-            `Failed to find tasks.json: ${error.message}`,
-          );
+          // If tasks.json is not found, auto-initialize it
+          if (error.code === "TASKS_FILE_NOT_FOUND") {
+            log.info(`Tasks file not found, auto-initializing...`);
+            
+            // Determine the tasks.json path
+            const defaultTasksPath = path.join(args.projectRoot, "tasks", "tasks.json");
+            tasksJsonPath = args.file ? path.resolve(args.projectRoot, args.file) : defaultTasksPath;
+            
+            // Create the tasks directory if it doesn't exist
+            const tasksDir = path.dirname(tasksJsonPath);
+            if (!fs.existsSync(tasksDir)) {
+              fs.mkdirSync(tasksDir, { recursive: true });
+              log.info(`Created tasks directory: ${tasksDir}`);
+            }
+            
+            // Create minimal tasks.json structure
+            const minimalTasksData = createMinimalTasksJson();
+            writeJSON(tasksJsonPath, minimalTasksData);
+            wasAutoInitialized = true;
+            
+            log.info(`Auto-initialized tasks.json at ${tasksJsonPath}`);
+          } else {
+            log.error(`Error finding tasks.json: ${error.message}`);
+            return createErrorResponse(
+              `Failed to find tasks.json: ${error.message}`,
+            );
+          }
         }
 
         // Call the direct function
@@ -81,6 +109,7 @@ export function registerAddTaskTool(server) {
             dependencies: args.dependencies,
             priority: args.priority,
             projectRoot: args.projectRoot,
+            wasAutoInitialized: wasAutoInitialized,
           },
           log,
           { session },
