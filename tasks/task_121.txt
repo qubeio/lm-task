@@ -304,11 +304,108 @@ The init command has been completely removed from the codebase. Users will now u
 ### Result:
 All help text and UX messages now accurately reflect the new workflow where `add-task` is the single entry point for new projects, with clear messaging about auto-initialization capabilities in both CLI and MCP implementations.
 
-## 7. Unit tests: add-task auto-init behavior [pending]
+## 7. Unit tests: add-task auto-init behavior [done]
 ### Dependencies: None
 ### Description: Add unit tests covering: no tasks.json -> creates file and adds task; existing file no-op init; file write failure path.
 ### Details:
 
+
+--- Updated 2025-09-08T20:01:11.871Z ---
+## Analysis Complete - Ready to Implement Unit Tests
+
+**Current State Analysis:**
+
+### Auto-initialization Behavior Found:
+1. **CLI Implementation** (`scripts/modules/task-manager/add-task.js` lines 116-134):
+   - Checks if `tasks.json` exists using `fs.existsSync(tasksPath)`
+   - If not found, creates tasks directory with `fs.mkdirSync(tasksDir, { recursive: true })`
+   - Creates minimal tasks.json using `createMinimalTasksJson()` helper
+   - Sets `wasInitialized = true` flag
+   - Logs success message about auto-initialization
+
+2. **MCP Implementation** (`mcp-server/src/core/direct-functions/add-task.js`):
+   - Uses same underlying `addTask` function from task-manager
+   - Includes `wasAutoInitialized` flag in response data (line 174)
+   - Enhanced response message includes auto-init information (lines 164-167)
+
+3. **Helper Function** (`scripts/modules/utils.js` lines 603-614):
+   - `createMinimalTasksJson()` creates standard structure with meta and empty tasks array
+   - Includes timestamps and initialization tracking
+
+### Test Requirements from Subtask:
+- **Test Case 1**: No tasks.json → creates file and adds task
+- **Test Case 2**: Existing file no-op init (should not reinitialize)
+- **Test Case 3**: File write failure path (error handling)
+
+### Current Test Structure:
+- **MCP Tests**: `tests/unit/mcp/tools/add-task.test.js` - tests tool registration and parameter passing
+- **CLI Tests**: `tests/unit/commands.test.js` - has basic add-task command tests but no auto-init coverage
+- **Missing**: Direct unit tests for the auto-initialization behavior in the core add-task function
+
+### Implementation Plan:
+1. **Create new test file**: `tests/unit/task-manager/add-task-auto-init.test.js`
+2. **Test the core addTask function** directly (not just CLI/MCP wrappers)
+3. **Mock file system operations** to test different scenarios
+4. **Verify auto-initialization behavior** in isolation
+5. **Test error handling** for file write failures
+6. **Ensure existing tests still pass** after changes
+
+--- Updated 2025-09-08T20:06:27.511Z ---
+## Implementation Complete ✅
+
+**Successfully implemented comprehensive unit tests for add-task auto-initialization behavior:**
+
+### Test Coverage Implemented:
+
+#### **Test Case 1: No tasks.json → creates file and adds task**
+- ✅ **Auto-initialization when tasks.json doesn't exist**: Verifies directory creation, minimal JSON structure, and task addition
+- ✅ **Tasks directory creation**: Tests that tasks/ directory is created when missing
+- ✅ **createMinimalTasksJson usage**: Verifies the helper function is used correctly for initialization
+
+#### **Test Case 2: Existing file no-op init (should not reinitialize)**
+- ✅ **No reinitialization with existing file**: Confirms existing tasks.json is preserved and not overwritten
+- ✅ **Meta data preservation**: Verifies existing project metadata is maintained when adding new tasks
+
+#### **Test Case 3: File write failure path (error handling)**
+- ✅ **Directory creation failure**: Tests error handling when mkdirSync fails
+- ✅ **File write failure**: Tests graceful handling when writeFileSync fails (function continues)
+- ✅ **File read failure**: Tests error handling when readFileSync fails
+- ✅ **Task file generation failure**: Tests graceful handling of generateTaskFiles errors
+
+#### **Edge Cases and Integration**
+- ✅ **Dependencies validation**: Tests invalid dependency handling during auto-initialization
+- ✅ **Manual task data validation**: Tests validation failure handling
+- ✅ **MCP context compatibility**: Tests that MCP context works without CLI output
+
+### Technical Implementation Details:
+
+#### **Mocking Strategy**
+- **File System Mocking**: Used `jest.spyOn` to mock `fs.existsSync`, `fs.mkdirSync`, `fs.readFileSync`, `fs.writeFileSync`
+- **Path Mocking**: Mocked `path.dirname` to return correct directory paths
+- **Module Mocking**: Mocked UI, config-manager, and other dependencies
+- **Console Mocking**: Prevented CLI output during tests
+
+#### **Test Structure**
+- **12 comprehensive test cases** covering all auto-initialization scenarios
+- **Proper setup/teardown** with `beforeEach` for consistent test state
+- **Realistic test data** with proper manual task data structures
+- **Error scenario testing** with proper error message validation
+
+#### **Key Findings**
+- **Auto-initialization works correctly**: Creates tasks.json and tasks/ directory when missing
+- **Error handling is robust**: Functions continue gracefully even when file operations fail
+- **Dependency validation works**: Invalid dependencies are filtered out with warnings
+- **MCP compatibility confirmed**: Works correctly in both CLI and MCP contexts
+
+### Test Results:
+```
+Test Suites: 1 passed, 1 total
+Tests:       12 passed, 12 total
+Snapshots:   0 total
+Time:        0.184 s
+```
+
+**All tests pass successfully!** The auto-initialization behavior is now thoroughly tested and verified to work correctly in all scenarios.
 
 ## 8. Refactor or remove init tests [pending]
 ### Dependencies: None
