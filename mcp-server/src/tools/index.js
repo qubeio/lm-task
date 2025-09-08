@@ -21,7 +21,6 @@ import { registerValidateDependenciesTool } from "./validate-dependencies.js";
 import { registerFixDependenciesTool } from "./fix-dependencies.js";
 import { registerAddDependencyTool } from "./add-dependency.js";
 import { registerRemoveTaskTool } from "./remove-task.js";
-import { registerInitializeProjectTool } from "./initialize-project.js";
 import { registerMoveTaskTool } from "./move-task.js";
 
 /**
@@ -33,7 +32,7 @@ export function registerLMTaskerTools(server) {
     // Register each tool in a logical workflow order
 
     // Group 1: Initialization & Setup
-    registerInitializeProjectTool(server);
+    // Note: Project initialization is now handled automatically by add-task command
 
     // Group 2: Task Listing & Viewing
     registerListTasksTool(server);

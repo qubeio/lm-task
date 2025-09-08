@@ -57,7 +57,6 @@ import {
   stopLoadingIndicator,
 } from "./ui.js";
 
-import { initializeProject } from "../init.js";
 import { findProjectRoot } from "./utils.js";
 import {
   isValidTaskStatus,
@@ -1315,36 +1314,6 @@ function registerCommands(programInstance) {
       }
     });
 
-  // init command (Directly calls the implementation from init.js)
-  programInstance
-    .command("init")
-    .description("Initialize a new project with LM-Tasker structure")
-    .option("-y, --yes", "Skip prompts and use default values")
-    .option("-n, --name <name>", "Project name")
-    .option("-d, --description <description>", "Project description")
-    .option("-v, --version <version>", "Project version", "0.1.0") // Set default here
-    .option("-a, --author <author>", "Author name")
-    .option("--skip-install", "Skip installing dependencies")
-    .option("--dry-run", "Show what would be done without making changes")
-    .option("--aliases", "Add shell aliases (tm, lmtasker)")
-    .action(async (cmdOptions) => {
-      // cmdOptions contains parsed arguments
-      try {
-        // console.log("DEBUG: Running init command action in commands.js");
-        console.log(
-          "DEBUG: Options received by action:",
-          JSON.stringify(cmdOptions),
-        );
-        // Directly call the initializeProject function, passing the parsed options
-        await initializeProject(cmdOptions);
-        // initializeProject handles its own flow, including potential process.exit()
-      } catch (error) {
-        console.error(
-          chalk.red(`Error during initialization: ${error.message}`),
-        );
-        process.exit(1);
-      }
-    });
 
   // move-task command
   programInstance

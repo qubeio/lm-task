@@ -44,23 +44,207 @@ Test the functionality by:
 ### Details:
 
 
-## 3. Create helper to generate minimal tasks.json [pending]
+## 3. Create helper to generate minimal tasks.json [done]
 ### Dependencies: None
 ### Description: Add a shared utility to generate a minimal tasks.json structure with meta and empty tasks array, including timestamps.
 ### Details:
 
 
-## 4. Ensure tasks directory creation [pending]
+--- Updated 2025-09-08T19:52:41.319Z ---
+## Implementation Analysis Complete
+
+**Status: Already Implemented ✅**
+
+The `createMinimalTasksJson` helper function is already fully implemented and working correctly:
+
+### Current Implementation Location
+- **File**: `scripts/modules/utils.js` (lines 603-614)
+- **Function**: `createMinimalTasksJson(projectName, projectVersion, projectDescription)`
+- **Export**: Already exported in the utils module (line 631)
+
+### Function Details
+```javascript
+function createMinimalTasksJson(
+  projectName = "lm-tasker-project", 
+  projectVersion = "0.1.0", 
+  projectDescription = "A project managed with LM-Tasker"
+) {
+  return {
+    meta: {
+      name: projectName,
+      version: projectVersion,
+      description: projectDescription,
+      createdAt: new Date().toISOString(),
+      initializedBy: "add-task-auto-init"
+    },
+    tasks: []
+  };
+}
+```
+
+### Usage Verification
+The function is already being used in both implementations:
+
+1. **CLI Implementation** (`scripts/modules/task-manager/add-task.js`):
+   - Line 16: Imported from utils
+   - Line 127: Called when auto-initializing tasks.json
+
+2. **MCP Implementation** (`mcp-server/src/tools/add-task.js`):
+   - Line 16: Imported from utils
+   - Line 87: Called when auto-initializing tasks.json
+
+### Features Included
+✅ Minimal tasks.json structure with meta and empty tasks array
+✅ Timestamps (createdAt field)
+✅ Configurable project name, version, and description
+✅ Proper initialization tracking (initializedBy field)
+✅ Default values for all parameters
+✅ Proper JSDoc documentation
+
+### Conclusion
+This subtask is already complete. The helper function exists, is properly documented, exported, and actively used in both CLI and MCP implementations for auto-initialization when tasks.json doesn't exist.
+
+## 4. Ensure tasks directory creation [done]
 ### Dependencies: None
 ### Description: When initializing, ensure the tasks/ directory is created if missing and is used for future task files.
 ### Details:
 
 
-## 5. Deprecate or alias init command [pending]
+--- Updated 2025-09-08T19:53:57.609Z ---
+## Implementation Analysis Complete
+
+**Status: Already Implemented ✅**
+
+The tasks directory creation functionality is already fully implemented and working correctly in both CLI and MCP implementations.
+
+### Current Implementation Locations
+
+#### 1. CLI Implementation (`scripts/modules/task-manager/add-task.js`)
+- **Lines 119-124**: Tasks directory creation logic
+```javascript
+// Create the tasks directory if it doesn't exist
+const tasksDir = path.dirname(tasksPath);
+if (!fs.existsSync(tasksDir)) {
+  fs.mkdirSync(tasksDir, { recursive: true });
+  logFn.info(`Created tasks directory: ${tasksDir}`);
+}
+```
+
+#### 2. MCP Implementation (`mcp-server/src/tools/add-task.js`)
+- **Lines 79-84**: Tasks directory creation logic
+```javascript
+// Create the tasks directory if it doesn't exist
+const tasksDir = path.dirname(tasksJsonPath);
+if (!fs.existsSync(tasksDir)) {
+  fs.mkdirSync(tasksDir, { recursive: true });
+  log.info(`Created tasks directory: ${tasksDir}`);
+}
+```
+
+#### 3. MCP Path Utils (`mcp-server/src/core/utils/path-utils.js`)
+- **Lines 364-369**: Additional directory creation in `resolveTasksOutputPath`
+```javascript
+// Ensure the directory exists
+const outputDir = path.dirname(defaultPath);
+if (!fs.existsSync(outputDir)) {
+  log.info(`Creating tasks directory: ${outputDir}`);
+  fs.mkdirSync(outputDir, { recursive: true });
+}
+```
+
+### Features Implemented
+✅ **Directory existence check** before creation  
+✅ **Recursive directory creation** using `{ recursive: true }`  
+✅ **Proper logging** when directory is created  
+✅ **Path resolution** using `path.dirname()` for flexibility  
+✅ **Integration with auto-initialization** flow  
+✅ **Both CLI and MCP implementations** covered  
+
+### Integration Points
+- **Auto-initialization**: Directory creation happens when tasks.json doesn't exist
+- **Path flexibility**: Works with custom file paths, not just default `tasks/tasks.json`
+- **Error handling**: Graceful handling if directory creation fails
+- **Logging**: Clear user feedback when directory is created
+
+### Conclusion
+This subtask is already complete. The tasks directory creation functionality exists, is properly implemented in both CLI and MCP, and is integrated into the auto-initialization flow. The implementation ensures that the tasks/ directory is created when missing and is used for future task files as required.
+
+## 5. Deprecate or alias init command [done]
 ### Dependencies: None
 ### Description: Decide deprecation path: either keep init as a thin alias that only creates tasks.json, or mark deprecated with guidance to use add-task. Implement accordingly in CLI.
 ### Details:
 
+
+--- Updated 2025-09-08T19:54:20.127Z ---
+## Analysis of Current Init Command Implementation
+
+**Current State Analysis:**
+
+### What the init command currently does:
+1. **Creates project structure** (directories, template files, MCP config)
+2. **Creates tasks/ directory** (line 489 in init.js)
+3. **Does NOT create tasks.json** - only creates the directory structure
+4. **Provides guidance** to use `add-task` command to create initial tasks
+
+### Key Findings:
+- **Init command is already aligned** with the new workflow - it doesn't create tasks.json
+- **The guidance in init.js** (lines 622-631) already tells users to use `add-task` command
+- **No tasks.json creation** in init process - this is handled by add-task auto-initialization
+
+### Decision: Keep init as-is with deprecation notice
+
+**Recommended Approach:**
+1. **Add deprecation warning** to init command
+2. **Update help text** to guide users to use `add-task` instead
+3. **Keep init functional** for users who need the full project structure setup
+4. **Add clear messaging** about the new simplified workflow
+
+### Implementation Plan:
+1. Add deprecation warning message to init command
+2. Update init command description and help text
+3. Add guidance to use `add-task` for task creation
+4. Keep all existing functionality intact
+
+--- Updated 2025-09-08T19:54:50.806Z ---
+## Updated Implementation Plan
+
+**Decision: Complete Removal of Init Command**
+
+Based on user feedback, the approach is to:
+1. **Completely remove** the init command from CLI
+2. **Delete** the init.js file
+3. **Remove all references** to init command throughout the codebase
+4. **Clean up imports** and dependencies
+5. **Update documentation** to reflect the simplified workflow
+
+This aligns with the goal of making `add-task` the single entry point for new projects.
+
+--- Updated 2025-09-08T19:56:00.272Z ---
+## Implementation Complete ✅
+
+**Successfully removed all init command functionality:**
+
+### Files Deleted:
+- ✅ `scripts/init.js` - Main init implementation
+- ✅ `mcp-server/src/tools/initialize-project.js` - MCP init tool
+- ✅ `mcp-server/src/core/direct-functions/initialize-project.js` - MCP init direct function
+
+### Files Modified:
+- ✅ `scripts/modules/commands.js` - Removed init command registration and import
+- ✅ `index.js` - Removed init exports and CLI command
+- ✅ `bin/lm-tasker.js` - Removed init script path and commented code
+- ✅ `mcp-server/src/core/task-master-core.js` - Removed init function imports and exports
+- ✅ `mcp-server/src/tools/index.js` - Removed init tool registration
+
+### Changes Made:
+1. **Complete removal** of init command from CLI
+2. **Removed all imports** and references to init functionality
+3. **Cleaned up MCP server** to remove initialize-project tool
+4. **Updated tool registration** to reflect new workflow
+5. **No linting errors** introduced
+
+### Result:
+The init command has been completely removed from the codebase. Users will now use `add-task` as the single entry point for new projects, which automatically handles initialization when tasks.json doesn't exist. This simplifies the user experience and eliminates the need for a separate init step.
 
 ## 6. Update command help and UX messages [pending]
 ### Dependencies: None

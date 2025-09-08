@@ -30,26 +30,6 @@ const packageJson = require("./package.json");
 // Export the path to the dev.js script for programmatic usage
 export const devScriptPath = resolve(__dirname, "./scripts/dev.js");
 
-// Export a function to initialize a new project programmatically
-export const initProject = async (options = {}) => {
-  const init = await import("./scripts/init.js");
-  return init.initializeProject(options);
-};
-
-// Export a function to run init as a CLI command
-export const runInitCLI = async (options = {}) => {
-  try {
-    const init = await import("./scripts/init.js");
-    const result = await init.initializeProject(options);
-    return result;
-  } catch (error) {
-    console.error("Initialization failed:", error.message);
-    if (process.env.DEBUG === "true") {
-      console.error("Debug stack trace:", error.stack);
-    }
-    throw error; // Re-throw to be handled by the command handler
-  }
-};
 
 // Export version information
 export const version = packageJson.version;
@@ -60,25 +40,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
   program.name("lm-tasker").description("LM-Tasker CLI").version(version);
 
-  program
-    .command("init")
-    .description("Initialize a new project")
-    .option("-y, --yes", "Skip prompts and use default values")
-    .option("-n, --name <n>", "Project name")
-    .option("-d, --description <description>", "Project description")
-    .option("-v, --version <version>", "Project version", "0.1.0")
-    .option("-a, --author <author>", "Author name")
-    .option("--skip-install", "Skip installing dependencies")
-    .option("--dry-run", "Show what would be done without making changes")
-    .option("--aliases", "Add shell aliases (tm, LM-Tasker)")
-    .action(async (cmdOptions) => {
-      try {
-        await runInitCLI(cmdOptions);
-      } catch (err) {
-        console.error("Init failed:", err.message);
-        process.exit(1);
-      }
-    });
 
   program
     .command("dev")
