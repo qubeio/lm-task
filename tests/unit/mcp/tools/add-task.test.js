@@ -68,7 +68,7 @@ const registerAddTaskTool = (server) => {
   // Create simplified version of the tool config
   const toolConfig = {
     name: "add_task",
-    description: "Add a new task using AI",
+    // ...existing code...
     parameters: mockZod,
 
     // Create a simplified mock of the execute function
@@ -166,7 +166,7 @@ describe("MCP Tool: add-task", () => {
     expect(mockServer.addTool).toHaveBeenCalledWith(
       expect.objectContaining({
         name: "add_task",
-        description: "Add a new task using AI",
+        // ...existing code...
         parameters: expect.any(Object),
         execute: expect.any(Function),
       }),

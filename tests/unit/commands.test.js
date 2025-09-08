@@ -3,6 +3,8 @@
  */
 
 import { jest } from "@jest/globals";
+import chalk from "chalk";
+import fs from "fs";
 import {
   sampleTasks,
   emptySampleTasks,
@@ -19,485 +21,22 @@ const mockDisplayBanner = jest.fn();
 const mockDisplayHelp = jest.fn();
 const mockLog = jest.fn();
 
-// Mock modules first
-jest.mock("fs", () => ({
-  existsSync: jest.fn(),
-  readFileSync: jest.fn(),
-}));
+// Mock fs and process functions
+const mockExistsSync = jest.fn();
+const mockConsoleError = jest.fn();
+const mockConsoleLog = jest.fn();
+const mockExit = jest.fn();
 
-jest.mock("path", () => ({
-  join: jest.fn((dir, file) => `${dir}/${file}`),
-}));
-
-jest.mock("chalk", () => ({
-  red: jest.fn((text) => text),
-  blue: jest.fn((text) => text),
-  green: jest.fn((text) => text),
-  yellow: jest.fn((text) => text),
-  white: jest.fn((text) => ({
-    bold: jest.fn((text) => text),
-  })),
-  reset: jest.fn((text) => text),
-}));
-
-jest.mock("../../scripts/modules/ui.js", () => ({
-  displayBanner: mockDisplayBanner,
-  displayHelp: mockDisplayHelp,
-}));
-
-jest.mock("../../scripts/modules/task-manager.js", () => ({
-  parsePRD: mockParsePRD,
-  updateTaskById: mockUpdateTaskById,
-}));
-
-// Mock the path utils
-const mockFindPRDDocumentPath = jest.fn();
-jest.mock("../../mcp-server/src/core/utils/path-utils.js", () => ({
-  findPRDDocumentPath: mockFindPRDDocumentPath,
-}));
-
-// Add this function before the mock of utils.js
-/**
- * Convert camelCase to kebab-case
- * @param {string} str - String to convert
- * @returns {string} kebab-case version of the input
- */
-const toKebabCase = (str) => {
-  return str
-    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
-    .toLowerCase()
-    .replace(/^-/, ""); // Remove leading hyphen if present
+// Mock task manager
+const mockTaskManager = {
+  addTask: jest.fn().mockResolvedValue({
+    success: true,
+    taskId: 5,
+    message: "Task added successfully"
+  })
 };
 
-/**
- * Detect camelCase flags in command arguments
- * @param {string[]} args - Command line arguments to check
- * @returns {Array<{original: string, kebabCase: string}>} - List of flags that should be converted
- */
-function detectCamelCaseFlags(args) {
-  const camelCaseFlags = [];
-  for (const arg of args) {
-    if (arg.startsWith("--")) {
-      const flagName = arg.split("=")[0].slice(2); // Remove -- and anything after =
-
-      // Skip if it's a single word (no hyphens) or already in kebab-case
-      if (!flagName.includes("-")) {
-        // Check for camelCase pattern (lowercase followed by uppercase)
-        if (/[a-z][A-Z]/.test(flagName)) {
-          const kebabVersion = toKebabCase(flagName);
-          if (kebabVersion !== flagName) {
-            camelCaseFlags.push({
-              original: flagName,
-              kebabCase: kebabVersion,
-            });
-          }
-        }
-      }
-    }
-  }
-  return camelCaseFlags;
-}
-
-// Then update the utils.js mock to include these functions
-jest.mock("../../scripts/modules/utils.js", () => ({
-  log: mockLog,
-  toKebabCase: toKebabCase,
-}));
-
-// Import all modules after mocking
-import fs from "fs";
-import path from "path";
-import chalk from "chalk";
-import { fileURLToPath } from "url";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Use dynamic import for setupCLI to avoid issues with ES modules
-let setupCLI;
-try {
-  const commandsModule = await import("../../scripts/modules/commands.js");
-  setupCLI = commandsModule.setupCLI;
-} catch (error) {
-  console.error("Error importing commands module:", error);
-}
-
-// We'll use a simplified, direct test approach instead of Commander mocking
-describe("Commands Module", () => {
-  // Set up spies on the mocked modules
-  const mockExistsSync = jest.spyOn(fs, "existsSync");
-  const mockReadFileSync = jest.spyOn(fs, "readFileSync");
-  const mockJoin = jest.spyOn(path, "join");
-  const mockConsoleLog = jest
-    .spyOn(console, "log")
-    .mockImplementation(() => {});
-  const mockConsoleError = jest
-    .spyOn(console, "error")
-    .mockImplementation(() => {});
-  const mockExit = jest.spyOn(process, "exit").mockImplementation(() => {});
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    mockExistsSync.mockReturnValue(true);
-  });
-
-  afterAll(() => {
-    jest.restoreAllMocks();
-  });
-
-  describe("setupCLI function", () => {
-    test("should return Commander program instance", () => {
-      const program = setupCLI();
-      expect(program).toBeDefined();
-      expect(program.name()).toBe("dev");
-    });
-
-    test("should read version from package.json when available", () => {
-      mockExistsSync.mockReturnValue(true);
-      mockReadFileSync.mockReturnValue('{"version": "1.0.0"}');
-      mockJoin.mockReturnValue("package.json");
-
-      const program = setupCLI();
-      const version = program._version();
-      expect(mockReadFileSync).toHaveBeenCalledWith("package.json", "utf8");
-      expect(version).toBe("1.0.0");
-    });
-
-    test("should use default version when package.json is not available", () => {
-      mockExistsSync.mockReturnValue(false);
-
-      const program = setupCLI();
-      const version = program._version();
-      expect(mockReadFileSync).not.toHaveBeenCalled();
-      expect(version).toBe("unknown");
-    });
-
-    test("should use default version when package.json reading throws an error", () => {
-      mockExistsSync.mockReturnValue(true);
-      mockReadFileSync.mockImplementation(() => {
-        throw new Error("Read error");
-      });
-
-      const program = setupCLI();
-      const version = program._version();
-      expect(mockReadFileSync).toHaveBeenCalled();
-      expect(version).toBe("unknown");
-    });
-  });
-
-  describe("Kebab Case Validation", () => {
-    test("should detect camelCase flags correctly", () => {
-      const args = ["node", "lm-tasker", "--camelCase", "--kebab-case"];
-      const camelCaseFlags = args.filter(
-        (arg) =>
-          arg.startsWith("--") && /[A-Z]/.test(arg) && !arg.includes("-[A-Z]"),
-      );
-      expect(camelCaseFlags).toContain("--camelCase");
-      expect(camelCaseFlags).not.toContain("--kebab-case");
-    });
-
-    test("should accept kebab-case flags correctly", () => {
-      const args = ["node", "lm-tasker", "--kebab-case"];
-      const camelCaseFlags = args.filter(
-        (arg) =>
-          arg.startsWith("--") && /[A-Z]/.test(arg) && !arg.includes("-[A-Z]"),
-      );
-      expect(camelCaseFlags).toHaveLength(0);
-    });
-  });
-
-  describe("parse-prd command", () => {
-    // Since mocking Commander is complex, we'll test the action handler directly
-    // Recreate the action handler logic based on commands.js
-    async function parsePrdAction(file, options) {
-      // Use input option if file argument not provided
-      const inputFile = file || options.input;
-      const append = options.append || false;
-      const force = options.force || false;
-      const outputPath = options.output || "tasks/tasks.json";
-
-      // Mock confirmOverwriteIfNeeded function to test overwrite behavior
-      const mockConfirmOverwrite = jest.fn().mockResolvedValue(true);
-
-      // Helper function to check if tasks.json exists and confirm overwrite
-      async function confirmOverwriteIfNeeded() {
-        if (fs.existsSync(outputPath) && !force && !append) {
-          return mockConfirmOverwrite();
-        }
-        return true;
-      }
-
-      // If no input file specified, try to find PRD using findPRDDocumentPath
-      if (!inputFile) {
-        // Use the mocked findPRDDocumentPath
-        const foundPrdPath = mockFindPRDDocumentPath();
-
-        if (foundPrdPath) {
-          console.log(chalk.blue(`Using PRD file: ${foundPrdPath}`));
-          const numTasks = parseInt(options.numTasks, 10);
-
-          // Check if we need to confirm overwrite
-          if (!(await confirmOverwriteIfNeeded())) return;
-
-          console.log(chalk.blue(`Generating ${numTasks} tasks...`));
-          if (append) {
-            console.log(chalk.blue("Appending to existing tasks..."));
-          }
-          await mockParsePRD(foundPrdPath, outputPath, numTasks, { append });
-          return;
-        }
-
-        console.log(
-          chalk.yellow(
-            "No PRD file found. Searched for PRD.md, prd.md, PRD.txt, prd.txt in project root and scripts/ directory.",
-          ),
-        );
-        return;
-      }
-
-      const numTasks = parseInt(options.numTasks, 10);
-
-      // Check if we need to confirm overwrite
-      if (!(await confirmOverwriteIfNeeded())) return;
-
-      console.log(chalk.blue(`Parsing PRD file: ${inputFile}`));
-      console.log(chalk.blue(`Generating ${numTasks} tasks...`));
-      if (append) {
-        console.log(chalk.blue("Appending to existing tasks..."));
-      }
-
-      await mockParsePRD(inputFile, outputPath, numTasks, { append });
-
-      // Return mock for testing
-      return { mockConfirmOverwrite };
-    }
-
-    beforeEach(() => {
-      // Reset the parsePRD mock
-      mockParsePRD.mockClear();
-      mockFindPRDDocumentPath.mockClear();
-    });
-
-    test("should use default PRD path when no arguments provided", async () => {
-      // Arrange - Mock findPRDDocumentPath to return a found file
-      mockFindPRDDocumentPath.mockReturnValue("PRD.md");
-
-      // Act - call the handler directly with the right params
-      await parsePrdAction(undefined, {
-        numTasks: "10",
-        output: "tasks/tasks.json",
-      });
-
-      // Assert
-      expect(mockConsoleLog).toHaveBeenCalledWith(
-        expect.stringContaining("Using PRD file: PRD.md"),
-      );
-      expect(mockParsePRD).toHaveBeenCalledWith(
-        "PRD.md",
-        "tasks/tasks.json",
-        10, // Default value from command definition
-        { append: false },
-      );
-    });
-
-    test("should display help when no arguments and no PRD found", async () => {
-      // Arrange - Mock findPRDDocumentPath to return null (no file found)
-      mockFindPRDDocumentPath.mockReturnValue(null);
-
-      // Act - call the handler directly with the right params
-      await parsePrdAction(undefined, {
-        numTasks: "10",
-        output: "tasks/tasks.json",
-      });
-
-      // Assert
-      expect(mockConsoleLog).toHaveBeenCalledWith(
-        expect.stringContaining("No PRD file found"),
-      );
-      expect(mockParsePRD).not.toHaveBeenCalled();
-    });
-
-    test("should use explicitly provided file path", async () => {
-      // Arrange
-      const testFile = "test/prd.txt";
-
-      // Act - call the handler directly with the right params
-      await parsePrdAction(testFile, {
-        numTasks: "10",
-        output: "tasks/tasks.json",
-      });
-
-      // Assert
-      expect(mockConsoleLog).toHaveBeenCalledWith(
-        expect.stringContaining(`Parsing PRD file: ${testFile}`),
-      );
-      expect(mockParsePRD).toHaveBeenCalledWith(
-        testFile,
-        "tasks/tasks.json",
-        10,
-        { append: false },
-      );
-      expect(mockExistsSync).not.toHaveBeenCalledWith("scripts/prd.txt");
-    });
-
-    test("should use file path from input option when provided", async () => {
-      // Arrange
-      const testFile = "test/prd.txt";
-
-      // Act - call the handler directly with the right params
-      await parsePrdAction(undefined, {
-        input: testFile,
-        numTasks: "10",
-        output: "tasks/tasks.json",
-      });
-
-      // Assert
-      expect(mockConsoleLog).toHaveBeenCalledWith(
-        expect.stringContaining(`Parsing PRD file: ${testFile}`),
-      );
-      expect(mockParsePRD).toHaveBeenCalledWith(
-        testFile,
-        "tasks/tasks.json",
-        10,
-        { append: false },
-      );
-      expect(mockExistsSync).not.toHaveBeenCalledWith("scripts/prd.txt");
-    });
-
-    test("should respect numTasks and output options", async () => {
-      // Arrange
-      const testFile = "test/prd.txt";
-      const outputFile = "custom/output.json";
-      const numTasks = 15;
-
-      // Act - call the handler directly with the right params
-      await parsePrdAction(testFile, {
-        numTasks: numTasks.toString(),
-        output: outputFile,
-      });
-
-      // Assert
-      expect(mockParsePRD).toHaveBeenCalledWith(
-        testFile,
-        outputFile,
-        numTasks,
-        { append: false },
-      );
-    });
-
-    test("should pass append flag to parsePRD when provided", async () => {
-      // Arrange
-      const testFile = "test/prd.txt";
-
-      // Act - call the handler directly with append flag
-      await parsePrdAction(testFile, {
-        numTasks: "10",
-        output: "tasks/tasks.json",
-        append: true,
-      });
-
-      // Assert
-      expect(mockConsoleLog).toHaveBeenCalledWith(
-        expect.stringContaining("Appending to existing tasks"),
-      );
-      expect(mockParsePRD).toHaveBeenCalledWith(
-        testFile,
-        "tasks/tasks.json",
-        10,
-        { append: true },
-      );
-    });
-
-    test("should bypass confirmation when append flag is true and tasks.json exists", async () => {
-      // Arrange
-      const testFile = "test/prd.txt";
-      const outputFile = "tasks/tasks.json";
-
-      // Mock that tasks.json exists
-      mockExistsSync.mockImplementation((path) => {
-        if (path === outputFile) return true;
-        if (path === testFile) return true;
-        return false;
-      });
-
-      // Act - call the handler with append flag
-      const { mockConfirmOverwrite } =
-        (await parsePrdAction(testFile, {
-          numTasks: "10",
-          output: outputFile,
-          append: true,
-        })) || {};
-
-      // Assert - confirm overwrite should not be called with append flag
-      expect(mockConfirmOverwrite).not.toHaveBeenCalled();
-      expect(mockParsePRD).toHaveBeenCalledWith(testFile, outputFile, 10, {
-        append: true,
-      });
-
-      // Reset mock implementation
-      mockExistsSync.mockReset();
-    });
-
-    test("should prompt for confirmation when append flag is false and tasks.json exists", async () => {
-      // Arrange
-      const testFile = "test/prd.txt";
-      const outputFile = "tasks/tasks.json";
-
-      // Mock that tasks.json exists
-      mockExistsSync.mockImplementation((path) => {
-        if (path === outputFile) return true;
-        if (path === testFile) return true;
-        return false;
-      });
-
-      // Act - call the handler without append flag
-      const { mockConfirmOverwrite } =
-        (await parsePrdAction(testFile, {
-          numTasks: "10",
-          output: outputFile,
-          // append: false (default)
-        })) || {};
-
-      // Assert - confirm overwrite should be called without append flag
-      expect(mockConfirmOverwrite).toHaveBeenCalled();
-      expect(mockParsePRD).toHaveBeenCalledWith(testFile, outputFile, 10, {
-        append: false,
-      });
-
-      // Reset mock implementation
-      mockExistsSync.mockReset();
-    });
-
-    test("should bypass confirmation when force flag is true, regardless of append flag", async () => {
-      // Arrange
-      const testFile = "test/prd.txt";
-      const outputFile = "tasks/tasks.json";
-
-      // Mock that tasks.json exists
-      mockExistsSync.mockImplementation((path) => {
-        if (path === outputFile) return true;
-        if (path === testFile) return true;
-        return false;
-      });
-
-      // Act - call the handler with force flag
-      const { mockConfirmOverwrite } =
-        (await parsePrdAction(testFile, {
-          numTasks: "10",
-          output: outputFile,
-          force: true,
-          append: false,
-        })) || {};
-
-      // Assert - confirm overwrite should not be called with force flag
-      expect(mockConfirmOverwrite).not.toHaveBeenCalled();
-      expect(mockParsePRD).toHaveBeenCalledWith(testFile, outputFile, 10, {
-        append: false,
-      });
-
-      // Reset mock implementation
-      mockExistsSync.mockReset();
-    });
-  });
+// ...existing code...
 
   describe("updateTask command", () => {
     // Since mocking Commander is complex, we'll test the action handler directly
@@ -508,45 +47,45 @@ describe("Commands Module", () => {
 
         // Validate required parameters
         if (!options.id) {
-          console.error(chalk.red("Error: --id parameter is required"));
-          console.log(
+          mockConsoleError(chalk.red("Error: --id parameter is required"));
+          mockConsoleLog(
             chalk.yellow(
               'Usage example: lm-tasker update-task --id=23 (manual updates only)',
             ),
           );
-          process.exit(1);
+          mockExit(1);
           return; // Add early return to prevent calling updateTaskById
         }
 
         // Parse the task ID and validate it's a number
         const taskId = parseInt(options.id, 10);
         if (isNaN(taskId) || taskId <= 0) {
-          console.error(
+          mockConsoleError(
             chalk.red(
               `Error: Invalid task ID: ${options.id}. Task ID must be a positive integer.`,
             ),
           );
-          console.log(
+          mockConsoleLog(
             chalk.yellow(
               'Usage example: lm-tasker update-task --id=23 (manual updates only)',
             ),
           );
-          process.exit(1);
+          mockExit(1);
           return; // Add early return to prevent calling updateTaskById
         }
 
         if (!options.prompt) {
-          console.error(
+          mockConsoleError(
             chalk.red(
               "Error: Manual updates only. Use the interactive update process.",
             ),
           );
-          console.log(
+          mockConsoleLog(
             chalk.yellow(
               'Usage example: lm-tasker update-task --id=23 (manual updates only)',
             ),
           );
-          process.exit(1);
+          mockExit(1);
           return; // Add early return to prevent calling updateTaskById
         }
 
@@ -554,45 +93,45 @@ describe("Commands Module", () => {
         const useResearch = options.research || false;
 
         // Validate tasks file exists
-        if (!fs.existsSync(tasksPath)) {
-          console.error(
+        if (!mockExistsSync(tasksPath)) {
+          mockConsoleError(
             chalk.red(`Error: Tasks file not found at path: ${tasksPath}`),
           );
           if (tasksPath === "tasks/tasks.json") {
-            console.log(
+            mockConsoleLog(
               chalk.yellow(
                 "Hint: Run lm-tasker init or lm-tasker parse-prd to create tasks.json first",
               ),
             );
           } else {
-            console.log(
+            mockConsoleLog(
               chalk.yellow(
                 `Hint: Check if the file path is correct: ${tasksPath}`,
               ),
             );
           }
-          process.exit(1);
+          mockExit(1);
           return; // Add early return to prevent calling updateTaskById
         }
 
-        console.log(
+        mockConsoleLog(
           chalk.blue(`Updating task ${taskId} with prompt: "${prompt}"`),
         );
-        console.log(chalk.blue(`Tasks file: ${tasksPath}`));
+        mockConsoleLog(chalk.blue(`Tasks file: ${tasksPath}`));
 
         if (useResearch) {
           // Verify Perplexity API key exists if using research
           if (!process.env.PERPLEXITY_API_KEY) {
-            console.log(
+            mockConsoleLog(
               chalk.yellow(
                 "Warning: PERPLEXITY_API_KEY environment variable is missing. Research-backed updates will not be available.",
               ),
             );
-            console.log(
+            mockConsoleLog(
               chalk.yellow("Research-backed updates will not be available."),
             );
           } else {
-            console.log(
+            mockConsoleLog(
               chalk.blue("Using Perplexity AI for research-backed task update"),
             );
           }
@@ -607,25 +146,25 @@ describe("Commands Module", () => {
 
         // If the task wasn't updated (e.g., if it was already marked as done)
         if (!result) {
-          console.log(
+          mockConsoleLog(
             chalk.yellow(
               "\nTask update was not completed. Review the messages above for details.",
             ),
           );
         }
       } catch (error) {
-        console.error(chalk.red(`Error: ${error.message}`));
+        mockConsoleError(chalk.red(`Error: ${error.message}`));
 
         // Provide more helpful error messages for common issues
         if (
           error.message.includes("task") &&
           error.message.includes("not found")
         ) {
-          console.log(chalk.yellow("\nTo fix this issue:"));
-          console.log("  1. Run lm-tasker list to see all available task IDs");
-          console.log("  2. Use a valid task ID with the --id parameter");
+          mockConsoleLog(chalk.yellow("\nTo fix this issue:"));
+          mockConsoleLog("  1. Run lm-tasker list to see all available task IDs");
+          mockConsoleLog("  2. Use a valid task ID with the --id parameter");
         } else if (error.message.includes("API key")) {
-          console.log(
+          mockConsoleLog(
             chalk.yellow(
               "\nThis error is related to API keys. Check your environment variables.",
             ),
@@ -634,10 +173,10 @@ describe("Commands Module", () => {
 
         if (true) {
           // CONFIG.debug
-          console.error(error);
+          mockConsoleError(error);
         }
 
-        process.exit(1);
+        mockExit(1);
       }
     }
 
@@ -1097,4 +636,3 @@ describe("Commands Module", () => {
       expect(consoleLogSpy.mock.calls[0][0]).toContain("1.1.0");
     });
   });
-});

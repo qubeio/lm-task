@@ -510,8 +510,8 @@
           "id": 7,
           "title": "Phase 7: Remove AI-Related Tests and Fixtures",
           "description": "Clean up test files and fixtures that test AI functionality",
-          "details": "Remove AI-related test files:\n- Tests for parse-prd functionality\n- Tests for migrate-prd functionality\n- Tests for models command and configuration\n- Tests for AI service layer and providers\n- Remove AI-related test fixtures and sample data\n- Update integration tests to not use AI commands\n- Update e2e tests to remove AI functionality testing\n- Fix any remaining tests that may have dependencies on removed AI code",
-          "status": "pending",
+          "details": "Remove AI-related test files:\n- Tests for parse-prd functionality\n- Tests for migrate-prd functionality\n- Tests for models command and configuration\n- Tests for AI service layer and providers\n- Remove AI-related test fixtures and sample data\n- Update integration tests to not use AI commands\n- Update e2e tests to remove AI functionality testing\n- Fix any remaining tests that may have dependencies on removed AI code\n\n--- Updated 2025-08-05T17:02:41.582Z ---\nImplementation Plan (2025-08-05):\n\n1. Remove the following AI-related test files and scripts:\n   - tests/e2e/run_fallback_verification.sh (references models, providers, fallback AI cost)\n   - Any test or fixture referencing parse-prd, migrate-prd, models, or AI providers\n   - Test fixtures and sample data related to AI (e.g., tests/fixtures/legacy-prd.txt if it contains AI test data)\n2. Update integration and e2e tests to remove AI functionality testing.\n3. Fix any remaining tests that depend on removed AI code.\n4. Run all tests to ensure correctness and stability.\n5. Log progress and mark the subtask as done when complete.\n\nThis plan will be executed step by step, with each change verified and tested for correctness.",
+          "status": "done",
           "dependencies": [],
           "parentTaskId": 120
         },

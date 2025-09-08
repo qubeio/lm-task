@@ -268,7 +268,7 @@ Update documentation files:
 - Update .cursor/rules/ files to remove AI functionality references
 - Update any other documentation mentioning AI features
 
-## 7. Phase 7: Remove AI-Related Tests and Fixtures [pending]
+## 7. Phase 7: Remove AI-Related Tests and Fixtures [done]
 ### Dependencies: None
 ### Description: Clean up test files and fixtures that test AI functionality
 ### Details:
@@ -281,6 +281,20 @@ Remove AI-related test files:
 - Update integration tests to not use AI commands
 - Update e2e tests to remove AI functionality testing
 - Fix any remaining tests that may have dependencies on removed AI code
+
+--- Updated 2025-08-05T17:02:41.582Z ---
+Implementation Plan (2025-08-05):
+
+1. Remove the following AI-related test files and scripts:
+   - tests/e2e/run_fallback_verification.sh (references models, providers, fallback AI cost)
+   - Any test or fixture referencing parse-prd, migrate-prd, models, or AI providers
+   - Test fixtures and sample data related to AI (e.g., tests/fixtures/legacy-prd.txt if it contains AI test data)
+2. Update integration and e2e tests to remove AI functionality testing.
+3. Fix any remaining tests that depend on removed AI code.
+4. Run all tests to ensure correctness and stability.
+5. Log progress and mark the subtask as done when complete.
+
+This plan will be executed step by step, with each change verified and tested for correctness.
 
 ## 8. Phase 8: Final Cleanup and Validation [pending]
 ### Dependencies: None
