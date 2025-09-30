@@ -3,11 +3,11 @@
  * Direct function implementation for listing tasks
  */
 
-import { listTasks } from "../../../../scripts/modules/task-manager.js";
+import { listTasks } from "#scripts/task-manager.js";
 import {
   enableSilentMode,
   disableSilentMode,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 
 /**
  * Direct function wrapper for listTasks with error handling and caching.

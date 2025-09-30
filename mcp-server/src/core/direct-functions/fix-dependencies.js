@@ -2,11 +2,11 @@
  * Direct function wrapper for fixDependenciesCommand
  */
 
-import { fixDependenciesCommand } from "../../../../scripts/modules/dependency-manager.js";
+import { fixDependenciesCommand } from "#scripts/dependency-manager.js";
 import {
   enableSilentMode,
   disableSilentMode,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 import fs from "fs";
 
 /**

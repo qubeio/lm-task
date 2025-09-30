@@ -3,12 +3,12 @@
  * Direct function implementation for setting task status
  */
 
-import { setTaskStatus } from "../../../../scripts/modules/task-manager.js";
+import { setTaskStatus } from "#scripts/task-manager.js";
 import {
   enableSilentMode,
   disableSilentMode,
   isSilentMode,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 import { nextTaskDirect } from "./next-task.js";
 /**
  * Direct function wrapper for setTaskStatus with error handling.

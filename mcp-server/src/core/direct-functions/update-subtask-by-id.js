@@ -3,12 +3,12 @@
  * Direct function implementation for updating a subtask by ID with additional information
  */
 
-import { updateSubtaskById } from "../../../../scripts/modules/task-manager.js";
+import { updateSubtaskById } from "#scripts/task-manager.js";
 import {
   enableSilentMode,
   disableSilentMode,
   isSilentMode,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 import { createLogWrapper } from "../../tools/utils.js";
 
 /**

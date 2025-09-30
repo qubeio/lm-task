@@ -6,12 +6,12 @@
 import {
   removeTask,
   taskExists,
-} from "../../../../scripts/modules/task-manager.js";
+} from "#scripts/task-manager.js";
 import {
   enableSilentMode,
   disableSilentMode,
   readJSON,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 
 /**
  * Direct function wrapper for removeTask with error handling.

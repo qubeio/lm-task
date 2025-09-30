@@ -13,7 +13,7 @@ import {
 } from "./utils.js";
 import { addTaskDirect } from "../core/task-master-core.js";
 import { findTasksJsonPath } from "../core/utils/path-utils.js";
-import { createMinimalTasksJson, writeJSON } from "../../../../scripts/modules/utils.js";
+import { createMinimalTasksJson, writeJSON } from "#scripts/utils.js";
 
 /**
  * Register the addTask tool with the MCP server

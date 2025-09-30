@@ -3,12 +3,12 @@
  * Direct function implementation for updating multiple tasks - FUNCTIONALITY REMOVED
  */
 
-import { updateTasks } from "../../../../scripts/modules/task-manager.js";
+import { updateTasks } from "#scripts/task-manager.js";
 import {
   enableSilentMode,
   disableSilentMode,
   isSilentMode,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 import { createLogWrapper } from "../../tools/utils.js";
 
 /**

@@ -5,6 +5,7 @@
       "args": [
         "/Users/andreas/source/repos/qubeio/lm-task/mcp-server/server.js"
       ],
+      "cwd": "/Users/andreas/source/repos/qubeio/lm-task",
       "env": {
       }
     }

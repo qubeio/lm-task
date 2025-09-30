@@ -2,11 +2,11 @@
  * Direct function wrapper for validateDependenciesCommand
  */
 
-import { validateDependenciesCommand } from "../../../../scripts/modules/dependency-manager.js";
+import { validateDependenciesCommand } from "#scripts/dependency-manager.js";
 import {
   enableSilentMode,
   disableSilentMode,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 import fs from "fs";
 
 /**

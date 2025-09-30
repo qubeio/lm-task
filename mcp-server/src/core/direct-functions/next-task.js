@@ -3,12 +3,12 @@
  * Direct function implementation for finding the next task to work on
  */
 
-import { findNextTask } from "../../../../scripts/modules/task-manager.js";
-import { readJSON } from "../../../../scripts/modules/utils.js";
+import { findNextTask } from "#scripts/task-manager.js";
+import { readJSON } from "#scripts/utils.js";
 import {
   enableSilentMode,
   disableSilentMode,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 
 /**
  * Direct function wrapper for finding the next task to work on with error handling and caching.

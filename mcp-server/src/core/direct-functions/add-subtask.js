@@ -2,11 +2,11 @@
  * Direct function wrapper for addSubtask
  */
 
-import { addSubtask } from "../../../../scripts/modules/task-manager.js";
+import { addSubtask } from "#scripts/task-manager.js";
 import {
   enableSilentMode,
   disableSilentMode,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 
 /**
  * Add a subtask to an existing task

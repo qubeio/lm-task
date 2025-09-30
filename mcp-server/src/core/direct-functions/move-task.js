@@ -2,12 +2,12 @@
  * Direct function wrapper for moveTask
  */
 
-import { moveTask } from "../../../../scripts/modules/task-manager.js";
+import { moveTask } from "#scripts/task-manager.js";
 import { findTasksJsonPath } from "../utils/path-utils.js";
 import {
   enableSilentMode,
   disableSilentMode,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 
 /**
  * Move a task or subtask to a new position

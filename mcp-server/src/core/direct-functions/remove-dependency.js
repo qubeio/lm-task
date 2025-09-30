@@ -2,11 +2,11 @@
  * Direct function wrapper for removeDependency
  */
 
-import { removeDependency } from "../../../../scripts/modules/dependency-manager.js";
+import { removeDependency } from "#scripts/dependency-manager.js";
 import {
   enableSilentMode,
   disableSilentMode,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 
 /**
  * Remove a dependency from a task

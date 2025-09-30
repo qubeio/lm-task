@@ -3,12 +3,12 @@
  * Direct function implementation for updating a single task by ID with new information
  */
 
-import { updateTaskById } from "../../../../scripts/modules/task-manager.js";
+import { updateTaskById } from "#scripts/task-manager.js";
 import {
   enableSilentMode,
   disableSilentMode,
   isSilentMode,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 import { createLogWrapper } from "../../tools/utils.js";
 
 /**

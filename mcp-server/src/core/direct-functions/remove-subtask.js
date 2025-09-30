@@ -2,11 +2,11 @@
  * Direct function wrapper for removeSubtask
  */
 
-import { removeSubtask } from "../../../../scripts/modules/task-manager.js";
+import { removeSubtask } from "#scripts/task-manager.js";
 import {
   enableSilentMode,
   disableSilentMode,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 
 /**
  * Remove a subtask from its parent task

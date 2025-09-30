@@ -3,11 +3,11 @@
  * Direct function implementation for adding a new task
  */
 
-import { addTask } from "../../../../scripts/modules/task-manager.js";
+import { addTask } from "#scripts/task-manager.js";
 import {
   enableSilentMode,
   disableSilentMode,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 import { createLogWrapper } from "../../tools/utils.js";
 
 /**

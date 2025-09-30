@@ -4,6 +4,10 @@
   "description": "A task management system for ambitious development that doesn't overwhelm and confuse developers.",
   "main": "index.js",
   "type": "module",
+  "imports": {
+    "#scripts/*": "./scripts/modules/*",
+    "#mcp/*": "./mcp-server/src/*"
+  },
   "bin": {
     "lm-tasker": "bin/lm-tasker.js",
     "lm-tasker-mcp": "mcp-server/server.js"

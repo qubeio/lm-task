@@ -3,11 +3,11 @@
  * Direct function implementation for adding a dependency to a task
  */
 
-import { addDependency } from "../../../../scripts/modules/dependency-manager.js";
+import { addDependency } from "#scripts/dependency-manager.js";
 import {
   enableSilentMode,
   disableSilentMode,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 
 /**
  * Direct function wrapper for addDependency with error handling.

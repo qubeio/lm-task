@@ -3,7 +3,7 @@
  * Direct function implementation for showing task details
  */
 
-import { findTaskById, readJSON } from "../../../../scripts/modules/utils.js";
+import { findTaskById, readJSON } from "#scripts/utils.js";
 import { findTasksJsonPath } from "../utils/path-utils.js";
 
 /**

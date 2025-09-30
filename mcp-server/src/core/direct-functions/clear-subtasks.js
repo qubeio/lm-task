@@ -2,11 +2,11 @@
  * Direct function wrapper for clearSubtasks
  */
 
-import { clearSubtasks } from "../../../../scripts/modules/task-manager.js";
+import { clearSubtasks } from "#scripts/task-manager.js";
 import {
   enableSilentMode,
   disableSilentMode,
-} from "../../../../scripts/modules/utils.js";
+} from "#scripts/utils.js";
 import fs from "fs";
 
 /**
