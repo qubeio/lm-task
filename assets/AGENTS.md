@@ -5,10 +5,6 @@
 ### Core Workflow Commands
 
 ```bash
-# Project Setup
-lm-tasker init                                    # Initialize LM-Tasker in current project
-```
-
 # Daily Development Workflow
 lm-tasker list                                   # Show all tasks with status
 lm-tasker next                                   # Get next available task to work on
@@ -16,10 +12,10 @@ lm-tasker show <id>                             # View detailed task information
 lm-tasker set-status --id=<id> --status=done    # Mark task complete
 
 # Task Management
-lm-tasker add-task --title="title" --description="description"  # Add new task manually
+lm-tasker add-task --title="title" --description="description"  # Add new task manually (auto-creates tasks.json if needed)
 lm-tasker add-subtask --parent=<id> --title="subtask"      # Add subtask to existing task
-
-
+lm-tasker update-task --id=<id> --details="notes"         # Append notes to task
+lm-tasker update-subtask --id=<id> --details="notes"      # Append notes to subtask
 
 # Dependencies & Organization
 lm-tasker add-dependency --id=<id> --depends-on=<id>       # Add task dependency
@@ -33,7 +29,6 @@ lm-tasker generate                                         # Update task markdow
 ### Core Files
 
 - `tasks/tasks.json` - Main task data file (auto-managed)
-- `.lmtaskerconfig` - Project configuration (use `lm-tasker init` to modify)
 - `tasks/*.txt` - Individual task files (auto-generated from tasks.json)
 - `.env` - Optional environment variables for logging and debugging
 
@@ -50,15 +45,13 @@ lm-tasker generate                                         # Update task markdow
 project/
 ├── tasks/
 │   ├── tasks.json           # Main task database
-│   ├── task-1.md           # Individual task files
-│   └── task-2.md
+│   ├── task-1.txt          # Individual task files
+│   └── task-2.txt
 ├── scripts/
 │   └── ...                 # Project scripts
-
 ├── .claude/
 │   ├── settings.json        # Claude Code configuration
 │   └── commands/           # Custom slash commands
-├── .lmtaskerconfig       # Project settings
 ├── .env                    # Optional environment variables
 ├── .mcp.json              # MCP configuration
 └── CLAUDE.md              # This file - auto-loaded by Claude Code
@@ -73,7 +66,7 @@ LM-Tasker provides an MCP server that Claude Code can connect to. Configure in `
   "mcpServers": {
     "lm-tasker": {
       "command": "npx",
-      "args": ["-y", "--package=lm-tasker", "lm-tasker-mcp"],
+      "args": ["-y", "--package=@qubeio/lm-tasker", "lm-tasker-mcp"],
       "env": {}
     }
   }
@@ -83,22 +76,23 @@ LM-Tasker provides an MCP server that Claude Code can connect to. Configure in `
 ### Essential MCP Tools
 
 ```javascript
-help; // = shows available lm-tasker commands
-// Project setup
-initialize_project; // = lm-tasker init
-
 // Daily workflow
-get_tasks; // = lm-tasker list
-next_task; // = lm-tasker next
-get_task; // = lm-tasker show <id>
-set_task_status; // = lm-tasker set-status
+get_tasks         // = lm-tasker list
+next_task         // = lm-tasker next
+get_task          // = lm-tasker show <id>
+set_task_status   // = lm-tasker set-status
 
 // Task management
-add_task; // = lm-tasker add-task
-add_subtask; // = lm-tasker add-subtask
-update_task; // = lm-tasker update-task
-update_subtask; // = lm-tasker update-subtask
-update; // = lm-tasker update
+add_task          // = lm-tasker add-task (auto-creates tasks.json if needed)
+add_subtask       // = lm-tasker add-subtask
+update_task       // = lm-tasker update-task
+update_subtask    // = lm-tasker update-subtask
+
+// Organization
+move_task         // = lm-tasker move
+add_dependency    // = lm-tasker add-dependency
+remove_dependency // = lm-tasker remove-dependency
+validate_dependencies // = lm-tasker validate-dependencies
 ```
 
 ## Claude Code Workflow Integration
@@ -108,10 +102,7 @@ update; // = lm-tasker update
 #### 1. Project Initialization
 
 ```bash
-# Initialize LM-Tasker
-lm-tasker init
-
-# Create tasks manually
+# Create first task (auto-creates tasks.json and project structure)
 lm-tasker add-task --title="Task title" --description="Task description"
 
 # Add subtasks to break down complex tasks
@@ -125,7 +116,8 @@ lm-tasker add-subtask --parent=<id> --title="subtask name" --description="subtas
 lm-tasker next                           # Find next available task
 lm-tasker show <id>                     # Review task details
 
-# During implementation, manually edit tasks.json or use other commands as needed
+# During implementation, log progress
+lm-tasker update-subtask --id=<id> --details="Implementation notes and progress"
 
 # Complete tasks
 lm-tasker set-status --id=<id> --status=done
@@ -154,7 +146,6 @@ Create `.claude/commands/lm-tasker-next.md`:
 Find the next available LM-Tasker task and show its details.
 
 Steps:
-
 1. Run `lm-tasker next` to get the next task
 2. If a task is available, run `lm-tasker show <id>` for full details
 3. Provide a summary of what needs to be implemented
@@ -167,7 +158,6 @@ Create `.claude/commands/lm-tasker-complete.md`:
 Complete a LM-Tasker task: $ARGUMENTS
 
 Steps:
-
 1. Review the current task with `lm-tasker show $ARGUMENTS`
 2. Verify all implementation is complete
 3. Run any tests related to this task
@@ -194,31 +184,10 @@ Add to `.claude/settings.json`:
 
 ## Configuration & Setup
 
-### API Keys Required
+### Environment Variables (Optional)
 
-At least **one** of these API keys must be configured:
-
-- `ANTHROPIC_API_KEY` (Claude models) - **Recommended**
-- `PERPLEXITY_API_KEY` (Research features) - **Highly recommended**
-- `OPENAI_API_KEY` (GPT models)
-- `GOOGLE_API_KEY` (Gemini models)
-- `MISTRAL_API_KEY` (Mistral models)
-- `OPENROUTER_API_KEY` (Multiple models)
-- `XAI_API_KEY` (Grok models)
-
-An API key is required for any provider used across any of the 3 roles defined in the `models` command.
-
-### Model Configuration
-
-```bash
-# Interactive setup (recommended)
-lm-tasker models --setup
-
-# Set specific models
-lm-tasker models --set-main claude-3-5-sonnet-20241022
-lm-tasker models --set-research perplexity-llama-3.1-sonar-large-128k-online
-lm-tasker models --set-fallback gpt-4o-mini
-```
+- `LMTASKER_LOG_LEVEL` - Set logging level (debug, info, warn, error)
+- `DEBUG` - Enable debug output
 
 ## Task Structure & IDs
 
@@ -236,6 +205,7 @@ lm-tasker models --set-fallback gpt-4o-mini
 - `deferred` - Postponed
 - `cancelled` - No longer needed
 - `blocked` - Waiting on external factors
+- `review` - Ready for review
 
 ### Task Fields
 
@@ -271,17 +241,6 @@ lm-tasker models --set-fallback gpt-4o-mini
 6. `lm-tasker update-subtask --id=<id> --details="what worked/didn't work"` - Log progress
 7. `lm-tasker set-status --id=<id> --status=done` - Complete task
 
-### Complex Workflows with Checklists
-
-For large migrations or multi-step processes:
-
-1. Create a markdown PRD file describing the new changes: `touch task-migration-checklist.md` (prds can be .txt or .md)
-2. Use LM-Tasker to parse the new prd with `lm-tasker parse-prd --append` (also available in MCP)
-3. Use LM-Tasker to add subtasks to the newly generated tasks as needed using the `add-subtask` command.
-4. Work through items systematically, checking them off as completed
-5. Use `lm-tasker update-subtask` to log progress on each task/subtask and/or updating/researching them before/during
-   implementation if getting stuck
-
 ### Git Integration
 
 LM-Tasker works well with `gh` CLI:
@@ -308,19 +267,6 @@ cd ../project-api && claude     # Terminal 2: API work
 
 ## Troubleshooting
 
-### AI Commands Failing
-
-```bash
-# Check API keys are configured
-cat .env                           # For CLI usage
-
-# Verify model configuration
-lm-tasker models
-
-# Test with different model
-lm-tasker models --set-fallback gpt-4o-mini
-```
-
 ### MCP Connection Issues
 
 - Check `.mcp.json` configuration
@@ -338,27 +284,20 @@ lm-tasker generate
 lm-tasker fix-dependencies
 ```
 
-DO NOT RE-INITIALIZE. That will not do anything beyond re-adding the same LM-Tasker core files.
-
 ## Important Notes
 
-### AI-Powered Operations
+### Manual Operations
 
-These commands make AI calls and may take up to a minute:
-
-- `parse_prd` / `lm-tasker parse-prd`
-
-- `add_task` / `lm-tasker add-task`
-- `update` / `lm-tasker update`
-- `update_task` / `lm-tasker update-task`
-- `update_subtask` / `lm-tasker update-subtask`
+LM-Tasker is a purely manual task management system:
+- All task creation, updates, and modifications are manual operations
+- No AI functionality is included
+- Full control over task organization and management
 
 ### File Management
 
 - Never manually edit `tasks.json` - use commands instead
-- Never manually edit `.lmtaskerconfig` - use `lm-tasker models`
 - Task markdown files in `tasks/` are auto-generated
-- Run `lm-tasker generate` after manual changes to tasks.json
+- Run `lm-tasker generate` after manual changes to tasks.json if needed
 
 ### Claude Code Session Management
 
@@ -369,18 +308,10 @@ These commands make AI calls and may take up to a minute:
 
 ### Multi-Task Updates
 
-- Use `update --from=<id>` to update multiple future tasks
 - Use `update-task --id=<id>` for single task updates
 - Use `update-subtask --id=<id>` for implementation logging
-
-### Research Mode
-
-- Add `--research` flag for research-based AI enhancement
-- Requires a research model API key like Perplexity (`PERPLEXITY_API_KEY`) in environment
-- Provides more informed task creation and updates
-- Recommended for complex technical tasks
+- Both commands append timestamped details to existing content
 
 ---
 
-_This guide ensures Claude Code has immediate access to LM-Tasker's essential functionality for agentic development
-workflows._
+_This guide ensures Claude Code has immediate access to LM-Tasker's essential functionality for manual task management workflows._

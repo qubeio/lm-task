@@ -14,28 +14,24 @@ import { createLogWrapper } from "../../tools/utils.js";
  * Direct function wrapper for adding a new task with error handling.
  *
  * @param {Object} args - Command arguments
- * @param {string} [args.prompt] - Description of the task to add (required if not using manual fields)
- * @param {string} [args.title] - Task title (for manual task creation)
- * @param {string} [args.description] - Task description (for manual task creation)
- * @param {string} [args.details] - Implementation details (for manual task creation)
- * @param {string} [args.testStrategy] - Test strategy (for manual task creation)
+ * @param {string} args.title - Task title (required)
+ * @param {string} args.description - Task description (required)
+ * @param {string} [args.details] - Implementation details (optional)
+ * @param {string} [args.testStrategy] - Test strategy (optional)
  * @param {string} [args.dependencies] - Comma-separated list of task IDs this task depends on
  * @param {string} [args.priority='medium'] - Task priority (high, medium, low)
  * @param {string} [args.tasksJsonPath] - Path to the tasks.json file (resolved by tool)
- * @param {boolean} [args.research=false] - Whether to use research capabilities for task creation
  * @param {string} [args.projectRoot] - Project root path
  * @param {Object} log - Logger object
  * @param {Object} context - Additional context (session)
  * @returns {Promise<Object>} - Result object { success: boolean, data?: any, error?: { code: string, message: string } }
  */
 export async function addTaskDirect(args, log, context = {}) {
-  // Destructure expected args (including research and projectRoot)
+  // Destructure expected args
   const {
     tasksJsonPath,
-    prompt,
     dependencies,
     priority,
-    research,
     projectRoot,
     wasAutoInitialized,
   } = args;
@@ -64,11 +60,8 @@ export async function addTaskDirect(args, log, context = {}) {
     // Use provided path
     const tasksPath = tasksJsonPath;
 
-    // Check if this is manual task creation or AI-driven task creation
-    const isManualCreation = args.title && args.description;
-
-    // Check required parameters
-    if (!args.prompt && !isManualCreation) {
+    // Check required parameters for manual task creation
+    if (!args.title || !args.description) {
       log.error(
         "Missing required parameters: title and description must be provided",
       );
@@ -93,69 +86,38 @@ export async function addTaskDirect(args, log, context = {}) {
         : []; // Default to empty array if null/undefined
     const taskPriority = priority || "medium"; // Default priority
 
-    let manualTaskData = null;
-    let newTaskId;
-    let telemetryData;
+    // Create manual task data object
+    const manualTaskData = {
+      title: args.title,
+      description: args.description,
+      details: args.details || "",
+      testStrategy: args.testStrategy || "",
+    };
 
-    if (isManualCreation) {
-      // Create manual task data object
-      manualTaskData = {
-        title: args.title,
-        description: args.description,
-        details: args.details || "",
-        testStrategy: args.testStrategy || "",
-      };
+    log.info(
+      `Adding new task manually with title: "${args.title}", dependencies: [${taskDependencies.join(", ")}], priority: ${taskPriority}`,
+    );
 
-      log.info(
-        `Adding new task manually with title: "${args.title}", dependencies: [${taskDependencies.join(", ")}], priority: ${priority}`,
-      );
-
-      // Call the addTask function with manual task data
-      const result = await addTask(
-        tasksPath,
-        null, // prompt is null for manual creation
-        taskDependencies,
-        taskPriority,
-        {
-          session,
-          mcpLog,
-          projectRoot,
-          commandName: "add-task",
-          outputType: "mcp",
-        },
-        "json", // outputFormat
-        manualTaskData, // Pass the manual task data
-        false, // research flag is false for manual creation
-        projectRoot, // Pass projectRoot
-      );
-      newTaskId = result.newTaskId;
-      telemetryData = result.telemetryData;
-    } else {
-      // AI-driven task creation
-      log.info(
-        `Adding new task with prompt: "${prompt}", dependencies: [${taskDependencies.join(", ")}], priority: ${taskPriority}, research: ${research}`,
-      );
-
-      // Call the addTask function, passing the research flag
-      const result = await addTask(
-        tasksPath,
-        prompt, // Use the prompt for AI creation
-        taskDependencies,
-        taskPriority,
-        {
-          session,
-          mcpLog,
-          projectRoot,
-          commandName: "add-task",
-          outputType: "mcp",
-        },
-        "json", // outputFormat
-        null, // manualTaskData is null for AI creation
-        research, // Pass the research flag
-      );
-      newTaskId = result.newTaskId;
-      telemetryData = result.telemetryData;
-    }
+    // Call the addTask function with manual task data
+    const result = await addTask(
+      tasksPath,
+      null, // prompt is null for manual creation
+      taskDependencies,
+      taskPriority,
+      {
+        session,
+        mcpLog,
+        projectRoot,
+        commandName: "add-task",
+        outputType: "mcp",
+      },
+      "json", // outputFormat
+      manualTaskData, // Pass the manual task data
+      false, // research flag is false for manual creation
+      projectRoot, // Pass projectRoot
+    );
+    const newTaskId = result.newTaskId;
+    const telemetryData = result.telemetryData;
 
     // Restore normal logging
     disableSilentMode();
