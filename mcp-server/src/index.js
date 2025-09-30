@@ -64,7 +64,6 @@ class LMTaskerMCPServer {
 
     // Add individual tool documentation as resources
     const toolNames = [
-      "initialize_project",
       "get_tasks", "get_task", "next_task", 
       "set_task_status", "add_task", "add_subtask", "remove_task", "remove_subtask",
       "clear_subtasks", "move_task", "update_task", "update_subtask",

@@ -129,19 +129,19 @@ npm install @qubeio/lm-tasker
 
 ```bash
 # If installed globally
-lm-tasker init
+lm-tasker add-task --title="Task Title" --description="Task description"
 
 # If installed locally
-npx @qubeio/lm-tasker init
+npx @qubeio/lm-tasker add-task --title="Task Title" --description="Task description"
 ```
 
-This will prompt you for project details and set up a new project with the necessary files and structure.
+This will automatically create the `tasks.json` file and project structure when you add your first task.
 
 #### Common Commands
 
 ```bash
-# Initialize a new project
-lm-tasker init
+# Create first task (auto-initializes project)
+lm-tasker add-task --title="Task Title" --description="Task description"
 
 # List all tasks
 lm-tasker list
@@ -165,12 +165,12 @@ For more detailed information, check out the documentation in the `docs` directo
 
 ## Troubleshooting
 
-### If `lm-tasker init` doesn't respond
+### If `lm-tasker add-task` doesn't respond
 
 Try running it with Node directly:
 
 ```bash
-node node_modules/lm-tasker/scripts/init.js
+node node_modules/lm-tasker/bin/lm-tasker.js add-task --title="Task Title" --description="Task description"
 ```
 
 Or clone the repository and run:

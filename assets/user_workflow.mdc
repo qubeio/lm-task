@@ -9,12 +9,13 @@ This guide outlines how to use LM-Tasker to manage your software development pro
 
 ## Getting Started
 
-### 1. Initialize Your Project
+### 1. Create Your First Task
 ```bash
-lm-tasker init
+lm-tasker add-task --title="Task Title" --description="Task description"
 ```
+This automatically creates the `tasks.json` file and project structure.
 
-### 2. Create Your PRD
+### 2. Create Your PRD (Optional)
 Create a `PRD.md` file in your project root describing what you want to build.
 
 ### 3. Generate Tasks
@@ -122,8 +123,8 @@ lm-tasker models --set-main=gpt-4o
 
 ```bash
 # Project setup
-lm-tasker init                                    # Initialize project
-lm-tasker parse-prd                               # Generate tasks from PRD
+lm-tasker add-task --title="..." --description="..." # Create first task (auto-initializes)
+lm-tasker parse-prd                               # Generate tasks from PRD (optional)
 
 # Daily workflow
 lm-tasker list                                    # Show all tasks

@@ -70,13 +70,13 @@ Initialize a new project:
 
 ```bash
 # If installed globally
-lm-tasker init
+lm-tasker add-task --title="Task Title" --description="Task description"
 
 # If installed locally
-npx lm-tasker init
+npx lm-tasker add-task --title="Task Title" --description="Task description"
 ```
 
-This will prompt you for project details and set up a new project with the necessary files and structure.
+This will automatically create the `tasks.json` file and project structure when you add your first task.
 
 ## Common Commands
 

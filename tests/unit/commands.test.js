@@ -11,7 +11,6 @@ import {
 } from "../../tests/fixtures/sample-tasks.js";
 
 // Mock functions that need jest.fn methods
-const mockParsePRD = jest.fn().mockResolvedValue(undefined);
 const mockUpdateTaskById = jest.fn().mockResolvedValue({
   id: 2,
   title: "Updated Task",
@@ -90,7 +89,6 @@ const mockTaskManager = {
         }
 
         const prompt = options.prompt;
-        const useResearch = options.research || false;
 
         // Validate tasks file exists
         if (!mockExistsSync(tasksPath)) {
@@ -100,7 +98,7 @@ const mockTaskManager = {
           if (tasksPath === "tasks/tasks.json") {
             mockConsoleLog(
               chalk.yellow(
-                "Hint: Run lm-tasker init or lm-tasker parse-prd to create tasks.json first",
+                "Hint: Run 'lm-tasker add-task --title=\"...\" --description=\"...\"' to create your first task",
               ),
             );
           } else {
@@ -119,29 +117,11 @@ const mockTaskManager = {
         );
         mockConsoleLog(chalk.blue(`Tasks file: ${tasksPath}`));
 
-        if (useResearch) {
-          // Verify Perplexity API key exists if using research
-          if (!process.env.PERPLEXITY_API_KEY) {
-            mockConsoleLog(
-              chalk.yellow(
-                "Warning: PERPLEXITY_API_KEY environment variable is missing. Research-backed updates will not be available.",
-              ),
-            );
-            mockConsoleLog(
-              chalk.yellow("Research-backed updates will not be available."),
-            );
-          } else {
-            mockConsoleLog(
-              chalk.blue("Using Perplexity AI for research-backed task update"),
-            );
-          }
-        }
-
         const result = await mockUpdateTaskById(
           tasksPath,
           taskId,
           prompt,
-          useResearch,
+          false,
         );
 
         // If the task wasn't updated (e.g., if it was already marked as done)
@@ -265,41 +245,6 @@ const mockTaskManager = {
       expect(mockUpdateTaskById).not.toHaveBeenCalled();
     });
 
-    test("should call updateTaskById with correct parameters", async () => {
-      // Set up the command options
-      const options = {
-        file: "test-tasks.json",
-        id: "2",
-        prompt: "Update the task",
-        research: true,
-      };
-
-      // Mock perplexity API key
-      process.env.PERPLEXITY_API_KEY = "dummy-key";
-
-      // Call the action directly
-      await updateTaskAction(options);
-
-      // Verify updateTaskById was called with correct parameters
-      expect(mockUpdateTaskById).toHaveBeenCalledWith(
-        "test-tasks.json",
-        2,
-        "Update the task",
-        true,
-      );
-
-      // Verify console output
-      expect(mockConsoleLog).toHaveBeenCalledWith(
-        expect.stringContaining("Updating task 2"),
-      );
-      expect(mockConsoleLog).toHaveBeenCalledWith(
-        expect.stringContaining("Using Perplexity AI"),
-      );
-
-      // Clean up
-      delete process.env.PERPLEXITY_API_KEY;
-    });
-
     test("should handle null result from updateTaskById", async () => {
       // Mock updateTaskById returning null (e.g., task already completed)
       mockUpdateTaskById.mockResolvedValueOnce(null);
@@ -405,7 +350,6 @@ const mockTaskManager = {
         // Create manual task data if title and description are provided
         let manualTaskData = null;
         let prompt = undefined;
-        let useResearch = false;
         if (isManualCreation) {
           manualTaskData = {
             title: options.title,
@@ -415,7 +359,6 @@ const mockTaskManager = {
           };
         } else if (hasPrompt) {
           prompt = options.prompt || options.p;
-          useResearch = options.research || options.r || false;
         }
 
         // Call addTask with the right parameters
@@ -425,7 +368,7 @@ const mockTaskManager = {
           dependencies,
           options.priority || "medium",
           { session: process.env },
-          useResearch,
+          false,
           null,
           manualTaskData,
         );
@@ -460,28 +403,6 @@ const mockTaskManager = {
         "medium", // Default priority
         { session: process.env },
         false, // Research flag
-        null, // Generate files parameter
-        null, // Manual task data
-      );
-    });
-
-    test("should handle short-hand flag -r for research", async () => {
-      const options = {
-        prompt: "Create authentication system",
-        r: true,
-        file: "tasks/tasks.json",
-      };
-
-      await addTaskAction(undefined, options);
-
-      // Check that task manager was called with correct research flag
-      expect(mockTaskManager.addTask).toHaveBeenCalledWith(
-        expect.any(String),
-        "Create authentication system",
-        [],
-        "medium",
-        { session: process.env },
-        true, // Research flag should be true
         null, // Generate files parameter
         null, // Manual task data
       );

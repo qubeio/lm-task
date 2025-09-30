@@ -505,13 +505,11 @@ Tasks are managed manually through CLI commands:
 
 ### Available Tools
 
-- **Project Setup**: initialize_project, parse_prd
 - **Task Viewing**: get_tasks, get_task, next_task
 - **Task Management**: add_task, update_task, update_subtask, set_task_status
 - **Task Structure**: add_subtask, remove_task, clear_subtasks, move_task
 - **Dependencies**: add_dependency, remove_dependency, validate_dependencies, fix_dependencies
 - **File Generation**: generate
-- **Configuration**: models
 
 ### Tool Categories
 

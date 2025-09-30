@@ -310,7 +310,7 @@ Final validation steps:
 - Verify installation and setup works without AI dependencies
 - Test with a fresh project initialization to ensure clean experience
 
-## 9. Modify Initialize Functionality to Only Create Task JSON [pending]
+## 9. Modify Initialize Functionality to Only Create Task JSON [done]
 ### Dependencies: None
 ### Description: Update the initialize functionality to only create a basic tasks.json file without any configuration setup, MCP configuration, or AI-related functionality.
 ### Details:
@@ -328,4 +328,120 @@ This subtask should simplify it to only:
 - Keep the core task management functionality intact
 
 This aligns with the goal of removing all AI functionality and simplifying the tool to focus purely on task management.
+
+--- Updated 2025-09-30T19:56:46.052Z ---
+### Initial Exploration
+
+**Findings:**
+- There is no `scripts/init.js` file mentioned in the architecture documentation
+- No `initializeProject` direct function exists in `mcp-server/src/core/direct-functions/`
+- No init command registered in the CLI commands based on grep searches
+- The documentation references `lm-tasker init` command but it's not found in the codebase
+
+**Next steps:**
+- Search for any existing initialization code in the codebase
+- Determine if this is a new feature to be created or if it exists in a different location
+- Check if there's any template or setup functionality that handles project initialization
+
+--- Updated 2025-09-30T19:57:03.735Z ---
+### Discovery of Completed Work
+
+**Important Finding:**
+Looking at task 121, it appears the init command has **already been completely removed** from the codebase (as stated in task_121.txt line 247: "The init command has been completely removed from the codebase").
+
+Task 121 implemented the following changes:
+1. Complete removal of init command from CLI
+2. Removed all imports and references to init functionality
+3. Cleaned up MCP server to remove initialize-project tool
+4. Updated tool registration to reflect new workflow
+5. No linting errors introduced
+
+The new workflow uses `add-task` as the single entry point, which automatically handles initialization when tasks.json doesn't exist.
+
+**Need to verify:**
+- Whether there are any remaining references to init functionality
+- If there's any documentation that still mentions init that needs updating
+- Whether task 120.9 is already complete or if there's something additional needed
+
+--- Updated 2025-09-30T19:57:26.130Z ---
+### Remaining References Found
+
+After searching the codebase, found the following documentation files that still reference the removed init functionality:
+
+1. **CLAUDE.md** (3 references):
+   - Line 36: "Use `initialize_project` to create initial tasks.json"
+   - Line 61: "Managed via `lm-tasker init` command"
+   - Line 151: "lm-tasker init # Initialize project"
+
+2. **PRD.md** (1 reference):
+   - Line 508: "- **Project Setup**: initialize_project, parse_prd"
+
+3. **assets/user_workflow.mdc** (2 references):
+   - Line 14: "lm-tasker init"
+   - Line 125: "lm-tasker init # Initialize project"
+
+4. **mcp-server/src/index.js** (1 reference):
+   - Line 67: "initialize_project" (in a list/comment)
+
+5. **docs/tui-design.md** (2 references - these are example task titles, not commands)
+
+**Plan:**
+Need to update these documentation files to reflect the new workflow where `add-task` automatically initializes when tasks.json doesn't exist.
+
+--- Updated 2025-09-30T19:58:32.982Z ---
+### Cleanup Complete
+
+Successfully updated all documentation files to remove references to the removed init functionality:
+
+**Files Updated:**
+1. ✅ **CLAUDE.md** - Updated 3 references:
+   - Changed "Use `initialize_project`" to "Use `add_task` / `lm-tasker add-task`"
+   - Changed "Managed via `lm-tasker init` command" to "Created automatically when first task is added"
+   - Changed command example to show `add-task` as the initialization method
+
+2. ✅ **PRD.md** - Updated 1 reference:
+   - Removed `initialize_project` from Available Tools list
+
+3. ✅ **assets/user_workflow.mdc** - Updated 2 references:
+   - Changed "Initialize Your Project" section to "Create Your First Task"
+   - Updated command examples to use `add-task` instead of `init`
+
+4. ✅ **mcp-server/src/index.js** - Updated 1 reference:
+   - Removed "initialize_project" from toolNames array
+
+**Result:**
+All documentation now correctly reflects that:
+- `add-task` automatically initializes the project when tasks.json doesn't exist
+- No separate init command is needed
+- This aligns with the work completed in task 121
+
+--- Updated 2025-09-30T20:00:08.608Z ---
+### Final Updates Complete
+
+Successfully updated all remaining references:
+
+**Additional Files Updated:**
+5. ✅ **README.md** - Updated 4 references:
+   - Changed init commands to add-task commands in multiple places
+   - Updated troubleshooting section
+   
+6. ✅ **docs/command-reference.md** - Updated 3 references:
+   - Replaced init examples with add-task examples
+   
+7. ✅ **docs/tutorial.md** - Updated 2 references:
+   - Changed initialization instructions to use add-task
+   
+8. ✅ **docs/configuration.md** - Updated 2 references:
+   - Changed initialization instructions
+   - Updated troubleshooting section
+
+9. ✅ **scripts/modules/commands.js** - Updated 4 references:
+   - Changed hint messages from "lm-tasker init" to add-task instructions
+   - Updated configuration setup messages
+
+10. ✅ **tests/unit/commands.test.js** - Updated 1 reference:
+   - Updated test expectations to match new hint messages
+
+**Summary:**
+All documentation and code references to the init command have been successfully removed and replaced with instructions for using `add-task` to initialize projects. The remaining references in task files and e2e test scripts are historical/tracking references which are appropriate to keep.
 

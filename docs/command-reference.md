@@ -194,14 +194,14 @@ lm-tasker remove-subtask --id=<parentId.subtaskId> --convert
 ## Initialize a Project
 
 ```bash
-# Initialize a new project with LM-Tasker structure
-lm-tasker init
+# Create first task (automatically initializes project structure)
+lm-tasker add-task --title="Task Title" --description="Task description"
 
-# Initialize with project details
-lm-tasker init --name="Project Name" --description="Project description" --version="1.0.0"
+# Create first task with additional details
+lm-tasker add-task --title="Task Title" --description="Task description" --details="Implementation notes" --priority="high"
 
-# Initialize without prompts using defaults
-lm-tasker init --yes
+# Create first task with minimal input
+lm-tasker add-task --title="Task Title" --description="Brief description"
 ```
 
 

@@ -33,7 +33,7 @@ LM-Tasker is a task management system for development that provides structured, 
 
 ### Standard Development Process
 
-1. **Start Projects**: Use `initialize_project` to create initial tasks.json
+1. **Start Projects**: Use `add_task` / `lm-tasker add-task` to create your first task (automatically creates tasks.json if needed)
 2. **Begin Sessions**: Run `get_tasks` / `lm-tasker list` to see current tasks
 3. **Find Next Work**: Use `next_task` / `lm-tasker next` to identify next task
 4. **View Details**: Use `get_task` / `lm-tasker show <id>` for specific task information
@@ -58,7 +58,7 @@ For detailed subtask implementation, follow this workflow:
 
 ### Primary Configuration (`.lmtaskerconfig`)
 
-- Managed via `lm-tasker init` command
+- Created automatically when first task is added
 - Contains project settings, logging level, and default values
 - No AI model configuration required
 
@@ -148,7 +148,7 @@ npm run inspector        # MCP inspector
 ### Task Management (Examples)
 
 ```bash
-lm-tasker init                               # Initialize project
+lm-tasker add-task --title="First Task" --description="..." # Create first task (auto-initializes project)
 lm-tasker list                               # List all tasks
 lm-tasker next                               # Show next task
 lm-tasker show 1.2                          # Show specific task/subtask

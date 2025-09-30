@@ -4,7 +4,7 @@ LM-Tasker is designed to be simple and requires minimal configuration. The syste
 
 ## Project Structure
 
-When you initialize a project with `lm-tasker init`, it creates:
+When you create your first task with `lm-tasker add-task`, it automatically creates:
 
 - `tasks/tasks.json` - The main task file containing all your tasks and subtasks
 - `tasks/` directory - Contains individual task files (generated with `lm-tasker generate`)
@@ -34,12 +34,12 @@ For editor integration (Cursor, VS Code, Windsurf), LM-Tasker uses MCP (Model Co
 
 ## Troubleshooting
 
-### If `lm-tasker init` doesn't respond:
+### If `lm-tasker add-task` doesn't respond:
 
 Try running it with Node directly:
 
 ```bash
-node node_modules/lm-tasker/scripts/init.js
+node node_modules/lm-tasker/bin/lm-tasker.js add-task --title="Task Title" --description="Task description"
 ```
 
 Or clone the repository and run:
@@ -47,5 +47,5 @@ Or clone the repository and run:
 ```bash
 git clone https://github.com/your-org/lm-tasker.git
 cd lm-tasker
-node scripts/init.js
+npx lm-tasker add-task --title="Task Title" --description="Task description"
 ```

@@ -199,7 +199,7 @@ function registerCommands(programInstance) {
           if (tasksPath === "tasks/tasks.json") {
             console.log(
               chalk.yellow(
-                "Hint: Run lm-tasker init or lm-tasker parse-prd to create tasks.json first",
+                "Hint: Run 'lm-tasker add-task --title=\"...\" --description=\"...\"' to create your first task",
               ),
             );
           } else {
@@ -304,7 +304,7 @@ function registerCommands(programInstance) {
           if (tasksPath === "tasks/tasks.json") {
             console.log(
               chalk.yellow(
-                "Hint: Run lm-tasker init or lm-tasker parse-prd to create tasks.json first",
+                "Hint: Run 'lm-tasker add-task --title=\"...\" --description=\"...\"' to create your first task",
               ),
             );
           } else {
@@ -1668,22 +1668,22 @@ async function runCLI(argv = process.argv) {
             ) +
             chalk.red.bold("missing") +
             chalk.white(". No worries though.\n\n") +
-            chalk.cyan.bold("To create this file, run the interactive setup:") +
+            chalk.cyan.bold("To create this file, add your first task:") +
             "\n" +
-            chalk.green("   lm-tasker init") +
+            chalk.green("   lm-tasker add-task --title=\"Task Title\" --description=\"Task description\"") +
             "\n\n" +
             chalk.white.bold("Key Points:") +
             "\n" +
             chalk.white("*   ") +
             chalk.yellow.bold(".lmtaskerconfig") +
             chalk.white(
-              ": Stores your project settings (do not manually edit)\n",
+              ": Stores your project settings (created automatically)\n",
             ) +
             chalk.white("*   ") +
             chalk.yellow.bold(".env & .mcp.json") +
             chalk.white(": Used for any external service API keys if needed.\n\n") +
             chalk.cyan(
-              "`lm-tasker init` to initialize a new project\n",
+              "`lm-tasker add-task` creates your first task and initializes the project\n",
             ) +
             chalk.cyan(
               "`lm-tasker list` to see your tasks",
