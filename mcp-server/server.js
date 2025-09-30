@@ -32,5 +32,9 @@ async function startServer() {
   }
 }
 
-// Start the server
-startServer();
+// Start the server unless explicitly disabled (e.g., during tests)
+if (!process.env.LMTASKER_SKIP_MCP_AUTOSTART) {
+  startServer();
+}
+
+export default startServer;

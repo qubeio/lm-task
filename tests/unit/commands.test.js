@@ -582,6 +582,496 @@ const mockTaskManager = {
     });
   });
 
+  // Add test for remove-task command
+  describe("remove-task command", () => {
+    let mockRemoveTask;
+    let mockReadJSON;
+    let mockTaskExists;
+    let mockFindTaskById;
+    let mockInquirer;
+    let mockStartLoadingIndicator;
+    let mockStopLoadingIndicator;
+    let mockBoxen;
+
+    beforeEach(async () => {
+      // Reset all mocks
+      jest.clearAllMocks();
+
+      // Mock the removeTask function
+      mockRemoveTask = jest.fn().mockResolvedValue({
+        success: true,
+        removedTasks: [{ id: 1, title: "Test Task" }],
+        message: "Successfully removed task 1",
+        error: null
+      });
+
+      // Mock readJSON function
+      mockReadJSON = jest.fn().mockReturnValue({
+        tasks: [
+          { id: 1, title: "Test Task", status: "pending", dependencies: [] },
+          { id: 2, title: "Another Task", status: "done", dependencies: [1] }
+        ]
+      });
+
+      // Mock taskExists function
+      mockTaskExists = jest.fn().mockReturnValue(true);
+
+      // Mock findTaskById function
+      mockFindTaskById = jest.fn().mockReturnValue({
+        task: { id: 1, title: "Test Task", status: "pending", isSubtask: false, subtasks: [] }
+      });
+
+      // Mock inquirer
+      mockInquirer = {
+        prompt: jest.fn().mockResolvedValue({ confirm: true })
+      };
+
+      // Mock loading indicator functions
+      mockStartLoadingIndicator = jest.fn().mockReturnValue("indicator-id");
+      mockStopLoadingIndicator = jest.fn();
+
+      // Mock boxen
+      mockBoxen = jest.fn().mockReturnValue("formatted message");
+
+      // Mock the modules
+      jest.doMock("../../scripts/modules/task-manager/remove-task.js", () => ({
+        default: mockRemoveTask
+      }));
+      jest.doMock("../../scripts/modules/utils.js", () => ({
+        ...jest.requireActual("../../scripts/modules/utils.js"),
+        readJSON: mockReadJSON,
+        findTaskById: mockFindTaskById
+      }));
+      jest.doMock("../../scripts/modules/task-manager/task-exists.js", () => ({
+        default: mockTaskExists
+      }));
+      jest.doMock("inquirer", () => mockInquirer);
+      jest.doMock("../../scripts/modules/ui.js", () => ({
+        startLoadingIndicator: mockStartLoadingIndicator,
+        stopLoadingIndicator: mockStopLoadingIndicator
+      }));
+      jest.doMock("boxen", () => mockBoxen);
+    });
+
+    // Create a simplified version of the remove-task action function for testing
+    async function removeTaskAction(options) {
+      const tasksPath = options.file;
+      const taskIdsString = options.id;
+
+      if (!taskIdsString) {
+        mockConsoleError(chalk.red("Error: Task ID(s) are required"));
+        mockConsoleError(
+          chalk.yellow(
+            "Usage: task-master remove-task --id=<taskId1,taskId2...>",
+          ),
+        );
+        mockExit(1);
+        return;
+      }
+
+      const taskIdsToRemove = taskIdsString
+        .split(",")
+        .map((id) => id.trim())
+        .filter(Boolean);
+
+      if (taskIdsToRemove.length === 0) {
+        mockConsoleError(chalk.red("Error: No valid task IDs provided."));
+        mockExit(1);
+        return;
+      }
+
+      try {
+        // Read data once for checks and confirmation
+        const data = mockReadJSON(tasksPath);
+        if (!data || !data.tasks) {
+          mockConsoleError(
+            chalk.red(`Error: No valid tasks found in ${tasksPath}`),
+          );
+          mockExit(1);
+          return;
+        }
+
+        const existingTasksToRemove = [];
+        const nonExistentIds = [];
+
+        for (const taskId of taskIdsToRemove) {
+          if (!mockTaskExists(data.tasks, taskId)) {
+            nonExistentIds.push(taskId);
+          } else {
+            const findResult = mockFindTaskById(data.tasks, taskId);
+            const taskObject = findResult.task;
+
+            if (taskObject) {
+              existingTasksToRemove.push({ id: taskId, task: taskObject });
+            } else {
+              nonExistentIds.push(`${taskId} (error finding details)`);
+            }
+          }
+        }
+
+        if (nonExistentIds.length > 0) {
+          mockConsoleLog(
+            chalk.yellow(
+              `Warning: The following task IDs were not found: ${nonExistentIds.join(", ")}`,
+            ),
+          );
+        }
+
+        if (existingTasksToRemove.length === 0) {
+          mockConsoleLog(chalk.blue("No existing tasks found to remove."));
+          mockExit(0);
+          return;
+        }
+
+        // Skip confirmation if --yes flag is provided
+        if (!options.yes) {
+          mockConsoleLog();
+          mockConsoleLog(
+            chalk.red.bold(
+              `⚠️ WARNING: This will permanently delete the following ${existingTasksToRemove.length} item(s):`,
+            ),
+          );
+          mockConsoleLog();
+
+          existingTasksToRemove.forEach(({ id, task }) => {
+            if (!task) return;
+            if (task.isSubtask) {
+              mockConsoleLog(
+                chalk.white(`  Subtask ${id}: ${task.title || "(no title)"}`),
+              );
+            } else {
+              mockConsoleLog(
+                chalk.white.bold(`  Task ${id}: ${task.title || "(no title)"}`),
+              );
+            }
+          });
+
+          mockConsoleLog();
+
+          const { confirm } = await mockInquirer.prompt([
+            {
+              type: "confirm",
+              name: "confirm",
+              message: chalk.red.bold(
+                `Are you sure you want to permanently delete these ${existingTasksToRemove.length} item(s)?`,
+              ),
+              default: false,
+            },
+          ]);
+
+          if (!confirm) {
+            mockConsoleLog(chalk.blue("Task deletion cancelled."));
+            mockExit(0);
+            return;
+          }
+        }
+
+        const indicator = mockStartLoadingIndicator(
+          `Removing ${existingTasksToRemove.length} task(s)/subtask(s)...`,
+        );
+
+        const existingIdsString = existingTasksToRemove
+          .map(({ id }) => id)
+          .join(",");
+        const result = await mockRemoveTask(tasksPath, existingIdsString);
+
+        mockStopLoadingIndicator(indicator);
+
+        if (result.success) {
+          mockConsoleLog(
+            mockBoxen(
+              chalk.green(
+                `Successfully removed ${result.removedTasks.length} task(s)/subtask(s).`,
+              ) +
+                (result.message ? `\n\nDetails:\n${result.message}` : "") +
+                (result.error
+                  ? `\n\nWarnings:\n${chalk.yellow(result.error)}`
+                  : ""),
+              { padding: 1, borderColor: "green", borderStyle: "round" },
+            ),
+          );
+        } else {
+          mockConsoleError(
+            mockBoxen(
+              chalk.red(
+                `Operation completed with errors. Removed ${result.removedTasks.length} task(s)/subtask(s).`,
+              ) +
+                (result.message ? `\n\nDetails:\n${result.message}` : "") +
+                (result.error ? `\n\nErrors:\n${chalk.red(result.error)}` : ""),
+              {
+                padding: 1,
+                borderColor: "red",
+                borderStyle: "round",
+              },
+            ),
+          );
+          mockExit(1);
+        }
+
+        if (nonExistentIds.length > 0) {
+          mockConsoleLog(
+            chalk.yellow(
+              `Note: The following IDs were not found initially and were skipped: ${nonExistentIds.join(", ")}`,
+            ),
+          );
+
+          if (result.removedTasks.length === 0) {
+            mockExit(1);
+          }
+        }
+      } catch (error) {
+        mockConsoleError(
+          chalk.red(`Error: ${error.message || "An unknown error occurred"}`),
+        );
+        mockExit(1);
+      }
+    }
+
+    test("should validate required parameters - missing ID", async () => {
+      const options = {
+        file: "test-tasks.json"
+      };
+
+      await removeTaskAction(options);
+
+      expect(mockConsoleError).toHaveBeenCalledWith(
+        expect.stringContaining("Task ID(s) are required"),
+      );
+      expect(mockExit).toHaveBeenCalledWith(1);
+      expect(mockRemoveTask).not.toHaveBeenCalled();
+    });
+
+    test("should validate required parameters - empty ID string", async () => {
+      const options = {
+        file: "test-tasks.json",
+        id: "   ,  ,  "
+      };
+
+      await removeTaskAction(options);
+
+      expect(mockConsoleError).toHaveBeenCalledWith(
+        expect.stringContaining("No valid task IDs provided"),
+      );
+      expect(mockExit).toHaveBeenCalledWith(1);
+      expect(mockRemoveTask).not.toHaveBeenCalled();
+    });
+
+    test("should validate tasks file exists and has valid data", async () => {
+      mockReadJSON.mockReturnValue(null);
+
+      const options = {
+        file: "missing-tasks.json",
+        id: "1"
+      };
+
+      await removeTaskAction(options);
+
+      expect(mockConsoleError).toHaveBeenCalledWith(
+        expect.stringContaining("No valid tasks found"),
+      );
+      expect(mockExit).toHaveBeenCalledWith(1);
+      expect(mockRemoveTask).not.toHaveBeenCalled();
+    });
+
+    test("should handle non-existent task IDs with warning", async () => {
+      mockTaskExists.mockReturnValue(false);
+
+      const options = {
+        file: "test-tasks.json",
+        id: "999"
+      };
+
+      await removeTaskAction(options);
+
+      expect(mockConsoleLog).toHaveBeenCalledWith(
+        expect.stringContaining("Warning: The following task IDs were not found"),
+      );
+      expect(mockConsoleLog).toHaveBeenCalledWith(
+        expect.stringContaining("No existing tasks found to remove"),
+      );
+      expect(mockExit).toHaveBeenCalledWith(0);
+      expect(mockRemoveTask).not.toHaveBeenCalled();
+    });
+
+    test("should show confirmation prompt when --yes flag is not provided", async () => {
+      const options = {
+        file: "test-tasks.json",
+        id: "1"
+      };
+
+      await removeTaskAction(options);
+
+      expect(mockInquirer.prompt).toHaveBeenCalledWith([
+        {
+          type: "confirm",
+          name: "confirm",
+          message: expect.stringContaining("Are you sure you want to permanently delete"),
+          default: false,
+        },
+      ]);
+      expect(mockRemoveTask).toHaveBeenCalledWith("test-tasks.json", "1");
+    });
+
+    test("should skip confirmation when --yes flag is provided", async () => {
+      const options = {
+        file: "test-tasks.json",
+        id: "1",
+        yes: true
+      };
+
+      await removeTaskAction(options);
+
+      expect(mockInquirer.prompt).not.toHaveBeenCalled();
+      expect(mockRemoveTask).toHaveBeenCalledWith("test-tasks.json", "1");
+    });
+
+    test("should handle user cancellation of confirmation", async () => {
+      mockInquirer.prompt.mockResolvedValueOnce({ confirm: false });
+
+      const options = {
+        file: "test-tasks.json",
+        id: "1"
+      };
+
+      await removeTaskAction(options);
+
+      expect(mockConsoleLog).toHaveBeenCalledWith(
+        expect.stringContaining("Task deletion cancelled"),
+      );
+      expect(mockExit).toHaveBeenCalledWith(0);
+      expect(mockRemoveTask).not.toHaveBeenCalled();
+    });
+
+    test("should call removeTask with correct parameters", async () => {
+      const options = {
+        file: "test-tasks.json",
+        id: "1,2",
+        yes: true
+      };
+
+      await removeTaskAction(options);
+
+      expect(mockRemoveTask).toHaveBeenCalledWith("test-tasks.json", "1,2");
+    });
+
+    test("should display success message when removal succeeds", async () => {
+      const options = {
+        file: "test-tasks.json",
+        id: "1",
+        yes: true
+      };
+
+      await removeTaskAction(options);
+
+      expect(mockBoxen).toHaveBeenCalledWith(
+        expect.stringContaining("Successfully removed 1 task(s)/subtask(s)"),
+        expect.objectContaining({
+          padding: 1,
+          borderColor: "green",
+          borderStyle: "round"
+        })
+      );
+      expect(mockConsoleLog).toHaveBeenCalledWith("formatted message");
+    });
+
+    test("should display error message when removal fails", async () => {
+      mockRemoveTask.mockResolvedValueOnce({
+        success: false,
+        removedTasks: [],
+        message: "No tasks removed",
+        error: "Task removal failed"
+      });
+
+      const options = {
+        file: "test-tasks.json",
+        id: "1",
+        yes: true
+      };
+
+      await removeTaskAction(options);
+
+      expect(mockBoxen).toHaveBeenCalledWith(
+        expect.stringContaining("Operation completed with errors"),
+        expect.objectContaining({
+          padding: 1,
+          borderColor: "red",
+          borderStyle: "round"
+        })
+      );
+      expect(mockConsoleError).toHaveBeenCalledWith("formatted message");
+      expect(mockExit).toHaveBeenCalledWith(1);
+    });
+
+    test("should handle mixed success and failure scenarios", async () => {
+      mockTaskExists
+        .mockReturnValueOnce(true)  // First ID exists
+        .mockReturnValueOnce(false); // Second ID doesn't exist
+
+      const options = {
+        file: "test-tasks.json",
+        id: "1,999",
+        yes: true
+      };
+
+      await removeTaskAction(options);
+
+      expect(mockConsoleLog).toHaveBeenCalledWith(
+        expect.stringContaining("Warning: The following task IDs were not found: 999"),
+      );
+      expect(mockRemoveTask).toHaveBeenCalledWith("test-tasks.json", "1");
+    });
+
+    test("should handle errors during removal process", async () => {
+      mockReadJSON.mockImplementationOnce(() => {
+        throw new Error("File read error");
+      });
+
+      const options = {
+        file: "test-tasks.json",
+        id: "1"
+      };
+
+      await removeTaskAction(options);
+
+      expect(mockConsoleError).toHaveBeenCalledWith(
+        expect.stringContaining("Error: File read error"),
+      );
+      expect(mockExit).toHaveBeenCalledWith(1);
+    });
+
+    test("should show loading indicator during removal", async () => {
+      const options = {
+        file: "test-tasks.json",
+        id: "1",
+        yes: true
+      };
+
+      await removeTaskAction(options);
+
+      expect(mockStartLoadingIndicator).toHaveBeenCalledWith(
+        "Removing 1 task(s)/subtask(s)...",
+      );
+      expect(mockStopLoadingIndicator).toHaveBeenCalledWith("indicator-id");
+    });
+
+    test("should handle multiple task IDs correctly", async () => {
+      mockTaskExists.mockReturnValue(true);
+      mockFindTaskById.mockReturnValue({
+        task: { id: 1, title: "Task 1", status: "pending", isSubtask: false, subtasks: [] }
+      });
+
+      const options = {
+        file: "test-tasks.json",
+        id: "1,2,3",
+        yes: true
+      };
+
+      await removeTaskAction(options);
+
+      expect(mockRemoveTask).toHaveBeenCalledWith("test-tasks.json", "1,2,3");
+    });
+  });
+
   // Test the version comparison utility
   describe("Version comparison", () => {
     // Use a dynamic import for the commands module
