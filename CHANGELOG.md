@@ -1,5 +1,32 @@
 # lm-tasker
 
+## 2.2.0
+
+### Major Changes
+
+- **BREAKING**: Removed `lm-tasker init` command completely
+- **BREAKING**: Integrated project initialization into `add-task` command
+
+### UX Improvements
+
+- **Auto-initialization**: `add-task` now automatically creates tasks.json and project structure when missing
+- **Simplified Workflow**: Single command entry point for new projects - just run `lm-tasker add-task`
+- **Seamless Onboarding**: New users can start immediately without separate initialization step
+
+### Changes
+
+- **Backward Compatibility**: Existing projects continue to work unchanged
+- **Auto-initialization**: Creates tasks/ directory and minimal tasks.json with proper metadata
+- **Updated Documentation**: All docs now reflect the simplified workflow
+- **Enhanced User Experience**: Clear messaging when auto-initialization occurs
+- **Comprehensive Testing**: Added unit tests for auto-initialization behavior
+
+### Migration Guide
+
+- **For New Projects**: Simply run `lm-tasker add-task` - no initialization needed
+- **For Existing Projects**: No changes required - continue using as before
+- **If You Used Init**: The init command is no longer available, but add-task handles everything automatically
+
 ## 0.17.0
 
 ### Major Changes
