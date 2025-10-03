@@ -624,7 +624,7 @@
           "title": "E2E tests: first run with add-task only",
           "description": "Update e2e flows to create a fresh project and run only add-task to bootstrap. Verify tasks.json and first task exist.",
           "details": "",
-          "status": "pending",
+          "status": "done",
           "dependencies": [],
           "parentTaskId": 121
         },
