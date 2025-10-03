@@ -1,41 +1,31 @@
 # LM-Tasker
 
-## Introduction
+## Overview
 
-🚀 **LM-Tasker** is your all-in-one, task management sidekick for software development. Create, organize, and track your tasks with a powerful, manual task management system. Whether you're a solo dev or a whole team, LM-Tasker helps you plan, track, and deliver projects with less stress and more fun.
+**LM-Tasker** is a straightforward task management tool for software development. It favors explicit, manual operations and provides a CLI, a terminal UI (TUI) for in-terminal task browsing and updates, and an MCP server for editor integration.
 
-### ✨ What can LM-Tasker do?
+### What it offers
 
-- 📝 **Manual Task Management**: Create, organize, and track tasks with a powerful, structured approach.
-- 🔗 **Dependency Management**: Visualize, validate, and fix task dependencies with a click.
-- 🗂️ **Task File Generation**: Generate individual, human-readable task files for every task and subtask.
-- 🛠️ **Batch Operations**: Update statuses, reorganize, or move multiple tasks at once for maximum efficiency.
-- 🖥️ **Seamless Editor & CLI Integration**: Use the Model Control Protocol (MCP) server for direct editor (Cursor, VS
-  Code, Windsurf) integration, or manage everything from the command line.
-- 📝 **Comprehensive Documentation**: Get help and see example workflows right in your project.
-- 🔒 **Enterprise-Ready**: Built for corporate environments with secure configuration and modular design.
-- 🧩 **Extensible & Modular**: Designed for easy customization and community contributions.
+- **Manual task management**: Create, organize, and track tasks and subtasks with a clear structure.
+- **Dependency management**: Add, remove, validate, and fix task dependencies.
+- **Task file generation**: Generate individual, human-readable files for tasks and subtasks.
+- **Batch operations**: Update statuses, reorganize, or move tasks in bulk.
+- **Editor and CLI integration**: Use the MCP server from supported editors (Cursor, VS Code, Windsurf) or work from the command line.
+- **Documentation**: Practical examples and references are included in the repository.
 
-### 🏆 Core Features at a Glance
+### Core capabilities
 
-- **Project Initialization**: Scaffold your project with a single command
-- **Manual Task Creation**: Create tasks and subtasks with detailed descriptions
-- **Task CRUD**: Create, read, update, and delete tasks and subtasks
-- **Status & Priority**: Track progress and focus on what matters
-- **Dependency Tools**: Add, remove, validate, and auto-fix dependencies
-- **Batch & Move**: Reorganize your task hierarchy anytime
-- **Manual Task Updates**: Update and expand tasks as your project changes
-- **File Generation**: Keep your task files in sync with your plan
-- **Config Management**: Easy setup and configuration
-- **Editor Integration**: Use directly from Cursor, VS Code, or Windsurf
-
-🎯 **LM-Tasker is here to help you ship faster, smarter, and with less hassle.**
+- Project initialization (auto-creates structure on first task)
+- Task CRUD (create, read, update, delete)
+- Status and priority tracking
+- Hierarchy reorganization (move tasks/subtasks)
+- Configuration and generation utilities
 
 ---
 
 ## Requirements
 
-LM-Tasker is a manual task management system with no external dependencies. You will need:
+LM-Tasker is a manual task management system with no external services. You will need:
 
 - **Node.js** (v14 or higher)
 - **npm** or **yarn** for package management
@@ -44,11 +34,11 @@ LM-Tasker works offline and doesn't require any API keys or external services.
 
 ## Quick Start
 
-### Option 1: MCP (Recommended)
+### Option 1: MCP (recommended)
 
-MCP (Model Control Protocol) lets you run LM-Tasker directly from your editor.
+The Model Control Protocol (MCP) lets you run LM-Tasker directly from supported editors.
 
-#### 1. Add your MCP config at the following path depending on your editor
+#### 1. Add your MCP config at the appropriate path for your editor
 
 | Editor       | Scope   | Linux/macOS Path                      | Windows Path                                      | Key          |
 | ------------ | ------- | ------------------------------------- | ------------------------------------------------- | ------------ |
@@ -86,11 +76,11 @@ MCP (Model Control Protocol) lets you run LM-Tasker directly from your editor.
 }
 ```
 
-#### 2. (Cursor-only) Enable LM-Tasker MCP
+#### 2. (Cursor only) Enable LM-Tasker MCP
 
-Open Cursor Settings (Ctrl+Shift+J) ➡ Click on MCP tab on the left ➡ Enable lm-tasker with the toggle
+Open Cursor Settings (Ctrl+Shift+J) → open the MCP tab → enable `lm-tasker`.
 
-#### 3. Create Your First Task
+#### 3. Create your first task
 
 In your editor's AI chat pane, say:
 
@@ -98,24 +88,22 @@ In your editor's AI chat pane, say:
 Create a new task for implementing user authentication
 ```
 
-This will automatically initialize the project structure and create your first task.
+This initializes the project structure and creates your first task.
 
-#### 4. Continue Creating Tasks
+#### 4. Continue creating tasks
 
-LM-Tasker uses manual task creation. You can create tasks using the MCP tools or CLI commands.
+LM-Tasker uses manual task creation. Create tasks using the MCP tools or CLI commands.
 
-#### 5. Common Commands
+#### 5. Common actions in chat-enabled editors
 
-Use your AI assistant to:
-
-- Create tasks: `Can you create a new task for implementing user authentication?`
-- Plan next step: `What's the next task I should work on?`
-- Implement a task: `Can you help me implement task 3?`
-- Add subtasks to a task: `Can you help me add subtasks to task 4?`
+- Create a task: `Create a new task for implementing user authentication.`
+- Find the next task: `What's the next task I should work on?`
+- Work on a specific task: `Help me implement task 3.`
+- Add subtasks: `Add subtasks to task 4.`
 
 [More examples on how to use LM-Tasker in chat](docs/examples.md)
 
-### Option 2: Using Command Line
+### Option 2: Command line
 
 #### Installation
 
@@ -137,7 +125,7 @@ lm-tasker add-task --title="Task Title" --description="Task description"
 npx @qubeio/lm-tasker add-task --title="Task Title" --description="Task description"
 ```
 
-This will automatically create the `tasks.json` file and project structure when you add your first task.
+This creates the `tasks.json` file and project structure when you add your first task.
 
 #### Common Commands
 
@@ -155,15 +143,52 @@ lm-tasker next
 lm-tasker generate
 ```
 
+## Terminal UI (TUI)
+
+LM-Tasker includes a full-screen terminal UI for browsing tasks and viewing details.
+
+### Launch
+
+```bash
+# Start the TUI
+lm-tasker ui
+
+# Alias
+lm-tasker tmui
+
+# Specify a tasks file explicitly
+lm-tasker ui --file ./tasks/tasks.json
+```
+
+### Navigation
+
+- Arrow keys or j/k: move selection
+- Enter: open task details
+- s: update task status (opens status modal)
+- Esc or q: go back/exit
+- h/l: navigate between list and detail views
+
+The window title includes the current repository name to help distinguish sessions.
+
+### Screenshots
+
+<!-- Insert screenshot of the task list view -->
+![TUI — Task list](docs/images/tui-task-list.png)
+
+<!-- Insert screenshot of the task detail view -->
+![TUI — Task details](docs/images/tui-task-detail.png)
+
+The TUI reads data directly from `tasks.json`. Ensure it exists before launching.
+
 ## Documentation
 
-For more detailed information, check out the documentation in the `docs` directory:
+For details, see the documentation in the `docs` directory:
 
-- [Configuration Guide](docs/configuration.md) - Set up environment variables and customize LM-Tasker
-- [Tutorial](docs/tutorial.md) - Step-by-step guide to getting started with LM-Tasker
-- [Command Reference](docs/command-reference.md) - Complete list of all available commands
-- [Task Structure](docs/task-structure.md) - Understanding the task format and features
-- [Example Interactions](docs/examples.md) - Common Cursor AI interaction examples
+- [Configuration](docs/configuration.md) — Environment and customization
+- [Tutorial](docs/tutorial.md) — Getting started
+- [Command reference](docs/command-reference.md) — Available commands
+- [Task structure](docs/task-structure.md) — Task format and features
+- [Examples](docs/examples.md) — Common editor interaction workflows
 
 ## Troubleshooting
 
