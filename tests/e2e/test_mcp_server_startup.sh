@@ -58,45 +58,24 @@ log_step "Setting up test project"
 mkdir -p "$TEST_PROJECT_DIR"
 cd "$TEST_PROJECT_DIR"
 
-# Initialize a test project
-log_info "Initializing test project with lm-tasker"
-lm-tasker init -y --name="MCP Test Project" --description="Test project for MCP server startup"
+# Initialize a test project using add-task (auto-initializes)
+log_info "Initializing test project with lm-tasker add-task"
+lm-tasker add-task --title="Test Task 1" --description="First test task" --priority="high" --details="Test task for MCP server" --test-strategy="Verify MCP server can access this task"
 
-# Create some sample tasks
-log_info "Creating sample tasks"
-cat > tasks/tasks.json << 'EOF'
-{
-  "meta": {
-    "name": "MCP Test Project",
-    "version": "0.1.0",
-    "description": "Test project for MCP server startup"
-  },
-  "tasks": [
-    {
-      "id": 1,
-      "title": "Test Task 1",
-      "description": "First test task",
-      "status": "pending",
-      "priority": "high",
-      "dependencies": [],
-      "details": "Test task for MCP server",
-      "testStrategy": "Verify MCP server can access this task",
-      "subtasks": []
-    },
-    {
-      "id": 2,
-      "title": "Test Task 2", 
-      "description": "Second test task",
-      "status": "pending",
-      "priority": "medium",
-      "dependencies": [1],
-      "details": "Another test task for MCP server",
-      "testStrategy": "Verify MCP server can access this task",
-      "subtasks": []
-    }
-  ]
-}
-EOF
+# Add a second task with dependency
+log_info "Adding second task with dependency"
+lm-tasker add-task --title="Test Task 2" --description="Second test task" --priority="medium" --dependencies="1" --details="Another test task for MCP server" --test-strategy="Verify MCP server can access this task"
+
+# Verify the tasks.json was created by add-task commands
+log_info "Verifying tasks.json was created by add-task commands"
+if [ -f "tasks/tasks.json" ]; then
+  log_success "tasks.json created successfully"
+  log_info "Tasks.json contents:"
+  cat tasks/tasks.json
+else
+  log_error "tasks.json was not created"
+  exit 1
+fi
 
 log_success "Test project setup complete"
 

@@ -315,47 +315,26 @@ log_step() {
   # Skip npm link since we're testing the local development version
   log_success "Using local development version (npm link skipped)."
 
-  log_step "Initializing LM-Tasker project (non-interactive)"
-  lm-tasker init -y --name="E2E Test $TIMESTAMP" --description="Automated E2E test run"
-  log_success "Project initialized."
+  log_step "Initializing LM-Tasker project using add-task (auto-initializes)"
+  # Use add-task to create first task, which auto-initializes the project
+  lm-tasker add-task --title="E2E Test Task 1" --description="First E2E test task" --priority="high" --details="Test task for E2E testing" --test-strategy="Verify E2E test functionality"
+  log_success "Project initialized with first task."
 
-  log_step "Creating sample tasks manually (PRD parsing removed)"
-  # Since AI functionality has been removed, we'll create sample tasks manually
-  mkdir -p tasks
-  cat > tasks/tasks.json << 'EOF'
-{
-  "meta": {
-    "name": "E2E Test Project",
-    "version": "0.1.0",
-    "description": "Automated E2E test run"
-  },
-  "tasks": [
-    {
-      "id": 1,
-      "title": "Setup Project Structure",
-      "description": "Initialize the basic project structure and configuration",
-      "status": "pending",
-      "priority": "high",
-      "dependencies": [],
-      "details": "Create the basic folder structure and configuration files",
-      "testStrategy": "Verify all required files and folders exist",
-      "subtasks": []
-    },
-    {
-      "id": 2,
-      "title": "Implement Core Features",
-      "description": "Build the main functionality of the application",
-      "status": "pending",
-      "priority": "medium",
-      "dependencies": [1],
-      "details": "Implement the core business logic and features",
-      "testStrategy": "Run unit tests and integration tests",
-      "subtasks": []
-    }
-  ]
-}
-EOF
-  log_success "Sample tasks created manually."
+  log_step "Adding additional sample tasks"
+  # Add more tasks to test various scenarios
+  lm-tasker add-task --title="E2E Test Task 2" --description="Second E2E test task" --priority="medium" --dependencies="1" --details="Another test task for E2E testing" --test-strategy="Verify dependency handling"
+  lm-tasker add-task --title="E2E Test Task 3" --description="Third E2E test task" --priority="low" --details="Third test task for E2E testing" --test-strategy="Verify multiple task handling"
+  
+  # Verify the tasks.json was created by add-task commands
+  log_info "Verifying tasks.json was created by add-task commands"
+  if [ -f "tasks/tasks.json" ]; then
+    log_success "tasks.json created successfully by add-task commands"
+    log_info "Tasks.json contents:"
+    cat tasks/tasks.json
+  else
+    log_error "tasks.json was not created by add-task commands"
+    exit 1
+  fi
 
   log_step "Ensuring Task 1 has subtasks for testing"
   # Add a simple subtask to Task 1 for testing purposes
