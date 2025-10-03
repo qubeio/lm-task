@@ -18,7 +18,7 @@ LM-Tasker can use a few optional environment variables for customization:
 
 ## MCP Configuration
 
-For editor integration (Cursor, VS Code, Windsurf), LM-Tasker uses MCP (Model Control Protocol) with no required environment variables:
+For editor integration (Cursor, VS Code, Windsurf), LM-Tasker uses MCP (Model Control Protocol) with no required environment variables. The MCP server automatically handles project initialization when you create your first task:
 
 ```json
 {
@@ -31,6 +31,8 @@ For editor integration (Cursor, VS Code, Windsurf), LM-Tasker uses MCP (Model Co
   }
 }
 ```
+
+When using MCP tools, the `add_task` tool will automatically create the tasks.json file and project structure if this is your first task, eliminating the need for a separate initialization step.
 
 ## Troubleshooting
 

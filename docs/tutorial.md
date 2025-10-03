@@ -40,8 +40,8 @@ Can you create a new task for implementing user authentication?
 
 This will automatically:
 
-- Create necessary project structure
-- Set up initial configuration files
+- Create the tasks.json file and project structure
+- Set up the tasks/ directory for future task files
 - Create your first task
 - Initialize the project for future tasks
 

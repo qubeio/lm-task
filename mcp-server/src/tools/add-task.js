@@ -22,7 +22,7 @@ import { createMinimalTasksJson, writeJSON } from "#scripts/utils.js";
 export function registerAddTaskTool(server) {
   server.addTool({
     name: "add_task",
-    description: "Add a new task manually with specified details",
+    description: "Add a new task manually with specified details. Automatically initializes the project (creates tasks.json and project structure) if this is the first task.",
     parameters: z.object({
       title: z
         .string()

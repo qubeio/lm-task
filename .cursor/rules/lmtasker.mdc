@@ -13,27 +13,7 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
 
 ## Initialization & Setup
 
-### 1. Initialize Project (`init`)
-
-*   **MCP Tool:** `initialize_project`
-*   **CLI Command:** `lm-tasker init [options]`
-*   **Description:** `Set up the basic LM-Tasker file structure and configuration in the current directory for a new project.`
-*   **Key CLI Options:**
-    *   `--name <name>`: `Set the name for your project in LM-Tasker's configuration.`
-    *   `--description <text>`: `Provide a brief description for your project.`
-    *   `--version <version>`: `Set the initial version for your project, e.g., '0.1.0'.`
-    *   `-y, --yes`: `Initialize LM-Tasker quickly using default settings without interactive prompts.`
-*   **Usage:** Run this once at the beginning of a new project.
-*   **MCP Variant Description:** `Set up the basic LM-Tasker file structure and configuration in the current directory for a new project by running the 'lm-tasker init' command.`
-*   **Key MCP Parameters/Options:**
-    *   `projectName`: `Set the name for your project.` (CLI: `--name <name>`)
-    *   `projectDescription`: `Provide a brief description for your project.` (CLI: `--description <text>`)
-    *   `projectVersion`: `Set the initial version for your project, e.g., '0.1.0'.` (CLI: `--version <version>`)
-    *   `authorName`: `Author name.` (CLI: `--author <author>`)
-    *   `skipInstall`: `Skip installing dependencies. Default is false.` (CLI: `--skip-install`)
-    *   `addAliases`: `Add shell aliases tm and lm-tasker. Default is false.` (CLI: `--aliases`)
-    *   `yes`: `Skip prompts and use defaults/provided arguments. Default is false.` (CLI: `-y, --yes`)
-*   **Usage:** Run this once at the beginning of a new project, typically via an integrated tool like Cursor. Operates on the current working directory of the MCP server.
+LM-Tasker automatically initializes your project when you create your first task. No separate initialization step is required.
 
 ---
 
@@ -77,7 +57,7 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
 
 *   **MCP Tool:** `add_task`
 *   **CLI Command:** `lm-tasker add-task [options]`
-*   **Description:** `Add a new task to LM-Tasker with manually specified details.`
+*   **Description:** `Add a new task to LM-Tasker with manually specified details. Automatically initializes the project (creates tasks.json and project structure) if this is the first task.`
 *   **Key Parameters/Options:**
     *   `title`: `Required. The title for the new task.` (CLI: `-t, --title <title>`)
     *   `description`: `A brief description for the new task.` (CLI: `-d, --description <text>`)
@@ -86,7 +66,7 @@ This document provides a detailed reference for interacting with LM-Tasker, cove
     *   `dependencies`: `Specify the IDs of any LM-Tasker tasks that must be completed before this new one can start, e.g., '12,14'.` (CLI: `--dependencies <ids>`)
     *   `priority`: `Set the priority for the new task: 'high', 'medium', or 'low'. Default is 'medium'.` (CLI: `--priority <priority>`)
     *   `file`: `Path to your LM-Tasker 'tasks.json' file. Default relies on auto-detection.` (CLI: `-f, --file <file>`)
-*   **Usage:** Manually create new tasks with specific titles, descriptions, and implementation details.
+*   **Usage:** Manually create new tasks with specific titles, descriptions, and implementation details. For new projects, this command automatically creates the tasks.json file and project structure when adding the first task.
 
 ### 6. Add Subtask (`add_subtask`)
 
