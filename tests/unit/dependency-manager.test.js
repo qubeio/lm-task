@@ -54,7 +54,7 @@ jest.mock("../../scripts/modules/task-manager.js", () => ({
 }));
 
 // Create a path for test files
-const TEST_TASKS_PATH = "tests/fixture/test-tasks.json";
+const TEST_TASKS_PATH = "tests/fixtures/test-tasks.json";
 
 describe("Dependency Manager Module", () => {
   beforeEach(() => {

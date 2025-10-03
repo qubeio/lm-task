@@ -1,6 +1,6 @@
 {
   "name": "@qubeio/lm-tasker",
-  "version": "2.0.0",
+  "version": "2.1.1",
   "description": "A task management system for ambitious development that doesn't overwhelm and confuse developers.",
   "main": "index.js",
   "type": "module",
@@ -83,7 +83,6 @@
   "files": [
     "scripts/**",
     "assets/**",
-    ".cursor/**",
     "index.js",
     "bin/**",
     "mcp-server/**",
