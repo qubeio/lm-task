@@ -138,7 +138,7 @@ lm-tasker move --from=10,11,12 --to=16,17,18
 ## Add a New Task
 
 ```bash
-# Add a new task manually with required details
+# Add a new task manually with required details (auto-initializes project if tasks.json doesn't exist)
 lm-tasker add-task --title="Task title" --description="Task description"
 
 # Add a task with additional details
@@ -154,7 +154,7 @@ lm-tasker add-task --title="Task title" --description="Task description" --prior
 lm-tasker add-task --title="Task title" --description="Task description" --test-strategy="Testing approach"
 ```
 
-**Note:** All task creation is manual. LM-Tasker focuses on structured task management, providing predictable behavior and full control over your task organization.
+**Note:** All task creation is manual. LM-Tasker focuses on structured task management, providing predictable behavior and full control over your task organization. When you run `add-task` for the first time in a project, it automatically creates the `tasks.json` file and project structure.
 
 ## Add a New Subtask
 
@@ -191,7 +191,9 @@ lm-tasker remove-subtask --id=<parentId.subtaskId>
 lm-tasker remove-subtask --id=<parentId.subtaskId> --convert
 ```
 
-## Initialize a Project
+## Project Initialization
+
+LM-Tasker automatically initializes your project when you create your first task. No separate initialization step is required.
 
 ```bash
 # Create first task (automatically initializes project structure)
@@ -203,5 +205,11 @@ lm-tasker add-task --title="Task Title" --description="Task description" --detai
 # Create first task with minimal input
 lm-tasker add-task --title="Task Title" --description="Brief description"
 ```
+
+When you run `add-task` for the first time in a project directory, LM-Tasker will:
+- Create a `tasks.json` file with the proper structure
+- Create a `tasks/` directory for individual task files
+- Set up project metadata (name, version, description)
+- Add your first task to the project
 
 

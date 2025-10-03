@@ -317,13 +317,13 @@ log_step() {
 
   log_step "Initializing LM-Tasker project using add-task (auto-initializes)"
   # Use add-task to create first task, which auto-initializes the project
-  lm-tasker add-task --title="E2E Test Task 1" --description="First E2E test task" --priority="high" --details="Test task for E2E testing" --test-strategy="Verify E2E test functionality"
+  lm-tasker add-task --title="E2E Test Task 1" --description="First E2E test task" --priority="high" --details="Test task for E2E testing"
   log_success "Project initialized with first task."
 
   log_step "Adding additional sample tasks"
   # Add more tasks to test various scenarios
-  lm-tasker add-task --title="E2E Test Task 2" --description="Second E2E test task" --priority="medium" --dependencies="1" --details="Another test task for E2E testing" --test-strategy="Verify dependency handling"
-  lm-tasker add-task --title="E2E Test Task 3" --description="Third E2E test task" --priority="low" --details="Third test task for E2E testing" --test-strategy="Verify multiple task handling"
+lm-tasker add-task --title="E2E Test Task 2" --description="Second E2E test task" --priority="medium" --dependencies="1" --details="Another test task for E2E testing"
+lm-tasker add-task --title="E2E Test Task 3" --description="Third E2E test task" --priority="low" --details="Third test task for E2E testing"
   
   # Verify the tasks.json was created by add-task commands
   log_info "Verifying tasks.json was created by add-task commands"

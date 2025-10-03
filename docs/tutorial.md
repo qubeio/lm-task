@@ -32,19 +32,20 @@ npm i -g lm-tasker
 
 3. **Enable the MCP** in your editor settings
 
-4. **Initialize LM-Tasker** in your project:
+4. **Create your first task** in your project:
 
 ```
-Can you please initialize lm-tasker into my project?
+Can you create a new task for implementing user authentication?
 ```
 
-This will:
+This will automatically:
 
 - Create necessary project structure
 - Set up initial configuration files
-- Guide you through the rest of the process
+- Create your first task
+- Initialize the project for future tasks
 
-5. **Create your tasks manually** using the MCP tools or CLI commands
+5. **Continue creating tasks** using the MCP tools or CLI commands
 
 6. **Use natural language commands** to interact with LM-Tasker:
 
@@ -66,7 +67,7 @@ npm install -g lm-tasker
 npm install lm-tasker
 ```
 
-Initialize a new project:
+Create your first task (auto-initializes project):
 
 ```bash
 # If installed globally
@@ -339,7 +340,7 @@ lm-tasker add-subtask --parent=5 --title="Integration testing" --description="Te
 ### Starting a new project
 
 ```
-I've just initialized a new project with LM-Tasker.
+I'm starting a new project and want to use LM-Tasker for task management.
 Can you help me create some initial tasks for my project?
 ```
 

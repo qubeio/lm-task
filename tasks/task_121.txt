@@ -461,11 +461,56 @@ The test suite has been successfully refactored to remove all init command depen
 ### Details:
 
 
-## 10. Documentation: update README and command-reference [pending]
+## 10. Documentation: update README and command-reference [done]
 ### Dependencies: None
 ### Description: Document the new behavior: add-task auto-initializes. Update examples, tutorials, and remove init-first steps.
 ### Details:
 
+
+--- Updated 2025-10-03T19:29:13.137Z ---
+## Documentation Updates Complete ✅
+
+**Successfully updated all documentation to reflect the new add-task auto-initialization behavior:**
+
+### Files Updated:
+
+#### 1. README.md
+- ✅ **Updated MCP setup section**: Changed from "Initialize LM-Tasker" to "Create Your First Task"
+- ✅ **Updated CLI setup section**: Changed from "Initialize a new project" to "Create your first task (auto-initializes project)"
+- ✅ **Updated troubleshooting section**: Removed references to old init.js script, replaced with proper npm install + add-task workflow
+- ✅ **Maintained all existing functionality**: All commands and examples still work correctly
+
+#### 2. docs/command-reference.md
+- ✅ **Updated Add a New Task section**: Added clear note about auto-initialization behavior
+- ✅ **Replaced "Initialize a Project" section**: Now called "Project Initialization" with detailed explanation of what happens during auto-init
+- ✅ **Added comprehensive explanation**: Details about tasks.json creation, tasks/ directory setup, and project metadata
+- ✅ **Maintained all command examples**: All existing commands and options preserved
+
+#### 3. docs/tutorial.md
+- ✅ **Updated MCP workflow**: Changed from "Initialize LM-Tasker" to "Create your first task"
+- ✅ **Updated CLI workflow**: Changed from "Initialize a new project" to "Create your first task (auto-initializes project)"
+- ✅ **Updated example interactions**: Changed "I've just initialized a new project" to "I'm starting a new project"
+- ✅ **Maintained all tutorial content**: All step-by-step instructions preserved
+
+#### 4. docs/examples.md
+- ✅ **Updated example interactions**: Changed "I've just initialized a new project" to "I'm starting a new project"
+- ✅ **Maintained all example commands**: All existing examples and interactions preserved
+
+### Key Changes Made:
+
+1. **Removed all references to separate initialization step**: No more "lm-tasker init" commands in documentation
+2. **Emphasized auto-initialization**: Clear messaging that add-task automatically handles project setup
+3. **Updated workflow descriptions**: All tutorials now start with creating the first task
+4. **Maintained backward compatibility**: All existing commands and functionality preserved
+5. **Improved user experience**: Simplified workflow with single entry point (add-task)
+
+### Documentation Consistency:
+- ✅ **All files updated consistently**: Same messaging across README, command-reference, tutorial, and examples
+- ✅ **Clear auto-initialization messaging**: Users understand that add-task handles everything
+- ✅ **Maintained existing functionality**: All commands, options, and workflows preserved
+- ✅ **Improved user experience**: Simplified onboarding with single command
+
+The documentation now accurately reflects the new simplified workflow where users can start using LM-Tasker immediately with a single `add-task` command, eliminating the need for a separate initialization step.
 
 ## 11. MCP docs: update tool descriptions [pending]
 ### Dependencies: None

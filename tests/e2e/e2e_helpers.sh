@@ -16,6 +16,7 @@ _get_elapsed_time_for_log() {
   local current_time
   current_time=$(date +%s)
   local elapsed_seconds
+  overall_start_time=${overall_start_time:-$current_time}
   elapsed_seconds=$((current_time - overall_start_time))
   _format_duration "$elapsed_seconds"
 }
@@ -33,6 +34,7 @@ log_error() {
 }
 
 log_step() {
+  test_step_count=${test_step_count:-0}
   test_step_count=$((test_step_count + 1))
   echo ""
   echo "============================================="

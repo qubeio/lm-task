@@ -5,7 +5,7 @@ Here are some common interactions with Cursor when using LM-Tasker:
 ## Starting a new project
 
 ```
-I've just initialized a new project with LM-Tasker.
+I'm starting a new project and want to use LM-Tasker for task management.
 Can you help me create some initial tasks for my project?
 ```
 

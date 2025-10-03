@@ -60,11 +60,11 @@ cd "$TEST_PROJECT_DIR"
 
 # Initialize a test project using add-task (auto-initializes)
 log_info "Initializing test project with lm-tasker add-task"
-lm-tasker add-task --title="Test Task 1" --description="First test task" --priority="high" --details="Test task for MCP server" --test-strategy="Verify MCP server can access this task"
+lm-tasker add-task --title="Test Task 1" --description="First test task" --priority="high" --details="Test task for MCP server"
 
 # Add a second task with dependency
 log_info "Adding second task with dependency"
-lm-tasker add-task --title="Test Task 2" --description="Second test task" --priority="medium" --dependencies="1" --details="Another test task for MCP server" --test-strategy="Verify MCP server can access this task"
+lm-tasker add-task --title="Test Task 2" --description="Second test task" --priority="medium" --dependencies="1" --details="Another test task for MCP server"
 
 # Verify the tasks.json was created by add-task commands
 log_info "Verifying tasks.json was created by add-task commands"

@@ -90,15 +90,17 @@ MCP (Model Control Protocol) lets you run LM-Tasker directly from your editor.
 
 Open Cursor Settings (Ctrl+Shift+J) ➡ Click on MCP tab on the left ➡ Enable lm-tasker with the toggle
 
-#### 3. Initialize LM-Tasker
+#### 3. Create Your First Task
 
 In your editor's AI chat pane, say:
 
 ```txt
-Initialize lm-tasker in my project
+Create a new task for implementing user authentication
 ```
 
-#### 4. Create Your Tasks
+This will automatically initialize the project structure and create your first task.
+
+#### 4. Continue Creating Tasks
 
 LM-Tasker uses manual task creation. You can create tasks using the MCP tools or CLI commands.
 
@@ -125,7 +127,7 @@ npm install -g @qubeio/lm-tasker
 npm install @qubeio/lm-tasker
 ```
 
-#### Initialize a new project
+#### Create your first task (auto-initializes project)
 
 ```bash
 # If installed globally
@@ -177,5 +179,6 @@ Or clone the repository and run:
 
 ```bash
 cd lm-tasker
-node scripts/init.js
+npm install
+npx lm-tasker add-task --title="Task Title" --description="Task description"
 ```
