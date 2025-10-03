@@ -1,6 +1,6 @@
 # Task ID: 121
 # Title: Integrate Initialize Functionality into Add Task Command
-# Status: in-progress
+# Status: done
 # Dependencies: 120
 # Priority: high
 # Description: Modify the add-task functionality to automatically create a tasks.json file if one doesn't exist, eliminating the need for a separate init command and simplifying the user experience.
