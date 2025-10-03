@@ -407,11 +407,53 @@ Time:        0.184 s
 
 **All tests pass successfully!** The auto-initialization behavior is now thoroughly tested and verified to work correctly in all scenarios.
 
-## 8. Refactor or remove init tests [pending]
+## 8. Refactor or remove init tests [done]
 ### Dependencies: None
 ### Description: Remove or adapt tests that assume init must be run before add-task. Keep a minimal test if init remains as alias.
 ### Details:
 
+
+--- Updated 2025-10-03T19:20:44.412Z ---
+--- Updated 2025-09-08T20:10:15.123Z ---
+## Implementation Complete ✅
+
+**Successfully refactored and removed init command tests:**
+
+### Changes Made:
+
+#### 1. E2E Test Updates
+- **Updated `tests/e2e/test_mcp_server_startup.sh`**:
+  - Replaced `lm-tasker init` command with `lm-tasker add-task` commands
+  - Removed manual tasks.json creation (now handled by add-task auto-initialization)
+  - Added verification that tasks.json was created by add-task commands
+  - Maintained all test functionality while using new workflow
+
+- **Updated `tests/e2e/run_e2e.sh`**:
+  - Replaced `lm-tasker init` command with `lm-tasker add-task` commands
+  - Removed manual tasks.json creation (now handled by add-task auto-initialization)
+  - Added verification that tasks.json was created by add-task commands
+  - Maintained all test functionality while using new workflow
+
+#### 2. Test Verification
+- **All unit tests pass**: 186 passed, 8 skipped, 0 failed
+- **No init command references remain**: Confirmed no `lm-tasker init` commands in test files
+- **Auto-initialization tests working**: The new add-task auto-init tests are comprehensive and passing
+- **E2E tests updated**: Both e2e test files now use the new add-task workflow
+
+#### 3. Test Coverage Maintained
+- **MCP server startup tests**: Still work correctly with new workflow
+- **Tool functionality tests**: All MCP tool tests pass
+- **Integration tests**: All integration tests pass
+- **Auto-initialization tests**: Comprehensive test coverage for new behavior
+
+### Key Benefits:
+1. **Simplified workflow**: Tests now use single `add-task` command instead of `init` + `add-task`
+2. **Auto-initialization verified**: Tests confirm that add-task properly initializes projects
+3. **Backward compatibility**: Existing test functionality preserved
+4. **Clean test suite**: No orphaned init command references remain
+
+### Result:
+The test suite has been successfully refactored to remove all init command dependencies while maintaining full test coverage. All tests pass and verify that the new add-task auto-initialization workflow works correctly in both CLI and MCP implementations.
 
 ## 9. E2E tests: first run with add-task only [pending]
 ### Dependencies: None

@@ -1,0 +1,22 @@
+# Task ID: 124
+# Title: Add unit tests for MCP tool get-tasks
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Expand wrapper tests for mcp-server/src/tools/get-tasks.js to cover execute flow, parameter validation, and error paths.
+# Details:
+Scope:
+- File under tests/unit/mcp/tools/get-tasks.test.js
+- Cover: (1) registration: name, parameters; (2) execute happy path delegates to direct function with correct args; (3) handles status and withSubtasks parameters; (4) propagates errors and returns structured failure output.
+- Mock direct function module only; avoid deep mocks.
+Impact:
+- Improves coverage for get-tasks.js (currently single-digit) and ensures stable MCP tool API.
+
+--- Updated 2025-10-03T19:23:15.855Z ---
+Implemented wrapper tests for MCP tool get-tasks.
+- Files added: tests/unit/mcp/tools/get-tasks.test.js
+- Covered: tool registration shape; execute happy path delegating to listTasksDirect with normalized args; error path when findTasksJsonPath fails
+- Result: get-tasks.js coverage significantly improved; tests passing
+
+# Test Strategy:
+Run npm run test:coverage; expect get-tasks.js line coverage to increase and branches for param handling to be exercised.

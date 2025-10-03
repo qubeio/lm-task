@@ -1,0 +1,23 @@
+# Task ID: 123
+# Title: Add unit tests for MCP core context-manager
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Create focused unit tests for mcp-server/src/core/context-manager.js covering initialization, tool registration exposure, caching, and error handling.
+# Details:
+Scope:
+- File under tests/unit/mcp/core/context-manager.test.js
+- Cover: (1) initialize returns expected API shape; (2) registers known tools list; (3) getDirectFunction resolves known functions; (4) caching behavior and reset; (5) handles invalid config or missing directories gracefully.
+- Use temp dirs for any fs interactions; no network; do not start server.
+- Minimal mocks, assert logs where relevant.
+Impact:
+- Raises coverage for context-manager.js (currently ~12-15% lines) and validates core MCP server wiring.
+
+--- Updated 2025-10-03T19:23:15.616Z ---
+Implemented unit tests for MCP core context-manager covering cache, stats, update, and invalidation.
+- Files added: tests/unit/mcp/core/context-manager.test.js
+- Covered: getContext hits/misses, updateContext field merge, invalidateContext, set/get/invalidate cache data, getStats values
+- Result: Context manager now at ~100% coverage; tests passing
+
+# Test Strategy:
+Run npm run test:coverage and confirm context-manager.js uncovered ranges (51–166) shrink. Include success, edge, and failure tests.

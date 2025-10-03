@@ -1,6 +1,6 @@
 # Task ID: 120
 # Title: Remove All AI Functionality
-# Status: in-progress
+# Status: done
 # Dependencies: None
 # Priority: high
 # Description: Remove all remaining AI functionality from LM-Tasker, including PRD parsing, model selection, AI provider integrations, and any AI-related configuration. The goal is to make LM-Tasker a purely manual task management system.

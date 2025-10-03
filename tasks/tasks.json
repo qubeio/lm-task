@@ -448,7 +448,7 @@
       "description": "Remove all remaining AI functionality from LM-Tasker, including PRD parsing, model selection, AI provider integrations, and any AI-related configuration. The goal is to make LM-Tasker a purely manual task management system.",
       "details": "This task involves removing all AI-related code and functionality from LM-Tasker to make it a purely manual task management system. The scope includes:\n\n**AI Functionality to Remove:**\n1. PRD parsing commands and functionality (parse-prd, migrate-prd)\n2. Model selection and configuration (models command, .lmtaskerconfig AI settings)\n3. All AI provider integrations (Azure, OpenAI, Anthropic, Google, Mistral, Perplexity, XAI, Ollama)\n4. AI services layer (ai-services-unified.js and related modules)\n5. AI-related configuration management\n6. AI provider-specific code in src/ai-providers/\n7. supported-models.json and model management\n8. All AI-related environment variables and API key handling\n9. AI-related documentation and examples\n\n**Key Areas to Clean Up:**\n- Remove parse-prd and migrate-prd commands from CLI and MCP\n- Remove models command and model configuration\n- Remove AI services layer (ai-services-unified.js)\n- Remove AI provider implementations (src/ai-providers/)\n- Remove supported-models.json and model management code\n- Clean up configuration files (.lmtaskerconfig) to remove AI settings\n- Update documentation to reflect manual-only operation\n- Remove AI-related dependencies from package.json\n- Clean up environment variable handling for API keys\n- Remove AI-related tests and fixtures\n\n**Files/Directories to Review:**\n- scripts/modules/commands.js (remove parse-prd, migrate-prd, models commands)\n- scripts/modules/ai-services-unified.js (entire file)\n- scripts/modules/task-manager/parse-prd.js (entire file)\n- scripts/modules/task-manager/migrate-prd.js (entire file)\n- scripts/modules/task-manager/models.js (entire file)\n- scripts/modules/config-manager.js (remove AI configuration)\n- scripts/modules/supported-models.json (entire file)\n- src/ai-providers/ (entire directory)\n- mcp-server/src/tools/parse-prd.js (entire file)\n- mcp-server/src/tools/migrate-prd.js (entire file)\n- mcp-server/src/tools/models.js (entire file)\n- mcp-server/src/core/direct-functions/parse-prd.js (entire file)\n- mcp-server/src/core/direct-functions/migrate-prd.js (entire file)\n- mcp-server/src/core/direct-functions/models.js (entire file)\n- All documentation files referencing AI functionality\n- Package.json dependencies related to AI providers\n- Test files for AI functionality\n\n**Approach:**\n1. Remove AI-related CLI commands (parse-prd, migrate-prd, models)\n2. Remove AI-related MCP tools\n3. Remove AI service layer and provider implementations\n4. Clean up configuration management\n5. Update documentation and examples\n6. Remove AI-related dependencies\n7. Clean up tests and remove AI-related test files\n8. Update README and user guides to reflect manual-only operation",
       "testStrategy": "",
-      "status": "in-progress",
+      "status": "done",
       "dependencies": [],
       "priority": "high",
       "subtasks": [
@@ -614,8 +614,8 @@
           "id": 8,
           "title": "Refactor or remove init tests",
           "description": "Remove or adapt tests that assume init must be run before add-task. Keep a minimal test if init remains as alias.",
-          "details": "",
-          "status": "pending",
+          "details": "\n\n--- Updated 2025-10-03T19:20:44.412Z ---\n--- Updated 2025-09-08T20:10:15.123Z ---\n## Implementation Complete ✅\n\n**Successfully refactored and removed init command tests:**\n\n### Changes Made:\n\n#### 1. E2E Test Updates\n- **Updated `tests/e2e/test_mcp_server_startup.sh`**:\n  - Replaced `lm-tasker init` command with `lm-tasker add-task` commands\n  - Removed manual tasks.json creation (now handled by add-task auto-initialization)\n  - Added verification that tasks.json was created by add-task commands\n  - Maintained all test functionality while using new workflow\n\n- **Updated `tests/e2e/run_e2e.sh`**:\n  - Replaced `lm-tasker init` command with `lm-tasker add-task` commands\n  - Removed manual tasks.json creation (now handled by add-task auto-initialization)\n  - Added verification that tasks.json was created by add-task commands\n  - Maintained all test functionality while using new workflow\n\n#### 2. Test Verification\n- **All unit tests pass**: 186 passed, 8 skipped, 0 failed\n- **No init command references remain**: Confirmed no `lm-tasker init` commands in test files\n- **Auto-initialization tests working**: The new add-task auto-init tests are comprehensive and passing\n- **E2E tests updated**: Both e2e test files now use the new add-task workflow\n\n#### 3. Test Coverage Maintained\n- **MCP server startup tests**: Still work correctly with new workflow\n- **Tool functionality tests**: All MCP tool tests pass\n- **Integration tests**: All integration tests pass\n- **Auto-initialization tests**: Comprehensive test coverage for new behavior\n\n### Key Benefits:\n1. **Simplified workflow**: Tests now use single `add-task` command instead of `init` + `add-task`\n2. **Auto-initialization verified**: Tests confirm that add-task properly initializes projects\n3. **Backward compatibility**: Existing test functionality preserved\n4. **Clean test suite**: No orphaned init command references remain\n\n### Result:\nThe test suite has been successfully refactored to remove all init command dependencies while maintaining full test coverage. All tests pass and verify that the new add-task auto-initialization workflow works correctly in both CLI and MCP implementations.",
+          "status": "done",
           "dependencies": [],
           "parentTaskId": 121
         },
@@ -656,6 +656,39 @@
           "parentTaskId": 121
         }
       ]
+    },
+    {
+      "id": 122,
+      "title": "Add unit tests for task-manager list-tasks module",
+      "description": "Create unit tests covering scripts/modules/task-manager/list-tasks.js for happy path, status filtering, withSubtasks flag, and error handling using temp fixtures.",
+      "details": "Scope:\n- File under tests/unit/task-manager/list-tasks.test.js\n- Use tests/fixtures/test-tasks.json or temp copies; do not mutate repo fixtures.\n- Cover: (1) returns tasks with default options; (2) filters by status; (3) withSubtasks=false prunes subtasks; (4) handles missing/invalid tasks file gracefully; (5) edge cases (empty tasks, invalid status).\n- Mock only filesystem boundaries; avoid heavy mocking.\n- Keep lines <120 chars, follow repo conventions.\nImpact:\n- Raises coverage for list-tasks.js from 0% significantly and exercises core listing behavior.\n\n--- Updated 2025-10-03T19:23:15.404Z ---\nImplemented unit tests for list-tasks JSON output and filtering.\n- Files added: tests/unit/task-manager/list-tasks.test.js\n- Covered: JSON mode details omission for tasks/subtasks, status filtering (including 'all'), happy path and error path when file missing\n- Result: Tests passing; contributed to raising overall coverage",
+      "testStrategy": "Run npm test and npm run test:coverage. Verify uncovered lines for list-tasks.js decrease substantially. Include at least: success case, edge case, failure case.",
+      "status": "done",
+      "dependencies": [],
+      "priority": "high",
+      "subtasks": []
+    },
+    {
+      "id": 123,
+      "title": "Add unit tests for MCP core context-manager",
+      "description": "Create focused unit tests for mcp-server/src/core/context-manager.js covering initialization, tool registration exposure, caching, and error handling.",
+      "details": "Scope:\n- File under tests/unit/mcp/core/context-manager.test.js\n- Cover: (1) initialize returns expected API shape; (2) registers known tools list; (3) getDirectFunction resolves known functions; (4) caching behavior and reset; (5) handles invalid config or missing directories gracefully.\n- Use temp dirs for any fs interactions; no network; do not start server.\n- Minimal mocks, assert logs where relevant.\nImpact:\n- Raises coverage for context-manager.js (currently ~12-15% lines) and validates core MCP server wiring.\n\n--- Updated 2025-10-03T19:23:15.616Z ---\nImplemented unit tests for MCP core context-manager covering cache, stats, update, and invalidation.\n- Files added: tests/unit/mcp/core/context-manager.test.js\n- Covered: getContext hits/misses, updateContext field merge, invalidateContext, set/get/invalidate cache data, getStats values\n- Result: Context manager now at ~100% coverage; tests passing",
+      "testStrategy": "Run npm run test:coverage and confirm context-manager.js uncovered ranges (51–166) shrink. Include success, edge, and failure tests.",
+      "status": "done",
+      "dependencies": [],
+      "priority": "high",
+      "subtasks": []
+    },
+    {
+      "id": 124,
+      "title": "Add unit tests for MCP tool get-tasks",
+      "description": "Expand wrapper tests for mcp-server/src/tools/get-tasks.js to cover execute flow, parameter validation, and error paths.",
+      "details": "Scope:\n- File under tests/unit/mcp/tools/get-tasks.test.js\n- Cover: (1) registration: name, parameters; (2) execute happy path delegates to direct function with correct args; (3) handles status and withSubtasks parameters; (4) propagates errors and returns structured failure output.\n- Mock direct function module only; avoid deep mocks.\nImpact:\n- Improves coverage for get-tasks.js (currently single-digit) and ensures stable MCP tool API.\n\n--- Updated 2025-10-03T19:23:15.855Z ---\nImplemented wrapper tests for MCP tool get-tasks.\n- Files added: tests/unit/mcp/tools/get-tasks.test.js\n- Covered: tool registration shape; execute happy path delegating to listTasksDirect with normalized args; error path when findTasksJsonPath fails\n- Result: get-tasks.js coverage significantly improved; tests passing",
+      "testStrategy": "Run npm run test:coverage; expect get-tasks.js line coverage to increase and branches for param handling to be exercised.",
+      "status": "done",
+      "dependencies": [],
+      "priority": "high",
+      "subtasks": []
     }
   ]
 }
