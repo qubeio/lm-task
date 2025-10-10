@@ -2,7 +2,7 @@
 
 ## Overview
 
-**LM-Tasker** is a straightforward task management tool for software development. It favors explicit, manual operations and provides a CLI, a terminal UI (TUI) for in-terminal task browsing and updates, and an MCP server for editor integration.
+**LM-Tasker** is a straightforward task management tool for software development. It favors explicit, manual operations and provides a CLI, a terminal UI (TUI) for in-terminal task browsing and updates, and an MCP server for editor integration. Based heavily on eyaltoledano's excellent https://github.com/eyaltoledano/claude-task-master. I removed all the AI functionality because actually your usual coding assistant/agent paired with Perplexity MCP for research (or just their built-in web search tool call) has enough context to do a great job without it.
 
 ### What it offers
 
