@@ -103,7 +103,7 @@ export class StatusBar {
    */
   getKeyboardShortcuts() {
     const autoRefreshIndicator = this.app.options.autoRefresh
-      ? " {dim}●{/}"
+      ? " {gray-fg}●{/}"
       : "";
 
     if (this.app.searchMode) {

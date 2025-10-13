@@ -60,7 +60,6 @@ export class TaskListScreen {
     logger.log("TaskListScreen.show() called.");
     this.container.show();
     this.updateDisplay();
-    this.statusBar.setSecondLine("Placeholder: Task List View - Second Line"); // Add this line
     this.focus();
 
     // Ensure selection is properly synchronized after the screen is shown

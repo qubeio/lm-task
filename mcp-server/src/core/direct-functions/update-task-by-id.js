@@ -118,11 +118,12 @@ export async function updateTaskByIdDirect(args, log, context = {}) {
 
       // Check if the core function returned null or an object without success
       if (!coreResult || !coreResult.success) {
-        // Core function logs the reason, just return the result
+        // Core function logs the reason, just return the result as success with updated: false
+        // This matches the pattern in update-subtask and avoids throwing an error to the user
         const message = coreResult?.message || `Task ${taskId} was not updated.`;
         logWrapper.info(message);
         return {
-          success: false,
+          success: true,
           data: {
             message: message,
             taskId: taskId,

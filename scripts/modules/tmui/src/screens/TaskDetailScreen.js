@@ -482,7 +482,6 @@ export class TaskDetailScreen {
     this.currentSubtaskIndex = 0; // Reset to the first subtask
     this.container.show();
     this.updateDisplay();
-    this.statusBar.setSecondLine("Placeholder: Task Detail View - Second Line"); // Add this line
     this.focus(); // Focus the default component (subtasks list)
   }
 
