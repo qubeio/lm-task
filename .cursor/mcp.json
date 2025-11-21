@@ -8,6 +8,14 @@
       "cwd": "/Users/andreas/source/repos/qubeio/lm-task",
       "env": {
       }
+    },
+    "lm-tasker": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@qubeio/lm-tasker-mcp"
+      ],
+      "env": {}
     }
   }
 }

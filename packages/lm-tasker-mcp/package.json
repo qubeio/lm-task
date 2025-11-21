@@ -1,0 +1,39 @@
+{
+  "name": "@qubeio/lm-tasker-mcp",
+  "version": "2.11.0",
+  "description": "MCP server wrapper for LM-Tasker - enables editor integration",
+  "type": "module",
+  "bin": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "lm-tasker",
+    "task-management",
+    "cursor",
+    "windsurf",
+    "vscode"
+  ],
+  "author": "Andreas Frangopoulos",
+  "license": "MIT",
+  "dependencies": {
+    "@qubeio/lm-tasker": "^2.8.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qubeio/lm-task.git",
+    "directory": "packages/lm-tasker-mcp"
+  },
+  "homepage": "https://github.com/qubeio/lm-task#readme",
+  "bugs": {
+    "url": "https://github.com/qubeio/lm-task/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__lm-tasker__get_tasks"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

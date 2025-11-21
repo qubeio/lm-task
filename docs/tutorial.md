@@ -23,7 +23,7 @@ npm i -g lm-tasker
   "mcpServers": {
     "lm-tasker": {
       "command": "npx",
-      "args": ["-y", "--package=lm-tasker", "lm-tasker-mcp"],
+      "args": ["-y", "@qubeio/lm-tasker-mcp"],
       "env": {}
     }
   }
@@ -133,7 +133,7 @@ You can also set up the MCP server in Cursor settings:
 4. Configure with the following details:
    - Name: "LM-Tasker"
    - Type: "Command"
-   - Command: "npx -y --package=lm-tasker lm-tasker-mcp"
+   - Command: "npx -y @qubeio/lm-tasker-mcp"
 5. Save the settings
 
 Once configured, you can interact with LM-Tasker's task management commands directly through Cursor's interface,

@@ -14,7 +14,17 @@
       "Bash(git commit:*)",
       "Bash(find:*)",
       "Bash(node:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(mkdir:*)",
+      "Bash(chmod:*)",
+      "Bash(npm pack)",
+      "Bash(npm install:*)",
+      "Bash(npm view:*)",
+      "Bash(npm run mcp-server:*)",
+      "Bash(timeout 5 node:*)",
+      "Bash(timeout 5 npm run mcp-server)",
+      "Bash(npm run version:minor:*)",
+      "Bash(npm --version:*)"
     ],
     "deny": []
   }

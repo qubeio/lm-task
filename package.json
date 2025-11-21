@@ -1,9 +1,16 @@
 {
   "name": "@qubeio/lm-tasker",
-  "version": "2.3.2",
+  "version": "2.8.0",
   "description": "A task management system for ambitious development that doesn't overwhelm and confuse developers.",
   "main": "index.js",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "exports": {
+    ".": "./index.js",
+    "./mcp-server/server.js": "./mcp-server/server.js"
+  },
   "imports": {
     "#scripts/*": "./scripts/modules/*",
     "#mcp/*": "./mcp-server/src/*"
@@ -24,9 +31,10 @@
     "changeset:version": "changeset version",
     "changeset:status": "changeset status",
     "release": "changeset publish",
-    "publish:patch": "npm run changeset -- --type patch && npm run changeset:version && npm run release",
-    "publish:minor": "npm run changeset -- --type minor && npm run changeset:version && npm run release",
-    "publish:major": "npm run changeset -- --type major && npm run changeset:version && npm run release",
+    "version:patch": "node scripts/version.js patch",
+    "version:minor": "node scripts/version.js minor",
+    "version:major": "node scripts/version.js major",
+    "publish:all": "npm publish --workspaces && npm publish",
     "publish:check": "npm run format-check && npm run test && npm run changeset:status",
     "publish:full": "npm run publish:check && npm run changeset:version && npm run release",
     "inspector": "npx @modelcontextprotocol/inspector node mcp-server/server.js",

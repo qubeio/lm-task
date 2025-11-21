@@ -54,7 +54,7 @@ The Model Control Protocol (MCP) lets you run LM-Tasker directly from supported 
   "mcpServers": {
     "lm-tasker": {
       "command": "npx",
-      "args": ["-y", "--package=@qubeio/lm-tasker", "lm-tasker-mcp"],
+      "args": ["-y", "@qubeio/lm-tasker-mcp"],
       "env": {},
     },
   },
@@ -68,7 +68,7 @@ The Model Control Protocol (MCP) lets you run LM-Tasker directly from supported 
   "servers": {
     "lm-tasker": {
       "command": "npx",
-      "args": ["-y", "--package=@qubeio/lm-tasker", "lm-tasker-mcp"],
+      "args": ["-y", "@qubeio/lm-tasker-mcp"],
       "env": {},
       "type": "stdio",
     },

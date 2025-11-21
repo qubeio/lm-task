@@ -25,7 +25,7 @@ For editor integration (Cursor, VS Code, Windsurf), LM-Tasker uses MCP (Model Co
   "mcpServers": {
     "lm-tasker": {
       "command": "npx",
-      "args": ["-y", "--package=@qubeio/lm-tasker", "lm-tasker-mcp"],
+      "args": ["-y", "@qubeio/lm-tasker-mcp"],
       "env": {}
     }
   }
