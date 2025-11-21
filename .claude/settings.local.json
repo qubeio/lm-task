@@ -31,7 +31,8 @@
       "WebSearch",
       "Bash(cat:*)",
       "WebFetch(domain:www.npmjs.com)",
-      "Bash(npm test:*)"
+      "Bash(npm test:*)",
+      "Bash(npm run publish:all:*)"
     ],
     "deny": []
   }

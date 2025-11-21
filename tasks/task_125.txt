@@ -1,0 +1,11 @@
+# Task ID: 125
+# Title: Codex MCP load failure
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Codex CLI cannot load lm-tasker MCP server while Claude can; diagnose and fix compatibility issue.
+# Details:
+Investigate lm-tasker MCP server initialization path focusing on stdout/stderr usage, resource schemas, and FastMCP compat so Codex can connect.
+
+# Test Strategy:
+

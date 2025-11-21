@@ -86,6 +86,9 @@ into the pipeline after the MCP server has started.
   ensure npm registry access.
 - **Server not reachable** – confirm `--server` argument or `$MCP_SERVER` env
   variable points to a running instance.
+- **Inspector / Codex immediately abort with `invalid JSON`** – double-check the
+  MCP server does not print banners to stdout. All startup logs must go to
+  stderr for stdio-based clients.
 
 ---
 

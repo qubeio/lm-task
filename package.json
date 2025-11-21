@@ -1,6 +1,6 @@
 {
   "name": "@qubeio/lm-tasker",
-  "version": "2.9.0",
+  "version": "3.0.0",
   "description": "A task management system for ambitious development that doesn't overwhelm and confuse developers.",
   "main": "index.js",
   "type": "module",

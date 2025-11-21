@@ -74,11 +74,9 @@ function log(level, ...args) {
       coloredArgs = args;
     }
 
-    // Revert to console.log - FastMCP's context logger (context.log)
-    // is responsible for directing logs correctly (e.g., to stderr)
-    // during tool execution without upsetting the client connection.
-    // Logs outside of tool execution (like startup) will go to stdout.
-    console.log(prefix, ...coloredArgs);
+    // Route all logs to stderr so stdout remains reserved for MCP JSON-RPC.
+    // # Reason: Codex and other strict MCP clients reject non-JSON stdout data.
+    console.error(prefix, ...coloredArgs);
   }
 }
 

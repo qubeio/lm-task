@@ -1,0 +1,18 @@
+version: "3"
+
+env:
+  LMTASKER_SKIP_MCP_AUTOSTART: "1"
+
+tasks:
+  test:
+    desc: Run the Jest unit test suite
+    cmds:
+      - npm run test
+  test:coverage:
+    desc: Run the Jest coverage suite
+    cmds:
+      - npm run test:coverage
+  lint:
+    desc: Run the repository formatting check
+    cmds:
+      - npm run format-check

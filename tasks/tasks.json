@@ -10,6 +10,17 @@
       "dependencies": [],
       "priority": "high",
       "subtasks": []
+    },
+    {
+      "id": 125,
+      "title": "Codex MCP load failure",
+      "description": "Codex CLI cannot load lm-tasker MCP server while Claude can; diagnose and fix compatibility issue.",
+      "details": "Investigate lm-tasker MCP server initialization path focusing on stdout/stderr usage, resource schemas, and FastMCP compat so Codex can connect.",
+      "testStrategy": "",
+      "status": "done",
+      "dependencies": [],
+      "priority": "high",
+      "subtasks": []
     }
   ]
 }

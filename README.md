@@ -207,3 +207,31 @@ cd lm-tasker
 npm install
 npx lm-tasker add-task --title="Task Title" --description="Task description"
 ```
+
+### Codex (or strict MCP clients) can't load the server
+
+Some MCP clients – Codex in particular – reject any non-JSON text that appears on stdout while the
+server is connected over stdio. Earlier versions of LM-Tasker logged startup banners to stdout,
+which meant Codex aborted the handshake immediately even though Claude/Desktop would tolerate it.
+Upgrade to the latest version (or pull `main`) so logging goes to stderr only. If you maintain a
+fork, make sure any `console.log` statements are replaced with stderr logging before the MCP server
+starts.
+
+## Development Workflow
+
+This repository now ships with a `Taskfile.yml` so common actions can be run with [GoTask](https://taskfile.dev).
+Typical examples:
+
+```bash
+# Run the fast Jest suite
+task test
+
+# Run coverage
+task test:coverage
+
+# Check formatting
+task lint
+```
+
+All tasks automatically set `LMTASKER_SKIP_MCP_AUTOSTART=1` so the MCP server does not auto-run
+during unit tests.
