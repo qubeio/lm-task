@@ -1,6 +1,6 @@
 {
   "name": "@qubeio/lm-tasker-mcp",
-  "version": "2.11.0",
+  "version": "2.12.0",
   "description": "MCP server wrapper for LM-Tasker - enables editor integration",
   "type": "module",
   "bin": "index.js",
@@ -19,7 +19,7 @@
   "author": "Andreas Frangopoulos",
   "license": "MIT",
   "dependencies": {
-    "@qubeio/lm-tasker": "^2.8.0"
+    "@qubeio/lm-tasker": "^2.9.0"
   },
   "engines": {
     "node": ">=14.0.0"

@@ -24,7 +24,14 @@
       "Bash(timeout 5 node:*)",
       "Bash(timeout 5 npm run mcp-server)",
       "Bash(npm run version:minor:*)",
-      "Bash(npm --version:*)"
+      "Bash(npm --version:*)",
+      "Bash(npx -y @qubeio/lm-tasker-mcp)",
+      "Bash(npm ls:*)",
+      "mcp__perplexity__perplexity_search",
+      "WebSearch",
+      "Bash(cat:*)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(npm test:*)"
     ],
     "deny": []
   }
